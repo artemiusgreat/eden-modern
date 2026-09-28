@@ -1,0 +1,6 @@
+.heroImg {
+  border: 1px solid var(--line-strong);
+  padding: 10px;
+  background: var(--surface);
+  border-radius: 2px;
+}

@@ -1,0 +1,17 @@
+/* Trustpilot-style 5-star row: green squares with white stars. */
+
+.stars {
+  display: inline-flex;
+  gap: 2px;
+  vertical-align: middle;
+}
+.star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #00b67a;
+  color: #fff;
+}
+.star i {
+  line-height: 1;
+}

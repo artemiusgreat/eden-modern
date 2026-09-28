@@ -1,0 +1,29 @@
+/* Compact square add-to-bag button used on product cards.
+   Doubled class (0,2,0) beats MDB's .btn-primary (0,1,0) without !important. */
+
+.cartBtn.cartBtn {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 2px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.92rem;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  box-shadow: none;
+  text-transform: none;
+}
+.cartBtn.cartBtn:hover:not(:disabled) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #0b0a09;
+}
+.cartBtn.cartBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

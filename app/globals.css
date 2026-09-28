@@ -1,0 +1,403 @@
+/* ============================================================
+   INDEMOS — NOIR monochrome theme (MDB React UI Kit base)
+   Palette: black / warm white / stone gray, gold reserved for
+   ratings + small accents.
+   Type: Playfair Display (headings) + Inter (body).
+   No italics. No letter-spacing.
+   ============================================================ */
+
+:root {
+  --bg: #0b0a09;
+  --bg-soft: #100e0d;
+  --surface: #161413;
+  --surface-2: #1e1b19;
+  --ink: #f4f1ea;
+  --muted: #a9a29b;
+  --faint: #6d675f;
+  --gold: #c9a35f;
+  --gold-deep: #a8822a;
+  --gold-soft: #e3c98f;
+  --line: rgba(244, 241, 234, 0.12);
+  --line-strong: rgba(244, 241, 234, 0.26);
+  --paper: #ece7db;
+  --paper-ink: #17140f;
+  --danger: #d4695f;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #0b0a09;
+}
+
+/* NOTE: `html body` (not just `body`) — Next.js emits the MDB stylesheet
+   AFTER globals.css in production, and MDB's `body` rule would otherwise
+   win on equal specificity and paint the page white. */
+html body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+  color-scheme: dark;
+}
+
+.font-serif,
+h1, h2, h3, .display-serif {
+  font-family: var(--font-serif);
+  font-weight: 500;
+}
+
+em {
+  font-style: normal;
+}
+
+/* ---------- kickers ---------- */
+.kicker {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* ---------- buttons ---------- */
+.btn-noir.btn-noir {
+  background: #f4f1ea;
+  color: #0b0a09;
+  border: none;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.95rem 2.2rem;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+.btn-noir.btn-noir:hover {
+  transform: scale(1.03);
+  background: #ffffff;
+  color: #0b0a09;
+}
+.btn-noir-dark.btn-noir-dark {
+  background: #0b0a09;
+  color: #f4f1ea;
+  border: none;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.95rem 2.2rem;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+.btn-noir-dark.btn-noir-dark:hover {
+  transform: scale(1.03);
+  background: #241f1a;
+  color: #f4f1ea;
+}
+.btn-outline-noir.btn-outline-noir {
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.85rem 1.8rem;
+  border-radius: 2px;
+  background: transparent;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+.btn-outline-noir.btn-outline-noir:hover {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #0b0a09;
+}
+.btn-gold.btn-gold {
+  background: linear-gradient(135deg, #d9b46c, #b08a2e);
+  color: #14100b;
+  border: none;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.95rem 2.2rem;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+.btn-gold.btn-gold:hover {
+  transform: scale(1.03);
+  filter: brightness(1.06);
+  color: #14100b;
+}
+.btn-primary.btn-primary {
+  background-color: var(--gold);
+  border-color: var(--gold);
+  color: #14100b;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.announcement-bar {
+  background: #000;
+  color: #c9c2b4;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line);
+}
+.announcement-bar a {
+  color: var(--gold-soft);
+  text-decoration: none;
+}
+
+/* ---------- section scaffolding ---------- */
+.noir-section {
+  padding: 5rem 0;
+}
+.noir-kicker {
+  text-align: center;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.9rem;
+}
+.noir-title {
+  text-align: center;
+  font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 3rem;
+}
+.noir-head-split {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.4rem;
+}
+.noir-head-split h2 {
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  text-transform: uppercase;
+  margin: 0;
+}
+.noir-head-split a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.noir-head-split a:hover {
+  color: var(--ink);
+}
+
+.newsletter-shell {
+  border: 1px solid var(--line-strong);
+  display: flex;
+  border-radius: 3px;
+  overflow: hidden;
+  max-width: 520px;
+  background: var(--surface);
+}
+.newsletter-shell input {
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  flex: 1;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.9rem;
+  min-width: 0;
+}
+.newsletter-shell input::placeholder {
+  color: var(--faint);
+}
+.newsletter-shell input:focus {
+  box-shadow: none;
+}
+.newsletter-shell button {
+  background: linear-gradient(135deg, #d9b46c, #b08a2e);
+  color: #14100b;
+  border: none;
+  padding: 0 1.8rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ---------- shared product bits (badges, prices) ---------- */
+
+
+
+
+.product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0.35rem 0.7rem;
+  border-radius: 2px;
+}
+.badge-sale {
+  background: var(--ink);
+  color: #0b0a09;
+}
+.badge-new {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+}
+
+
+
+
+.price-regular {
+  color: var(--faint);
+  text-decoration: line-through;
+  font-size: 0.92rem;
+}
+.price-sale,
+.price-now {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+
+
+
+
+
+/* Shared quantity stepper (product page + cart drawer). Plain buttons: no MDB conflict. */
+.qty-stepper {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.qty-stepper button {
+  width: 44px;
+  height: 52px;
+  border: 0;
+  background: var(--surface);
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+.qty-stepper button:hover {
+  background: var(--surface-2);
+}
+.qty-stepper span {
+  width: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+
+/* ---------- info pages / blog ---------- */
+.info-hero {
+  background: linear-gradient(120deg, #0e0c0a, #171310);
+  border-bottom: 1px solid var(--line);
+}
+.info-hero h1 {
+  color: var(--ink);
+}
+.prose-wp {
+  line-height: 1.85;
+  color: var(--muted);
+}
+.prose-wp h2, .prose-wp h3, .prose-wp h4 {
+  font-family: var(--font-serif);
+  color: var(--ink);
+  margin-top: 2rem;
+}
+.prose-wp p {
+  margin-bottom: 1.1rem;
+}
+.prose-wp ul {
+  padding-left: 1.2rem;
+}
+.prose-wp a {
+  color: var(--gold-soft);
+}
+.blog-hero-img {
+  border: 1px solid var(--line-strong);
+  padding: 10px;
+  background: var(--surface);
+  border-radius: 2px;
+}
+.journal-card-dark {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 3px;
+  overflow: hidden;
+  height: 100%;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.journal-card-dark:hover {
+  transform: scale(1.02);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+  color: inherit;
+}
+.journal-media-dark {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.journal-media-dark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.journal-card-dark:hover .journal-media-dark img {
+  transform: scale(1.05);
+}
+
+/* ---------- skeletons ---------- */
+.skel {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-2);
+  border-radius: 3px;
+}
+.skel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(244, 241, 234, 0.08), transparent);
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ---------- design-system utilities ---------- */
+.text-gold { color: var(--gold); }
+.text-muted-dark { color: var(--muted); }
+.bg-surface { background: var(--surface); }

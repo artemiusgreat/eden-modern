@@ -1,0 +1,55 @@
+/* Scoped cart-drawer styles. Slide transition is functional (not hover). */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1040;
+}
+.backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(420px, 92vw);
+  background: var(--bg-soft);
+  z-index: 1045;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.6);
+  border-left: 1px solid var(--line);
+  color: var(--ink);
+}
+.drawer.show {
+  transform: translateX(0);
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.line {
+  border-bottom: 1px solid var(--line);
+  padding: 1rem 0;
+}
+
+.thumb {
+  width: 84px;
+  height: 96px;
+  object-fit: contain;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 6px;
+}

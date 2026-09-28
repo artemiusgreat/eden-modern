@@ -1,0 +1,202 @@
+/* Scoped navbar styles. MDB loads after this stylesheet, so every rule that
+   competes with an MDB selector wins on specificity instead of !important. */
+
+.navbar {
+  background: rgba(11, 10, 9, 0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Full-bleed header: brand at the far left, actions at the far right. */
+.navbarInner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  padding: 0.65rem 1.25rem;
+}
+
+.navbarInner .brand {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-transform: uppercase;
+  margin-right: 0;
+  line-height: 1;
+  flex-shrink: 0;
+  white-space: normal;
+}
+.navbarInner .brand small {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.56rem;
+  color: var(--muted);
+  font-weight: 500;
+  margin-top: 3px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+/* (0,3,0) beats MDB's .navbar-nav .nav-link (0,2,0). */
+.menu .links .navLink {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 400;
+  padding: 0.4rem 0.6rem;
+  position: relative;
+  white-space: nowrap;
+}
+.menu .links .navLink::after {
+  content: '';
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: 0.1rem;
+  height: 1px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.menu .links .navLink:hover::after {
+  transform: scaleX(1);
+}
+
+.navbarInner :global(.navbar-toggler.navbar-toggler) {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+/* (0,2,0) beats MDB's .btn / .btn-link (0,1,0). */
+.actions .iconBtn {
+  color: var(--ink);
+  font-size: 1.28rem;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+  background: transparent;
+}
+.actions .iconBtn:hover {
+  color: var(--gold-soft);
+  border-color: var(--gold-soft);
+}
+
+/* Mobile-first: the open menu stacks vertically with breathing room. */
+.menu {
+  width: 100%;
+}
+.menu .links {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 0 0.25rem;
+  margin: 0;
+  list-style: none;
+}
+.menu .searchShell {
+  margin: 0.75rem 0;
+  width: 100%;
+}
+.menu .actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0 0.9rem;
+}
+.cta {
+  display: none;
+}
+
+/* Desktop: one clean row — brand | links | search+actions pinned right. */
+@media (min-width: 992px) {
+  .navbarInner {
+    padding: 0.65rem 2rem;
+    flex-wrap: nowrap;
+  }
+  .menu:global(.navbar-collapse) {
+    align-items: center;
+    gap: 1.75rem;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .menu .links {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 0;
+    margin: 0;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .menu .searchShell {
+    flex: 0 1 280px;
+    min-width: 180px;
+    max-width: 320px;
+    margin: 0 0 0 auto;
+  }
+  .menu .actions {
+    padding: 0;
+    gap: 0.6rem;
+    flex-shrink: 0;
+  }
+}
+@media (min-width: 1280px) {
+  .cta {
+    display: inline-flex;
+    margin-right: 0.5rem;
+  }
+  .menu:global(.navbar-collapse) {
+    gap: 1.5rem;
+  }
+}
+
+.searchShell {
+  display: flex;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  border-radius: 2px;
+  overflow: hidden;
+}
+/* (0,1,1) beats MDB's .form-control (0,1,0); :focus (0,2,1) beats :focus (0,2,0). */
+.searchShell input {
+  border: 0;
+  background: transparent;
+  font-size: 0.85rem;
+  color: var(--ink);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.searchShell input::placeholder {
+  color: var(--faint);
+}
+.searchShell input:focus {
+  outline: none;
+  box-shadow: none;
+}
+/* (0,2,0) beats MDB's .btn-link (0,1,0). */
+.searchShell .searchBtn {
+  background: var(--ink);
+  color: #0b0a09;
+  border: 0;
+  border-radius: 0;
+  padding: 0 1.1rem;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+.searchShell .searchBtn:hover {
+  background: #fff;
+  color: #0b0a09;
+}

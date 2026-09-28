@@ -1,0 +1,18 @@
+/* Scoped MDB pagination restyle. Each selector beats MDB's specificity
+   without !important. */
+
+.pager :global(.page-link) {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.pager :global(.page-link:hover) {
+  color: #fff;
+  border-color: var(--ink);
+  background: var(--surface-2);
+}
+.pager :global(.page-item.active .page-link) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #0b0a09;
+}

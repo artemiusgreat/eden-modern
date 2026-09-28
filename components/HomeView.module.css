@@ -1,0 +1,292 @@
+/* Scoped home-page styles. No !important: MDB conflicts are won on specificity. */
+
+.hero {
+  position: relative;
+  min-height: clamp(440px, 58vh, 600px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #060505;
+}
+.hero .heroBg {
+  position: absolute;
+  inset: 0;
+}
+.hero .heroBg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.62;
+}
+.hero .heroShade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(6, 5, 5, 0.88) 0%, rgba(6, 5, 5, 0.45) 55%, rgba(6, 5, 5, 0.15) 100%);
+}
+.hero .heroContent {
+  position: relative;
+  z-index: 1;
+}
+.hero h1 {
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  line-height: 1.12;
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+}
+.hero .heroRule {
+  width: 56px;
+  height: 2px;
+  background: var(--ink);
+  margin: 0 0 1.4rem;
+}
+.hero .heroSub {
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  color: #d8d2c4;
+  margin-bottom: 2.2rem;
+  line-height: 1.9;
+}
+
+/* ---------- promise cards ---------- */
+.promiseCard {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 3px;
+  padding: 2.2rem 1.8rem;
+  height: 100%;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.promiseCard:hover {
+  border-color: var(--line-strong);
+  transform: scale(1.02);
+  color: inherit;
+}
+.promiseCard i {
+  font-size: 1.7rem;
+  color: var(--ink);
+  margin-bottom: 1.3rem;
+  display: block;
+}
+.promiseCard h3 {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+  color: var(--ink);
+}
+.promiseCard p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 1.2rem;
+  line-height: 1.7;
+}
+.promiseLink {
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.promiseLink .fa-arrow-right {
+  font-size: 0.78em;
+}
+
+/* ---------- collection cards ---------- */
+.collectionCard {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+.collectionCard:hover {
+  color: inherit;
+}
+.collectionMedia {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--surface-2);
+}
+.collectionMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+  opacity: 0.92;
+}
+.collectionCard:hover .collectionMedia img {
+  transform: scale(1.05);
+}
+.collectionCard h3 {
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 1.1rem 0 0.25rem;
+}
+.collectionCard p {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin: 0;
+}
+
+/* ---------- story split ---------- */
+.storyPanel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: none;
+  padding: clamp(2rem, 5vw, 4.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+.storyPanel h2 {
+  font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+  text-transform: uppercase;
+  line-height: 1.25;
+  margin-bottom: 1.6rem;
+}
+.storyPanel p {
+  color: var(--muted);
+  line-height: 1.9;
+  font-size: 0.95rem;
+  margin-bottom: 1.1rem;
+}
+.storyMedia {
+  height: 100%;
+  min-height: 420px;
+  overflow: hidden;
+}
+.storyMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- process steps ---------- */
+.processTrack {
+  position: relative;
+}
+.processTrack::before {
+  content: '';
+  position: absolute;
+  top: 34px;
+  left: 6%;
+  right: 6%;
+  height: 1px;
+  background: var(--line-strong);
+}
+.processStep {
+  text-align: center;
+  padding: 0 1rem;
+  position: relative;
+}
+.processStep .stepIcon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: var(--ink);
+  margin-bottom: 1.3rem;
+  position: relative;
+  z-index: 1;
+}
+.processStep h3 {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.processStep p {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* ---------- quote cards ---------- */
+.quoteCard {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 3px;
+  padding: 2.4rem 2rem;
+  height: 100%;
+  position: relative;
+}
+.quoteCard .qmark {
+  font-family: var(--font-serif);
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--faint);
+  display: block;
+  margin-bottom: 1rem;
+}
+.quoteCard blockquote {
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  line-height: 1.7;
+  color: var(--ink);
+  margin-bottom: 1.4rem;
+}
+.quoteCard .qwho {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.quoteCard .qwho strong {
+  display: block;
+  color: var(--ink);
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+/* ---------- light CTA band ---------- */
+.ctaBand {
+  background: linear-gradient(120deg, #e9e2d2, #d9d0ba);
+  color: var(--paper-ink);
+  text-align: center;
+  padding: 4.5rem 0;
+}
+.ctaBand h2 {
+  font-size: clamp(1.8rem, 3.6vw, 2.9rem);
+  text-transform: uppercase;
+  color: #14110b;
+  margin-bottom: 0.8rem;
+}
+.ctaBand p {
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: #5c554a;
+  margin-bottom: 2rem;
+}
+/* (0,2,1) beats the global .newsletter-shell input (0,1,1). */
+.ctaBand :global(.newsletter-shell) {
+  border: 1px solid rgba(20, 17, 11, 0.35);
+  background: rgba(255, 255, 255, 0.5);
+  margin: 0 auto;
+  max-width: 560px;
+}
+.ctaBand :global(.newsletter-shell) input {
+  color: #14110b;
+}
+.ctaBand :global(.newsletter-shell) input::placeholder {
+  color: #8a8172;
+}
+.ctaBand :global(.newsletter-shell) button {
+  background: #14110b;
+  color: #f4f1ea;
+}
