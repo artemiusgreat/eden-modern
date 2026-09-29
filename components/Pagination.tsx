@@ -29,11 +29,11 @@ export default function Pagination({
           <MDBPaginationLink>Previous</MDBPaginationLink>
         </Link>
       </MDBPaginationItem>
-      <MDBPaginationItem active>
+      <MDBPaginationItem active className="mx-2">
         <MDBPaginationLink>{page}</MDBPaginationLink>
       </MDBPaginationItem>
       <MDBPaginationItem>
-        <Link href={href(page + 1)} passHref legacyBehavior>
+        <Link href={href(page + 1)} passHref legacyBehavior className="mx-2">
           <MDBPaginationLink>Next</MDBPaginationLink>
         </Link>
       </MDBPaginationItem>
