@@ -39,7 +39,7 @@ function NewsletterCta() {
         <h2>Ready to find your signature scent?</h2>
         <p>Join the list for exclusive offers and new arrivals.</p>
         {done ? (
-          <p className="mb-0" style={{ color: '#14110b', fontWeight: 600 }}>
+          <p className="mb-0" style={{ color: '#111111', fontWeight: 600 }}>
             <MDBIcon fas icon="circle-check" className="me-2" />
             You're on the list — welcome.
           </p>

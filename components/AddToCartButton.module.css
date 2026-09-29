@@ -21,7 +21,7 @@
 .cartBtn.cartBtn:hover:not(:disabled) {
   background: var(--ink);
   border-color: var(--ink);
-  color: #0b0a09;
+  color: var(--bg);
 }
 .cartBtn.cartBtn:disabled {
   opacity: 0.35;

@@ -43,7 +43,7 @@
 .hero .heroSub {
   text-transform: uppercase;
   font-size: 0.82rem;
-  color: #d8d2c4;
+  color: #d4d4d4;
   margin-bottom: 2.2rem;
   line-height: 1.9;
 }
@@ -326,9 +326,9 @@
   margin-bottom: 0.2rem;
 }
 
-/* ---------- light CTA band ---------- */
+/* ---------- light CTA band (grayscale marble, like the reference) ---------- */
 .ctaBand {
-  background: linear-gradient(120deg, #e9e2d2, #d9d0ba);
+  background: linear-gradient(120deg, #d9d9d9, #b0b0b0);
   color: var(--paper-ink);
   text-align: center;
   padding: 4.5rem 0;
@@ -336,29 +336,29 @@
 .ctaBand h2 {
   font-size: clamp(1.8rem, 3.6vw, 2.9rem);
   text-transform: uppercase;
-  color: #14110b;
+  color: #111111;
   margin-bottom: 0.8rem;
 }
 .ctaBand p {
   text-transform: uppercase;
   font-size: 0.78rem;
-  color: #5c554a;
+  color: #555555;
   margin-bottom: 2rem;
 }
 /* (0,2,1) beats the global .newsletter-shell input (0,1,1). */
 .ctaBand :global(.newsletter-shell) {
-  border: 1px solid rgba(20, 17, 11, 0.35);
+  border: 1px solid rgba(17, 17, 17, 0.35);
   background: rgba(255, 255, 255, 0.5);
   margin: 0 auto;
   max-width: 560px;
 }
 .ctaBand :global(.newsletter-shell) input {
-  color: #14110b;
+  color: #111111;
 }
 .ctaBand :global(.newsletter-shell) input::placeholder {
-  color: #8a8172;
+  color: #777777;
 }
 .ctaBand :global(.newsletter-shell) button {
-  background: #14110b;
-  color: #f4f1ea;
+  background: #111111;
+  color: #f2f2f2;
 }
