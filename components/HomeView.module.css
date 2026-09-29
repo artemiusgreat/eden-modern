@@ -282,6 +282,8 @@
   color: var(--ink);
 }
 .promiseCard p {
+  font-family: var(--font-sans);
+  font-weight: 300;
   font-size: 0.85rem;
   color: var(--muted);
   margin-bottom: 1.2rem;
@@ -357,6 +359,8 @@
   margin-bottom: 1.6rem;
 }
 .storyPanel p {
+  font-family: var(--font-sans);
+  font-weight: 300;
   color: var(--muted);
   line-height: 1.9;
   font-size: 0.95rem;
@@ -414,6 +418,8 @@
   margin-bottom: 0.6rem;
 }
 .processStep p {
+  font-family: var(--font-sans);
+  font-weight: 300;
   font-size: 0.8rem;
   color: var(--muted);
   line-height: 1.75;
@@ -438,7 +444,8 @@
   margin-bottom: 1rem;
 }
 .quoteCard blockquote {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
+  font-weight: 300;
   font-size: 1.12rem;
   line-height: 1.7;
   color: var(--ink);

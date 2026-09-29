@@ -46,6 +46,14 @@
   background: transparent;
 }
 
+/* Inter Light prices, scoped to product cards — PDP and cart keep Bodoni. */
+.card.card :global(.price-regular),
+.card.card :global(.price-sale),
+.card.card :global(.price-now) {
+  font-family: var(--font-sans);
+  font-weight: 300;
+}
+
 .media {
   background: radial-gradient(120% 100% at 50% 0%, #1a2438 0%, #0e1626 70%);
   display: flex;
