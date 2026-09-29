@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Inter, Bodoni_Moda, Milonga, Prata } from 'next/font/google';
+import { Playfair_Display, Inter, Bodoni_Moda, Milonga } from 'next/font/google';
+import localFont from 'next/font/local';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import './globals.css';
 import { CartProvider } from '@/components/cart/CartProvider';
@@ -40,9 +41,12 @@ const milonga = Milonga({
 });
 
 // Picked 2026-09-29: Prata for all prices site-wide.
-const prata = Prata({
-  weight: ['400'],
-  subsets: ['latin'],
+// Self-hosted via next/font/local (not /google): the Google Fonts download
+// is flaky in some networks, and next/font emits a DIFFERENT variable-class
+// hash when the download fails, which desyncs the <body> class from the CSS
+// and silently drops --font-prata (prices fell back to Playfair).
+const prata = localFont({
+  src: './fonts/prata-latin-400.woff2',
   variable: '--font-prata',
   display: 'swap',
 });
