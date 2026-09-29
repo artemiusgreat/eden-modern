@@ -93,9 +93,10 @@
   justify-content: center;
   position: relative;
   flex-shrink: 0;
+  border: 1px solid var(--line-strong);
+
 }
 .actions .iconBtn:hover {
-  color: var(--gold-soft);
   border-color: var(--gold-soft);
 }
 

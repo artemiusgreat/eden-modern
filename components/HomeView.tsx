@@ -161,9 +161,6 @@ export default function HomeView({
                     {p.title}
                   </h3>
                   <p>{p.text}</p>
-                  <span className={styles.promiseLink}>
-                    Learn more <MDBIcon fas icon="arrow-right" />
-                  </span>
                 </Link>
               </MDBCol>
             ))}

@@ -418,9 +418,9 @@
   z-index: 1;
 }
 .processStep h3 {
-  font-family: var(--font-sans);
+  font-family: var(--font-card-title);
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 300;
   text-transform: uppercase;
   margin-bottom: 0.6rem;
 }

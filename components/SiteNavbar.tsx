@@ -93,11 +93,12 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
                 Shop Sale
               </Link>
               <Link href="/account" passHref legacyBehavior>
-                <MDBBtn tag="a" className={styles.iconBtn} aria-label="My account">
+                <MDBBtn tag="a" color="link" className={styles.iconBtn} aria-label="My account">
                   <MDBIcon far icon="user" />
                 </MDBBtn>
               </Link>
               <MDBBtn
+                color="link"
                 className={`${styles.iconBtn} px-2`}
                 aria-label="Open shopping bag"
                 onClick={() => setDrawerOpen(true)}>

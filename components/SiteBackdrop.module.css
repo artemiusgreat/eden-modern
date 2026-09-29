@@ -22,8 +22,8 @@
   position: absolute;
   inset: -70px;
   background: url('/images/ambient-perfume.jpg') center 30% / cover no-repeat;
-  filter: blur(30px) saturate(1.15);
-  opacity: 0.62;
+  filter: blur(1px) saturate(0.1);
+  opacity: 0.1;
   transform: scale(1.05);
 }
 
