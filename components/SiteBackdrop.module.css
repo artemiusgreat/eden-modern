@@ -55,7 +55,7 @@
   height: 12vw;
   left: 4%;
   top: 9%;
-  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.28) 0%, rgba(205, 216, 232, 0.1) 45%, transparent 72%);
+  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.42) 0%, rgba(205, 216, 232, 0.16) 45%, transparent 72%);
   animation-duration: 70s;
 }
 
@@ -64,7 +64,7 @@
   height: 10vw;
   right: 5%;
   top: 35%;
-  background: radial-gradient(ellipse at center, rgba(201, 163, 95, 0.26) 0%, rgba(201, 163, 95, 0.09) 45%, transparent 72%);
+  background: radial-gradient(ellipse at center, rgba(201, 163, 95, 0.4) 0%, rgba(201, 163, 95, 0.15) 45%, transparent 72%);
   animation-name: wispDriftB;
   animation-duration: 95s;
 }
@@ -74,7 +74,7 @@
   height: 13vw;
   left: 9%;
   top: 59%;
-  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.24) 0%, rgba(205, 216, 232, 0.08) 45%, transparent 72%);
+  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.36) 0%, rgba(205, 216, 232, 0.13) 45%, transparent 72%);
   animation-duration: 85s;
 }
 
@@ -83,7 +83,7 @@
   height: 10vw;
   right: 9%;
   top: 82%;
-  background: radial-gradient(ellipse at center, rgba(227, 201, 143, 0.24) 0%, rgba(227, 201, 143, 0.08) 45%, transparent 72%);
+  background: radial-gradient(ellipse at center, rgba(227, 201, 143, 0.34) 0%, rgba(227, 201, 143, 0.12) 45%, transparent 72%);
   animation-name: wispDriftB;
   animation-duration: 105s;
 }

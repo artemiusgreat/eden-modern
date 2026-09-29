@@ -7,8 +7,6 @@ export default function SiteBackdrop() {
     <div className={styles.backdrop} aria-hidden="true">
       <div className={styles.photo} />
       <div className={styles.tint} />
-      <div className={`${styles.fog} ${styles.fogGold}`} />
-      <div className={`${styles.fog} ${styles.fogBlue}`} />
       <div className={`${styles.wisp} ${styles.wisp1}`} />
       <div className={`${styles.wisp} ${styles.wisp2}`} />
       <div className={`${styles.wisp} ${styles.wisp3}`} />
