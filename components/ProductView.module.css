@@ -68,6 +68,41 @@
   width: 26px;
 }
 
+/* Quantity stepper next to the add-to-bag button. */
+.qtyStepper {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.qtyStepper button {
+  background: transparent;
+  color: var(--ink);
+  border: 0;
+  width: 42px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.qtyStepper button:hover {
+  background: var(--surface-2);
+  color: var(--gold-soft);
+}
+.qtyStepper span {
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--ink);
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+
 /* MDB accordion restyle, scoped to this view (0,2,0 beats MDB's 0,1,0). */
 .pdp :global(.accordion-item) {
   background: var(--surface);

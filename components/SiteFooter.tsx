@@ -23,7 +23,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
     <footer className={styles.footer}>
       <MDBContainer className="py-5">
         <MDBRow>
-          <MDBCol md="3" className="mb-4">
+          <MDBCol md="5" className="mb-4">
             <div className={`${styles.brand} mb-3`}>
               Indemos<small>Beauty & Fragrance</small>
             </div>
@@ -54,16 +54,18 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
             </div>
           </MDBCol>
 
-          <MDBCol md="3" sm="6" className="mb-4">
+          <MDBCol md="2" sm="6" className="mb-4">
             <h6>Quick links</h6>
             <Link href="/" className={styles.flink}>Home</Link>
             <Link href="/search" className={styles.flink}>Shop</Link>
             <Link href="/blog" className={styles.flink}>Journal</Link>
             <Link href="/account" className={styles.flink}>Account</Link>
             <Link href="/contacts" className={styles.flink}>Contact</Link>
+            <Link href="/refunds-and-returns" className={styles.flink}>Refunds and Returns</Link>
+            <Link href="/privacy" className={styles.flink}>Privacy Policy</Link>
           </MDBCol>
 
-          <MDBCol md="3" sm="6" className="mb-4">
+          <MDBCol md="2" sm="6" className="mb-4">
             <h6>Shop</h6>
             {shopCats.map((c) => (
               <Link key={c.id} href={`/category/${c.slug}`} className={styles.flink}>
@@ -82,14 +84,6 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
             <div className={styles.contactLine}>
               <MDBIcon fas icon="location-dot" />
               <span>Store 1250, 701 State Route 440 Ste 16, Jersey City, NJ 07304</span>
-            </div>
-            <div className={styles.contactLine}>
-              <MDBIcon fas icon="rotate-left" />
-              <Link href="/refunds-and-returns">Refunds and Returns</Link>
-            </div>
-            <div className={styles.contactLine}>
-              <MDBIcon fas icon="shield-halved" />
-              <Link href="/privacy">Privacy Policy</Link>
             </div>
             <Link href="/search?on_sale=1" className="btn-outline-noir mt-3">
               Shop the sale

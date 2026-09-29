@@ -162,7 +162,7 @@ export default function ProductView({
           )}
 
           <div className="d-flex gap-3 mb-4 align-items-stretch flex-wrap">
-            <div className="qty-stepper">
+            <div className={styles.qtyStepper}>
               <button type="button" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))}>
                 −
               </button>

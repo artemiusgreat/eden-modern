@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBIcon } from 'mdb-react-ui-kit';
+import styles from './AccountView.module.css';
 
 const WP_ACCOUNT_URL = 'https://eden.indemos.com/account/';
 
@@ -21,8 +22,8 @@ export default function AccountView() {
       <MDBContainer className="py-5">
         <MDBRow className="justify-content-center">
           <MDBCol md="6" lg="5" className="mb-4">
-            <MDBCard className="product-card">
-              <MDBCardBody className="p-5 text-center">
+            <MDBCard className={styles.card}>
+              <MDBCardBody className={`${styles.cardBody} p-5 text-center`}>
                 <MDBIcon far icon="user-circle" size="3x" className="text-gold mb-4" />
                 <h2 className="font-serif mb-3" style={{ fontSize: '1.8rem' }}>
                   Sign in / Register
@@ -41,8 +42,8 @@ export default function AccountView() {
             </MDBCard>
           </MDBCol>
           <MDBCol md="6" lg="5" className="mb-4">
-            <MDBCard className="product-card">
-              <MDBCardBody className="p-5">
+            <MDBCard className={styles.card}>
+              <MDBCardBody className={`${styles.cardBody} p-5`}>
                 <h2 className="font-serif mb-4" style={{ fontSize: '1.8rem' }}>
                   With an account you can
                 </h2>
@@ -53,7 +54,7 @@ export default function AccountView() {
                   ['tag', 'Private offers', 'Early access to sales and new arrivals.'],
                 ].map(([icon, title, text]) => (
                   <div key={title} className="d-flex gap-3 mb-4">
-                    <MDBIcon fas icon={icon} className="text-gold mt-1" size="lg" />
+                    <MDBIcon fas icon={icon} className={`${styles.perkIcon} mt-1`} size="lg" />
                     <div>
                       <h6 className="mb-1" style={{ textTransform: 'uppercase', fontSize: '0.8rem' }}>
                         {title}
