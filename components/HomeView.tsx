@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 import type { StoreProduct, StoreCategory, WpPost } from '@/lib/woo';
-import { formatPrice, stripHtml } from '@/lib/format';
+import { stripHtml } from '@/lib/format';
 import ProductCard from './ProductCard';
+import HeroFeatured from './HeroFeatured';
 import TrustpilotStars from './TrustpilotStars';
 import styles from './HomeView.module.css';
 
@@ -82,9 +83,9 @@ export default function HomeView({
   const heroImg = heroProduct?.images[0];
   const storyCat = topCats.find((c) => c.image) ?? topCats[0];
   void posts;
-  // Featured pair for the hero's right column — newest after the hero
-  // product, falling back to on-sale items.
-  const featured = newest.length > 2 ? newest.slice(1, 3) : onSale.slice(0, 2);
+  // Featured slideshow for the hero's right column — newest after the
+  // hero product, falling back to on-sale items.
+  const featured = newest.length > 2 ? newest.slice(1, 5) : onSale.slice(0, 4);
 
   return (
     <>
@@ -115,24 +116,8 @@ export default function HomeView({
               </Link>
             </MDBCol>
             {featured.length > 0 && (
-              <MDBCol lg="4" className={styles.heroFeatured}>
-                <p className={styles.heroFeatKicker}>Featured</p>
-                {featured.map((p) => {
-                  const img = p.images[0];
-                  const price = p.on_sale ? p.prices.sale_price : p.prices.price;
-                  return (
-                    <Link key={p.id} href={`/products/${p.slug}`} className={styles.heroFeatCard}>
-                      {img && <img src={img.src} alt="" aria-hidden="true" />}
-                      <span className={styles.heroFeatBody}>
-                        <span className={styles.heroFeatName}>{p.name}</span>
-                        <span className={styles.heroFeatPrice}>
-                          {formatPrice(price, p.prices.currency_minor_unit, p.prices.currency_symbol)}
-                        </span>
-                      </span>
-                      <MDBIcon fas icon="arrow-right" className={styles.heroFeatArrow} />
-                    </Link>
-                  );
-                })}
+              <MDBCol lg="4">
+                <HeroFeatured products={featured} />
               </MDBCol>
             )}
           </MDBRow>

@@ -54,6 +54,7 @@
   flex-direction: column;
   gap: 0.9rem;
   justify-content: center;
+  min-width: 0;
 }
 .heroFeatKicker {
   font-size: 0.68rem;
@@ -61,58 +62,126 @@
   color: var(--gold-soft);
   margin: 0;
 }
-.heroFeatCard {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  background: rgba(14, 20, 34, 0.85);
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  padding: 0.7rem 0.9rem;
-  text-decoration: none;
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-.heroFeatCard:hover {
-  transform: scale(1.02);
-  border-color: var(--line-strong);
-}
-.heroFeatCard img {
-  width: 54px;
-  height: 66px;
-  object-fit: contain;
-  background: var(--surface);
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-.heroFeatBody {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+.heroStage {
   min-width: 0;
 }
-.heroFeatName {
+/* One large slide at a time — zoom-fade transition, no sliding. */
+.heroSlide {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  background: rgba(14, 20, 34, 0.88);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1rem 1.1rem;
+  text-decoration: none;
+  min-height: 235px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.heroSlide:hover {
+  transform: scale(1.015);
+  border-color: var(--line-strong);
+}
+.heroSlide img {
+  width: clamp(120px, 14vw, 185px);
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+  background: var(--surface);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.heroSlideBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+.heroSlideName {
   font-family: var(--font-card-title, var(--font-serif));
-  font-size: 0.95rem;
-  line-height: 1.3;
+  font-size: 1.15rem;
+  line-height: 1.35;
   color: var(--ink);
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.heroFeatPrice {
-  font-family: var(--font-price);
+.heroSlidePrice {
+  font-family: var(--font-price, var(--font-serif));
   font-weight: 100;
-  font-size: 1.05rem;
-  color: var(--ink);
-}
-.heroFeatArrow {
-  color: var(--muted);
-  margin-left: auto;
-  flex-shrink: 0;
-}
-.heroFeatCard:hover .heroFeatArrow {
+  font-size: 1.35rem;
   color: var(--gold-soft);
+}
+.heroSlideCta {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.heroSlide:hover .heroSlideCta {
+  color: var(--gold-soft);
+}
+.slideAnim {
+  animation: heroSlideIn 0.45s ease;
+}
+@keyframes heroSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.965);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.heroControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.heroArrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  transition: transform 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.heroArrow:hover {
+  transform: scale(1.08);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.heroDots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.heroDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  background: var(--faint);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+.heroDotActive {
+  background: var(--gold);
+  transform: scale(1.35);
+}
+@media (prefers-reduced-motion: reduce) {
+  .slideAnim {
+    animation: none;
+  }
 }
 @media (max-width: 991.98px) {
   .heroFeatured {
