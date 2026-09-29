@@ -34,6 +34,21 @@
   transform: translateX(0);
 }
 
+/* (0,2,0) beats MDB's .btn-link (0,1,0); keep transparent on dark. */
+.closeBtn.closeBtn {
+  color: var(--muted);
+  --mdb-btn-hover-bg: transparent;
+  --mdb-btn-active-bg: transparent;
+}
+.closeBtn.closeBtn:hover,
+.closeBtn.closeBtn:focus-visible,
+.closeBtn.closeBtn:active {
+  color: var(--ink);
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .body {
   flex: 1;
   overflow-y: auto;

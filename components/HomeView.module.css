@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: #060505;
+  background: #070c15;
 }
 .hero .heroBg {
   position: absolute;
@@ -21,7 +21,7 @@
 .hero .heroShade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(100deg, rgba(6, 5, 5, 0.88) 0%, rgba(6, 5, 5, 0.45) 55%, rgba(6, 5, 5, 0.15) 100%);
+  background: linear-gradient(100deg, rgba(8, 12, 22, 0.9) 0%, rgba(8, 12, 22, 0.5) 55%, rgba(8, 12, 22, 0.18) 100%);
 }
 .hero .heroContent {
   position: relative;
@@ -65,7 +65,7 @@
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  background: rgba(22, 20, 19, 0.85);
+  background: rgba(14, 20, 34, 0.85);
   border: 1px solid var(--line);
   border-radius: 3px;
   padding: 0.7rem 0.9rem;
@@ -326,39 +326,41 @@
   margin-bottom: 0.2rem;
 }
 
-/* ---------- light CTA band (grayscale marble, like the reference) ---------- */
+/* ---------- newsletter CTA band (dark, gold button) ---------- */
 .ctaBand {
-  background: linear-gradient(120deg, #d9d9d9, #b0b0b0);
-  color: var(--paper-ink);
+  background: linear-gradient(180deg, var(--bg-soft), var(--bg));
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
   text-align: center;
   padding: 4.5rem 0;
 }
 .ctaBand h2 {
   font-size: clamp(1.8rem, 3.6vw, 2.9rem);
   text-transform: uppercase;
-  color: #111111;
+  color: var(--ink);
   margin-bottom: 0.8rem;
 }
 .ctaBand p {
   text-transform: uppercase;
   font-size: 0.78rem;
-  color: #555555;
+  color: var(--muted);
   margin-bottom: 2rem;
 }
 /* (0,2,1) beats the global .newsletter-shell input (0,1,1). */
 .ctaBand :global(.newsletter-shell) {
-  border: 1px solid rgba(17, 17, 17, 0.35);
-  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
   margin: 0 auto;
   max-width: 560px;
 }
 .ctaBand :global(.newsletter-shell) input {
-  color: #111111;
+  color: var(--ink);
 }
 .ctaBand :global(.newsletter-shell) input::placeholder {
-  color: #777777;
+  color: var(--faint);
 }
 .ctaBand :global(.newsletter-shell) button {
-  background: #111111;
-  color: #f2f2f2;
+  background: linear-gradient(135deg, #d9b46c, #b08a2e);
+  color: #14100b;
 }

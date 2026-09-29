@@ -107,8 +107,7 @@ function CartDrawer() {
           </h5>
           <button
             type="button"
-            className="btn btn-link p-1"
-            style={{ color: '#1c1611' }}
+            className={`btn btn-link p-1 ${styles.closeBtn}`}
             onClick={() => setDrawerOpen(false)}
             aria-label="Close bag">
             <MDBIcon fas icon="xmark" size="lg" />

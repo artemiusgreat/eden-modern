@@ -1,27 +1,27 @@
 /* ============================================================
-   INDEMOS — NOIR monochrome theme (MDB React UI Kit base)
-   Palette: neutral black / white / gray, no hue.
+   INDEMOS — NOIR theme (MDB React UI Kit base)
+   Palette: deep blue-black, warm white, champagne gold accents.
    Type: Playfair Display (headings) + Inter (body),
          Bodoni Moda (prices, card titles, nav), Milonga (logo).
    No italics. No letter-spacing.
    ============================================================ */
 
 :root {
-  --bg: #0a0a0a;
-  --bg-soft: #101010;
-  --surface: #161616;
-  --surface-2: #1f1f1f;
-  --ink: #f2f2f2;
-  --muted: #a6a6a6;
-  --faint: #6f6f6f;
-  /* Accent scale — monochrome direction (was champagne gold). */
-  --gold: #d9d9d9;
-  --gold-deep: #a8a8a8;
-  --gold-soft: #e8e8e8;
-  --line: rgba(255, 255, 255, 0.10);
-  --line-strong: rgba(255, 255, 255, 0.24);
-  --paper: #dcdcdc;
-  --paper-ink: #111111;
+  --bg: #0b1220;
+  --bg-soft: #0e1626;
+  --surface: #121b2e;
+  --surface-2: #182238;
+  --ink: #f4f1ea;
+  --muted: #9aa3b5;
+  --faint: #6b7488;
+  /* Accent scale — champagne gold on deep blue (villa-luxe direction). */
+  --gold: #c9a35f;
+  --gold-deep: #a8822a;
+  --gold-soft: #e3c98f;
+  --line: rgba(180, 195, 220, 0.12);
+  --line-strong: rgba(180, 195, 220, 0.26);
+  --paper: #ece7db;
+  --paper-ink: #17140f;
   --danger: #d4695f;
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
@@ -61,7 +61,7 @@ em {
 .kicker {
   font-size: 0.75rem;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--gold);
   font-weight: 500;
 }
 
@@ -103,7 +103,7 @@ em {
 }
 .btn-noir-dark.btn-noir-dark:hover {
   transform: scale(1.03);
-  background: #232323;
+  background: #1c2942;
   color: var(--ink);
 }
 .btn-outline-noir.btn-outline-noir {
@@ -128,8 +128,8 @@ em {
   color: var(--bg);
 }
 .btn-gold.btn-gold {
-  background: linear-gradient(135deg, #ededed, #c4c4c4);
-  color: #111111;
+  background: linear-gradient(135deg, #d9b46c, #b08a2e);
+  color: #14100b;
   border: none;
   text-transform: uppercase;
   font-size: 0.78rem;
@@ -145,19 +145,19 @@ em {
 .btn-gold.btn-gold:hover {
   transform: scale(1.03);
   filter: brightness(1.06);
-  color: #111111;
+  color: #14100b;
 }
 .btn-primary.btn-primary {
   background-color: var(--gold);
   border-color: var(--gold);
-  color: #111111;
+  color: #14100b;
   text-transform: uppercase;
   font-size: 0.78rem;
   font-weight: 600;
 }
 
 .announcement-bar {
-  background: #000;
+  background: #080d17;
   color: #b5b5b5;
   font-size: 0.72rem;
   text-transform: uppercase;
@@ -176,7 +176,7 @@ em {
   text-align: center;
   font-size: 0.72rem;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--gold);
   margin-bottom: 0.9rem;
 }
 .noir-title {
@@ -234,8 +234,8 @@ em {
   box-shadow: none;
 }
 .newsletter-shell button {
-  background: linear-gradient(135deg, #ededed, #c4c4c4);
-  color: #111111;
+  background: linear-gradient(135deg, #d9b46c, #b08a2e);
+  color: #14100b;
   border: none;
   padding: 0 1.8rem;
   font-size: 0.78rem;
@@ -324,7 +324,7 @@ em {
 
 /* ---------- info pages / blog ---------- */
 .info-hero {
-  background: linear-gradient(120deg, #0e0c0a, #171310);
+  background: linear-gradient(120deg, #0b1220, #131c30);
   border-bottom: 1px solid var(--line);
 }
 .info-hero h1 {
@@ -404,7 +404,7 @@ em {
 .prose-wp .single_add_to_cart_button {
   display: inline-block;
   background: var(--gold);
-  color: #111111;
+  color: #14100b;
   border: 0;
   border-radius: 2px;
   padding: 0.8rem 1.6rem;
@@ -419,7 +419,7 @@ em {
 .prose-wp .add_to_cart_button:hover,
 .prose-wp .single_add_to_cart_button:hover {
   background: var(--gold-soft);
-  color: #111111;
+  color: #14100b;
 }
 /* WooCommerce screen-reader text must never render visibly. */
 .prose-wp .screen-reader-text {
