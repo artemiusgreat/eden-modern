@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type InputHTMLAttributes } from 'react';
 import Link from 'next/link';
 import { loadStripe, type Stripe, type StripeElements, type StripeElement } from '@stripe/stripe-js';
 import {
@@ -9,7 +9,6 @@ import {
   MDBCol,
   MDBCard,
   MDBCardBody,
-  MDBInput,
   MDBBtn,
   MDBSpinner,
 } from 'mdb-react-ui-kit';
@@ -87,6 +86,20 @@ async function api(path: string, init?: RequestInit) {
   return data;
 }
 
+/** Native labeled field — explicit dark-theme styles, no MDB cascade fights. */
+function Field({
+  id,
+  label,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement> & { id: string; label: string }) {
+  return (
+    <div className={styles.field}>
+      <label htmlFor={id}>{label}</label>
+      <input id={id} {...props} />
+    </div>
+  );
+}
+
 export default function CheckoutView() {
   const { cart, removeItem } = useCart();
   const [checkout, setCheckout] = useState<CheckoutResponse | null>(null);
@@ -117,8 +130,17 @@ export default function CheckoutView() {
   const elementsRef = useRef<StripeElements | null>(null);
   const paymentElRef = useRef<StripeElement | null>(null);
   const cardMountRef = useRef<HTMLDivElement | null>(null);
+  const errorRef = useRef<HTMLDivElement | null>(null);
   const payMethodRef = useRef(payMethod);
   payMethodRef.current = payMethod;
+
+  /** Show an error at the top of the form and scroll it into view. */
+  function showError(msg: string) {
+    setError(msg);
+    window.setTimeout(() => {
+      errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 80);
+  }
 
   const loadCheckout = useCallback(async () => {
     // Only payment methods + saved addresses come from the checkout draft;
@@ -208,7 +230,7 @@ export default function CheckoutView() {
   async function calculateShipping() {
     const bad = validate();
     if (bad && !bad.startsWith('Please choose')) {
-      setError(bad);
+      showError(bad);
       return;
     }
     setError('');
@@ -231,7 +253,7 @@ export default function CheckoutView() {
       setSelectedRates(sel);
       setRatesReady(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not calculate shipping.');
+      showError(e instanceof Error ? e.message : 'Could not calculate shipping.');
     } finally {
       setCalcBusy(false);
     }
@@ -253,7 +275,7 @@ export default function CheckoutView() {
   async function placeOrder() {
     const bad = validate();
     if (bad) {
-      setError(bad);
+      showError(bad);
       return;
     }
     setError('');
@@ -322,7 +344,7 @@ export default function CheckoutView() {
       }
       setOrderNumber(result.order_number || String(result.order_id));
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Order could not be placed.');
+      showError(e instanceof Error ? e.message : 'Order could not be placed.');
     } finally {
       setPlacing(false);
     }
@@ -336,50 +358,48 @@ export default function CheckoutView() {
     ) => (
       <>
         <MDBRow>
-          <MDBCol md="6" className="mb-3">
-            <MDBInput label="First name *" id={`${idPrefix}-fn`} value={addr.first_name}
-              onChange={(e) => set('first_name', e.target.value)} />
+          <MDBCol md="6">
+            <Field id={`${idPrefix}-fn`} label="First name *" value={addr.first_name}
+              onChange={(e) => set('first_name', e.target.value)} autoComplete="given-name" />
           </MDBCol>
-          <MDBCol md="6" className="mb-3">
-            <MDBInput label="Last name *" id={`${idPrefix}-ln`} value={addr.last_name}
-              onChange={(e) => set('last_name', e.target.value)} />
+          <MDBCol md="6">
+            <Field id={`${idPrefix}-ln`} label="Last name *" value={addr.last_name}
+              onChange={(e) => set('last_name', e.target.value)} autoComplete="family-name" />
           </MDBCol>
         </MDBRow>
-        <div className="mb-3">
-          <MDBInput label="Street address *" id={`${idPrefix}-a1`} value={addr.address_1}
-            onChange={(e) => set('address_1', e.target.value)} />
-        </div>
-        <div className="mb-3">
-          <MDBInput label="Apt, suite, etc. (optional)" id={`${idPrefix}-a2`} value={addr.address_2}
-            onChange={(e) => set('address_2', e.target.value)} />
-        </div>
+        <Field id={`${idPrefix}-a1`} label="Street address *" value={addr.address_1}
+          onChange={(e) => set('address_1', e.target.value)} autoComplete="street-address" />
+        <Field id={`${idPrefix}-a2`} label="Apt, suite, etc. (optional)" value={addr.address_2}
+          onChange={(e) => set('address_2', e.target.value)} />
         <MDBRow>
-          <MDBCol md="5" className="mb-3">
-            <MDBInput label="City *" id={`${idPrefix}-city`} value={addr.city}
-              onChange={(e) => set('city', e.target.value)} />
+          <MDBCol md="5">
+            <Field id={`${idPrefix}-city`} label="City *" value={addr.city}
+              onChange={(e) => set('city', e.target.value)} autoComplete="address-level2" />
           </MDBCol>
-          <MDBCol md="4" className="mb-3">
-            <MDBInput label="State / Province" id={`${idPrefix}-state`} value={addr.state}
-              onChange={(e) => set('state', e.target.value)} />
+          <MDBCol md="4">
+            <Field id={`${idPrefix}-state`} label="State / Province" value={addr.state}
+              onChange={(e) => set('state', e.target.value)} autoComplete="address-level1" />
           </MDBCol>
-          <MDBCol md="3" className="mb-3">
-            <MDBInput label="ZIP / Postcode *" id={`${idPrefix}-zip`} value={addr.postcode}
-              onChange={(e) => set('postcode', e.target.value)} />
+          <MDBCol md="3">
+            <Field id={`${idPrefix}-zip`} label="ZIP / Postcode *" value={addr.postcode}
+              onChange={(e) => set('postcode', e.target.value)} autoComplete="postal-code" />
           </MDBCol>
         </MDBRow>
         <MDBRow>
-          <MDBCol md="6" className="mb-3">
-            <label className={styles.selectLabel} htmlFor={`${idPrefix}-country`}>Country *</label>
-            <select id={`${idPrefix}-country`} className={styles.select}
-              value={addr.country} onChange={(e) => set('country', e.target.value)}>
-              {COUNTRIES.map(([code, name]) => (
-                <option key={code} value={code}>{name}</option>
-              ))}
-            </select>
+          <MDBCol md="6">
+            <div className={styles.field}>
+              <label htmlFor={`${idPrefix}-country`}>Country *</label>
+              <select id={`${idPrefix}-country`} value={addr.country}
+                onChange={(e) => set('country', e.target.value)} autoComplete="country-name">
+                {COUNTRIES.map(([code, name]) => (
+                  <option key={code} value={code}>{name}</option>
+                ))}
+              </select>
+            </div>
           </MDBCol>
-          <MDBCol md="6" className="mb-3">
-            <MDBInput label="Phone (optional)" id={`${idPrefix}-phone`} type="tel" value={addr.phone}
-              onChange={(e) => set('phone', e.target.value)} />
+          <MDBCol md="6">
+            <Field id={`${idPrefix}-phone`} label="Phone (optional)" type="tel" value={addr.phone}
+              onChange={(e) => set('phone', e.target.value)} autoComplete="tel" />
           </MDBCol>
         </MDBRow>
       </>
@@ -443,13 +463,16 @@ export default function CheckoutView() {
   return (
     <MDBContainer className="py-5">
       <h1 className={styles.title}>Checkout</h1>
+      <div ref={errorRef} aria-live="polite">
+        {error && <p className={styles.error}>{error}</p>}
+      </div>
       <MDBRow>
         <MDBCol lg="7">
           {/* Contact */}
           <section className={styles.section}>
             <h2 className={styles.h2}>Contact</h2>
-            <MDBInput label="Email address *" id="co-email" type="email" value={email}
-              onChange={(e) => setEmail(e.target.value)} />
+            <Field id="co-email" label="Email address *" type="email" value={email}
+              onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
           </section>
 
           {/* Shipping address */}
@@ -526,13 +549,10 @@ export default function CheckoutView() {
             {payMethod === 'ppcp-gateway' && (
               <p className={styles.hint}>You will be redirected to PayPal to complete your purchase.</p>
             )}
-            <div className="mt-3">
-              <MDBInput label="Order notes (optional)" id="co-note" value={note}
-                onChange={(e) => setNote(e.target.value)} />
-            </div>
+            <Field id="co-note" label="Order notes (optional)" value={note}
+              onChange={(e) => setNote(e.target.value)} />
           </section>
 
-          {error && <p className={styles.error}>{error}</p>}
           <MDBBtn className={styles.placeBtn} onClick={placeOrder} disabled={placing || !ratesReady && needsShipping}>
             {placing ? 'Placing order…' : totals ? `Pay ${money(totals.total_price, totals)}` : 'Place order'}
           </MDBBtn>

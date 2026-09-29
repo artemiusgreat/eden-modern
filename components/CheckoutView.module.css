@@ -23,42 +23,43 @@
   margin-bottom: 1.4rem;
 }
 
-/* MDB inputs on dark: keep the theme's voice. */
-.section :global(.form-outline .form-control),
-.section :global(.form-control) {
-  background: var(--bg);
-  border-color: var(--line-strong);
-  color: var(--ink);
+/* Native form fields — explicit dark-theme styles. */
+.field {
+  margin-bottom: 1.1rem;
 }
-.section :global(.form-outline .form-control:focus),
-.section :global(.form-control:focus) {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 1px var(--gold);
-  color: var(--ink);
-  background: var(--bg);
-}
-.section :global(.form-label) {
-  color: var(--muted);
-}
-
-.selectLabel {
+.field > label {
   display: block;
   font-size: 0.8rem;
   color: var(--muted);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.4rem;
 }
-.select {
+.field input,
+.field select,
+.field textarea {
   width: 100%;
   background: var(--bg);
   border: 1px solid var(--line-strong);
   border-radius: 3px;
   color: var(--ink);
-  padding: 0.55rem 0.75rem;
+  padding: 0.7rem 0.9rem;
   font-size: 0.95rem;
+  font-family: var(--font-sans);
 }
-.select:focus {
+.field input::placeholder {
+  color: var(--faint);
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
   outline: none;
   border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold);
+  background: var(--bg);
+  color: var(--ink);
+}
+.field select option {
+  background: var(--surface);
+  color: var(--ink);
 }
 
 .ghostBtn {
@@ -199,14 +200,20 @@
 }
 .lineName {
   color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 400;
+  line-height: 1.5;
 }
 .lineName small {
   color: var(--muted);
+  font-size: 0.8rem;
 }
 .linePrice {
   font-family: var(--font-price, var(--font-serif));
   color: var(--ink);
   white-space: nowrap;
+  font-size: 0.95rem;
 }
 .totals {
   margin: 1rem 0 0;
@@ -220,10 +227,14 @@
 .totals dt {
   color: var(--muted);
   font-weight: 400;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
 }
 .totals dd {
   color: var(--ink);
   margin: 0;
+  font-family: var(--font-price, var(--font-serif));
+  font-size: 0.95rem;
 }
 .totals .grand {
   border-top: 1px solid var(--line-strong);
