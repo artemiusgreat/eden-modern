@@ -72,8 +72,67 @@
   height: 44vw;
   left: 8vw;
   bottom: -22vw;
-  background: radial-gradient(ellipse, rgba(227, 201, 143, 0.13) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(227, 201, 143, 0.15) 0%, transparent 70%);
   animation: driftLow 90s ease-in-out infinite alternate;
+}
+
+/* Visible drifting fog wisps: elongated soft puffs in cool moonlight and
+   warm champagne tones, placed in-view (not off-screen) and drifting
+   horizontally on long slow loops. */
+.wisp {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(38px);
+  will-change: transform;
+  animation: wispDriftA 80s ease-in-out infinite alternate;
+}
+
+.wisp1 {
+  width: 46vw;
+  height: 11vw;
+  left: 4%;
+  top: 9%;
+  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.22) 0%, rgba(205, 216, 232, 0.07) 45%, transparent 70%);
+  animation-duration: 70s;
+}
+
+.wisp2 {
+  width: 40vw;
+  height: 9vw;
+  right: 5%;
+  top: 35%;
+  background: radial-gradient(ellipse at center, rgba(201, 163, 95, 0.2) 0%, rgba(201, 163, 95, 0.06) 45%, transparent 70%);
+  animation-name: wispDriftB;
+  animation-duration: 95s;
+}
+
+.wisp3 {
+  width: 52vw;
+  height: 12vw;
+  left: 9%;
+  top: 59%;
+  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.18) 0%, rgba(205, 216, 232, 0.06) 45%, transparent 70%);
+  animation-duration: 85s;
+}
+
+.wisp4 {
+  width: 38vw;
+  height: 9vw;
+  right: 9%;
+  top: 82%;
+  background: radial-gradient(ellipse at center, rgba(227, 201, 143, 0.18) 0%, rgba(227, 201, 143, 0.05) 45%, transparent 70%);
+  animation-name: wispDriftB;
+  animation-duration: 105s;
+}
+
+@keyframes wispDriftA {
+  from { transform: translate3d(-7vw, 0, 0); }
+  to { transform: translate3d(7vw, 1.5vh, 0); }
+}
+
+@keyframes wispDriftB {
+  from { transform: translate3d(6vw, 0, 0); }
+  to { transform: translate3d(-6vw, -1.5vh, 0); }
 }
 
 @keyframes driftGold {
@@ -101,7 +160,11 @@
 @media (prefers-reduced-motion: reduce) {
   .fogGold,
   .fogBlue,
-  .fogLow {
+  .fogLow,
+  .wisp1,
+  .wisp2,
+  .wisp3,
+  .wisp4 {
     animation: none;
   }
 }

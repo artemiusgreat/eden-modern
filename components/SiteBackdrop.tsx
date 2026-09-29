@@ -9,7 +9,10 @@ export default function SiteBackdrop() {
       <div className={styles.tint} />
       <div className={`${styles.fog} ${styles.fogGold}`} />
       <div className={`${styles.fog} ${styles.fogBlue}`} />
-      <div className={`${styles.fog} ${styles.fogLow}`} />
+      <div className={`${styles.wisp} ${styles.wisp1}`} />
+      <div className={`${styles.wisp} ${styles.wisp2}`} />
+      <div className={`${styles.wisp} ${styles.wisp3}`} />
+      <div className={`${styles.wisp} ${styles.wisp4}`} />
       <div className={styles.vignette} />
     </div>
   );

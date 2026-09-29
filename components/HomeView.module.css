@@ -254,7 +254,10 @@
 /* ---------- promise cards ---------- */
 .promiseCard {
   border: 1px solid var(--line);
-  background: var(--surface);
+  background:
+    linear-gradient(165deg, rgba(201, 163, 95, 0.08) 0%, transparent 42%),
+    repeating-linear-gradient(135deg, rgba(214, 226, 244, 0.028) 0 1px, transparent 1px 8px),
+    var(--surface);
   border-radius: 3px;
   padding: 2.2rem 1.8rem;
   height: 100%;
@@ -290,18 +293,6 @@
   color: var(--muted);
   margin-bottom: 1.2rem;
   line-height: 1.7;
-}
-.promiseLink {
-  font-size: 0.74rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--ink);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.promiseLink .fa-arrow-right {
-  font-size: 0.78em;
 }
 
 /* ---------- collection cards ---------- */
