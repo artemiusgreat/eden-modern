@@ -34,9 +34,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
               href="https://www.trustpilot.com/review/eden.indemos.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="d-inline-flex align-items-center gap-2 mt-2"
-              style={{ border: '1px solid var(--line-strong)', borderRadius: 2, padding: '0.6rem 0.9rem' }}
-            >
+              className="d-inline-flex align-items-center gap-2 mt-2">
               <TrustpilotStars size={16} />
               <span style={{ fontSize: '0.78rem', color: 'var(--ink)' }}>Trustpilot</span>
             </a>
@@ -96,11 +94,6 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
             <Link href="/search?on_sale=1" className="btn-outline-noir mt-3">
               Shop the sale
             </Link>
-            <div className="d-flex gap-2 mt-4 flex-wrap">
-              {['VISA', 'MASTERCARD', 'AMEX', 'PAYPAL'].map((p) => (
-                <span key={p} className={styles.payBadge}>{p}</span>
-              ))}
-            </div>
           </MDBCol>
         </MDBRow>
       </MDBContainer>

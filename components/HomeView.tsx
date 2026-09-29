@@ -124,8 +124,10 @@ export default function HomeView({
             {PROMISES.map((p) => (
               <MDBCol md="3" sm="6" className="mb-4" key={p.title}>
                 <Link href={p.href} className={styles.promiseCard}>
-                  <MDBIcon fas icon={p.icon} />
-                  <h3>{p.title}</h3>
+                  <h3 className="d-flex align-items-center">
+                    <MDBIcon fas icon={p.icon} className="me-2" />
+                    {p.title}
+                  </h3>
                   <p>{p.text}</p>
                   <span className={styles.promiseLink}>
                     Learn more <MDBIcon fas icon="arrow-right" />

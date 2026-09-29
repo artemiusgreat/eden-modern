@@ -22,10 +22,10 @@
   font-weight: 600;
   color: var(--ink);
   text-transform: uppercase;
-  margin-right: 0;
   line-height: 1;
   flex-shrink: 0;
   white-space: normal;
+  display: block;
 }
 .navbarInner .brand small {
   display: block;
@@ -38,6 +38,9 @@
   line-height: 1.2;
 }
 
+.menu {
+  display: flex;
+}
 /* (0,3,0) beats MDB's .navbar-nav .nav-link (0,2,0). */
 .menu .links .navLink {
   font-size: 0.72rem;
@@ -73,17 +76,14 @@
 .actions .iconBtn {
   color: var(--ink);
   font-size: 1.28rem;
-  width: 46px;
+  min-width: 46px;
   height: 46px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--line-strong);
-  border-radius: 50%;
   position: relative;
   flex-shrink: 0;
-  background: transparent;
 }
 .actions .iconBtn:hover {
   color: var(--gold-soft);
@@ -92,9 +92,11 @@
 
 /* Mobile-first: the open menu stacks vertically with breathing room. */
 .menu {
+  display: flex;
   width: 100%;
 }
 .menu .links {
+  width: auto!important;
   display: flex;
   flex-direction: column;
   padding: 0.75rem 0 0.25rem;
@@ -102,21 +104,23 @@
   list-style: none;
 }
 .menu .searchShell {
-  margin: 0.75rem 0;
   width: 100%;
+  min-height: 46px;
 }
 .menu .actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.25rem 0 0.9rem;
+}
+.menu:global(.navbar-collapse .collapse-content) {
+  width: 100%;
 }
 .cta {
   display: none;
 }
 
 /* Desktop: one clean row — brand | links | search+actions pinned right. */
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
   .navbarInner {
     padding: 0.65rem 2rem;
     flex-wrap: nowrap;
@@ -144,7 +148,6 @@
   }
   .menu .actions {
     padding: 0;
-    gap: 0.6rem;
     flex-shrink: 0;
   }
 }

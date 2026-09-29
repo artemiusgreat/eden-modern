@@ -105,7 +105,9 @@ function CartDrawer() {
           <h5 className="mb-0 font-serif" style={{ fontSize: '1.5rem' }}>
             Your Bag{' '}
             {cart && cart.items_count > 0 && (
-              <span style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>({cart.items_count})</span>
+              <MDBBadge notification className="ms-2 position-static">
+                {cart.items_count}
+              </MDBBadge>
             )}
           </h5>
           <button
@@ -113,8 +115,7 @@ function CartDrawer() {
             className="btn btn-link p-1"
             style={{ color: '#1c1611' }}
             onClick={() => setDrawerOpen(false)}
-            aria-label="Close bag"
-          >
+            aria-label="Close bag">
             <MDBIcon fas icon="xmark" size="lg" />
           </button>
         </div>
@@ -137,18 +138,18 @@ function CartDrawer() {
                     alt={item.images[0].alt || item.name}
                     width={84}
                     height={96}
-                    className={styles.thumb}
-                  />
+                    className={styles.thumb} />
                 )}
                 <div className="flex-grow-1">
                   <div className="d-flex justify-content-between gap-2">
-                    <strong className="font-serif" style={{ fontSize: '1.05rem', fontWeight: 600 }}>{item.name}</strong>
+                    <strong className="font-serif" style={{ fontSize: '1.05rem', fontWeight: 600 }}>
+                      {item.name}
+                    </strong>
                     <button
                       type="button"
                       className="btn btn-link p-0 text-muted"
                       aria-label="Remove item"
-                      onClick={() => removeItem(item.key)}
-                    >
+                      onClick={() => removeItem(item.key)}>
                       <MDBIcon fas icon="trash-can" />
                     </button>
                   </div>
@@ -193,7 +194,7 @@ function CartDrawer() {
               Shipping & taxes calculated at checkout.
             </p>
             <Link href="/checkout" passHref legacyBehavior>
-              <MDBBtn className="btn-gold w-100" onClick={() => setDrawerOpen(false)}>
+              <MDBBtn className="btn-gold d-block" onClick={() => setDrawerOpen(false)}>
                 Proceed to checkout
               </MDBBtn>
             </Link>
@@ -201,8 +202,7 @@ function CartDrawer() {
               type="button"
               className="btn btn-link w-100 mt-2"
               style={{ color: 'var(--muted)', fontSize: '0.82rem', textTransform: 'uppercase' }}
-              onClick={() => setDrawerOpen(false)}
-            >
+              onClick={() => setDrawerOpen(false)}>
               Continue shopping
             </button>
           </div>

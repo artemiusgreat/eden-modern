@@ -14,37 +14,33 @@ export default function BlogPostView({ post, related }: { post: WpPost; related:
 
   return (
     <MDBContainer className="py-5">
-      <MDBRow className="justify-content-center">
-        <MDBCol lg="8">
-          <MDBBreadcrumb className="mb-4">
-            <Link href="/" passHref legacyBehavior>
-              <MDBBreadcrumbItem>Home</MDBBreadcrumbItem>
-            </Link>
-            <Link href="/blog" passHref legacyBehavior>
-              <MDBBreadcrumbItem>Journal</MDBBreadcrumbItem>
-            </Link>
-            <MDBBreadcrumbItem active>{post.title}</MDBBreadcrumbItem>
-          </MDBBreadcrumb>
+      <MDBBreadcrumb className="mb-4">
+        <Link href="/" passHref legacyBehavior>
+          <MDBBreadcrumbItem>Home</MDBBreadcrumbItem>
+        </Link>
+        <Link href="/blog" passHref legacyBehavior>
+          <MDBBreadcrumbItem>Journal</MDBBreadcrumbItem>
+        </Link>
+        <MDBBreadcrumbItem active>{post.title}</MDBBreadcrumbItem>
+      </MDBBreadcrumb>
 
-          <p className="kicker mb-2">{date}</p>
-          <h1 className="font-serif mb-4" style={{ fontSize: '2.8rem', lineHeight: 1.15 }}>{post.title}</h1>
+      <p className="kicker mb-2">{date}</p>
+      <h1 className="font-serif mb-4" style={{ fontSize: '2.8rem', lineHeight: 1.15 }}>{post.title}</h1>
 
-          {post.image && (
-            <div className={`${styles.heroImg} mb-5`}>
-              <img src={post.image} alt={post.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
-            </div>
-          )}
+      {post.image && (
+        <div className={`${styles.heroImg} mb-5`}>
+          <img src={post.image} alt={post.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
+        </div>
+      )}
 
-          <div className="prose-wp" dangerouslySetInnerHTML={{ __html: post.content }} />
+      <div className="prose-wp" dangerouslySetInnerHTML={{ __html: post.content }} />
 
-          <div className="mt-5 pt-4" style={{ borderTop: '1px solid var(--line)' }}>
-            <Link href="/blog" className="text-decoration-none text-gold" style={{ textTransform: 'uppercase', fontSize: '0.75rem' }}>
-              <MDBIcon fas icon="arrow-left" className="me-2" />
-              All stories
-            </Link>
-          </div>
-        </MDBCol>
-      </MDBRow>
+      <div className="mt-5 pt-4" style={{ borderTop: '1px solid var(--line)' }}>
+        <Link href="/blog" className="text-decoration-none text-gold" style={{ textTransform: 'uppercase', fontSize: '0.75rem' }}>
+          <MDBIcon fas icon="arrow-left" className="me-2" />
+          All stories
+        </Link>
+      </div>
 
       {related.length > 0 && (
         <section className="mt-5">

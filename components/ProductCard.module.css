@@ -23,7 +23,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.4rem;
+  padding: 10px;
   position: relative;
   border-bottom: 1px solid var(--line);
 }

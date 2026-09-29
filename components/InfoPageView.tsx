@@ -20,11 +20,7 @@ export default function InfoPageView({ title, content }: { title: string; conten
         </MDBContainer>
       </div>
       <MDBContainer className="py-5">
-        <MDBRow className="justify-content-center">
-          <MDBCol lg="8">
-            <div className="prose-wp" dangerouslySetInnerHTML={{ __html: content }} />
-          </MDBCol>
-        </MDBRow>
+        <div className="prose-wp" dangerouslySetInnerHTML={{ __html: content }} />
       </MDBContainer>
     </>
   );
