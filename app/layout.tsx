@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Inter, Bodoni_Moda, Milonga } from 'next/font/google';
+import { Playfair_Display, Inter, Bodoni_Moda, Milonga, Prata } from 'next/font/google';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import './globals.css';
 import { CartProvider } from '@/components/cart/CartProvider';
@@ -23,7 +23,7 @@ const sans = Inter({
   display: 'swap',
 });
 
-// Picked 2026-09-29: Bodoni Moda for all prices and card headings.
+// Picked 2026-09-29: Bodoni Moda for card headings and nav links.
 const bodoni = Bodoni_Moda({
   style: ['normal'],
   subsets: ['latin'],
@@ -39,6 +39,14 @@ const milonga = Milonga({
   display: 'swap',
 });
 
+// Picked 2026-09-29: Prata for all prices site-wide.
+const prata = Prata({
+  weight: ['400'],
+  subsets: ['latin'],
+  variable: '--font-prata',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: {
     default: 'Indemos — Luxury Fragrances & Beauty',
@@ -49,7 +57,7 @@ export const metadata: Metadata = {
 };
 
 // Bump on every shipped build so we can tell (via View Source) which build is live.
-const BUILD_ID = '2026-09-29-bodoni';
+const BUILD_ID = '2026-09-29-prata';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const categories = await getCategories().catch(() => []);
@@ -62,7 +70,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         />
       </head>
-      <body className={`${sans.variable} ${serif.variable} ${bodoni.variable} ${milonga.variable}`} data-build={BUILD_ID}>
+      <body className={`${sans.variable} ${serif.variable} ${bodoni.variable} ${milonga.variable} ${prata.variable}`} data-build={BUILD_ID}>
         <CartProvider>
           <AnnouncementBar />
           <SiteNavbar categories={categories} />
