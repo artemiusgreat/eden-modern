@@ -56,49 +56,56 @@
   justify-content: center;
   min-width: 0;
 }
-.heroFeatKicker {
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  color: var(--gold-soft);
-  margin: 0;
-}
 .heroStage {
+  display: grid;
   min-width: 0;
 }
-/* One large slide at a time — zoom-fade transition, no sliding. */
+/* Crossfade stack: every slide shares one grid cell, the active one
+   fades/zooms in over the previous — no hard cuts, no sliding. */
 .heroSlide {
+  grid-area: 1 / 1;
   display: flex;
-  align-items: center;
-  gap: 1.1rem;
+  align-items: stretch;
+  gap: 1.2rem;
   background: rgba(14, 20, 34, 0.88);
   border: 1px solid var(--line);
   border-radius: 4px;
-  padding: 1rem 1.1rem;
+  padding: 1.2rem;
   text-decoration: none;
-  min-height: 235px;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  min-height: 300px;
+  opacity: 0;
+  transform: scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.7s ease, transform 0.8s ease, border-color 0.3s ease;
 }
-.heroSlide:hover {
-  transform: scale(1.015);
+.heroSlideActive {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+.heroSlideActive:hover {
   border-color: var(--line-strong);
 }
 .heroSlide img {
-  width: clamp(120px, 14vw, 185px);
+  flex: 0 0 calc(50% - 0.6rem);
+  width: calc(50% - 0.6rem);
   aspect-ratio: 4 / 5;
   object-fit: contain;
   background: var(--surface);
   border-radius: 3px;
-  flex-shrink: 0;
+  align-self: center;
 }
 .heroSlideBody {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  justify-content: center;
+  gap: 0.6rem;
   min-width: 0;
 }
 .heroSlideName {
   font-family: var(--font-card-title, var(--font-serif));
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   line-height: 1.35;
   color: var(--ink);
   display: -webkit-box;
@@ -109,7 +116,7 @@
 .heroSlidePrice {
   font-family: var(--font-price, var(--font-serif));
   font-weight: 100;
-  font-size: 1.35rem;
+  font-size: 1.6rem;
   color: var(--gold-soft);
 }
 .heroSlideCta {
@@ -120,21 +127,8 @@
   align-items: center;
   gap: 0.5rem;
 }
-.heroSlide:hover .heroSlideCta {
+.heroSlideActive:hover .heroSlideCta {
   color: var(--gold-soft);
-}
-.slideAnim {
-  animation: heroSlideIn 0.45s ease;
-}
-@keyframes heroSlideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.965);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 .heroControls {
   display: flex;
@@ -179,8 +173,21 @@
   transform: scale(1.35);
 }
 @media (prefers-reduced-motion: reduce) {
-  .slideAnim {
-    animation: none;
+  .heroSlide {
+    transition: none;
+  }
+}
+@media (max-width: 575.98px) {
+  .heroSlide {
+    min-height: 220px;
+    padding: 0.9rem;
+    gap: 0.9rem;
+  }
+  .heroSlideName {
+    font-size: 1.02rem;
+  }
+  .heroSlidePrice {
+    font-size: 1.2rem;
   }
 }
 @media (max-width: 991.98px) {

@@ -32,13 +32,9 @@ export default function HeroFeatured({ products }: { products: StoreProduct[] })
   }, [count, paused]);
 
   if (count === 0) return null;
-  const p = products[index];
-  const img = p.images[0];
-  const price = p.on_sale ? p.prices.sale_price : p.prices.price;
 
   return (
     <div className={styles.heroFeatured}>
-      <p className={styles.heroFeatKicker}>Featured</p>
       <div
         className={styles.heroStage}
         onMouseEnter={() => setPaused(true)}
@@ -46,22 +42,31 @@ export default function HeroFeatured({ products }: { products: StoreProduct[] })
         onFocus={() => setPaused(true)}
         onBlur={() => setPaused(false)}
       >
-        <Link
-          key={p.id}
-          href={`/products/${p.slug}`}
-          className={`${styles.heroSlide} ${styles.slideAnim}`}
-        >
-          {img && <img src={img.src} alt="" aria-hidden="true" />}
-          <span className={styles.heroSlideBody}>
-            <span className={styles.heroSlideName}>{p.name}</span>
-            <span className={styles.heroSlidePrice}>
-              {formatPrice(price, p.prices.currency_minor_unit, p.prices.currency_symbol)}
-            </span>
-            <span className={styles.heroSlideCta}>
-              Shop now <MDBIcon fas icon="arrow-right" />
-            </span>
-          </span>
-        </Link>
+        {products.map((prod, i) => {
+          const img = prod.images[0];
+          const price = prod.on_sale ? prod.prices.sale_price : prod.prices.price;
+          const active = i === index;
+          return (
+            <Link
+              key={prod.id}
+              href={`/products/${prod.slug}`}
+              className={`${styles.heroSlide}${active ? ` ${styles.heroSlideActive}` : ''}`}
+              aria-hidden={!active}
+              tabIndex={active ? 0 : -1}
+            >
+              {img && <img src={img.src} alt="" aria-hidden="true" />}
+              <span className={styles.heroSlideBody}>
+                <span className={styles.heroSlideName}>{prod.name}</span>
+                <span className={styles.heroSlidePrice}>
+                  {formatPrice(price, prod.prices.currency_minor_unit, prod.prices.currency_symbol)}
+                </span>
+                <span className={styles.heroSlideCta}>
+                  Shop now <MDBIcon fas icon="arrow-right" />
+                </span>
+              </span>
+            </Link>
+          );
+        })}
       </div>
       {count > 1 && (
         <div className={styles.heroControls}>
