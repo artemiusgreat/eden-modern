@@ -53,3 +53,17 @@
   border-radius: 2px;
   padding: 6px;
 }
+
+/* Remove (trash) button: generous tap target with breathing room; the
+   negative margins keep the visual alignment unchanged. Doubled class
+   (0,2,0) beats MDB's .btn-link (0,1,0) without !important. */
+.removeBtn.removeBtn {
+  padding: 0.55rem;
+  margin: -0.55rem -0.55rem -0.2rem 0.25rem;
+  color: var(--muted);
+  line-height: 1;
+}
+.removeBtn.removeBtn:hover,
+.removeBtn.removeBtn:focus-visible {
+  color: var(--ink);
+}

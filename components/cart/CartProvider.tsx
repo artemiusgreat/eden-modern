@@ -142,7 +142,7 @@ function CartDrawer() {
                     </strong>
                     <button
                       type="button"
-                      className="btn btn-link p-0 text-muted"
+                      className={`btn btn-link ${styles.removeBtn}`}
                       aria-label="Remove item"
                       onClick={() => removeItem(item.key)}>
                       <MDBIcon fas icon="trash-can" />
@@ -158,7 +158,7 @@ function CartDrawer() {
                         +
                       </button>
                     </div>
-                    <strong>
+                    <strong className="font-serif">
                       {formatPrice(
                         item.totals.line_total,
                         item.prices.currency_minor_unit,
