@@ -1,6 +1,6 @@
-/* Site-wide ambient backdrop: a blurred luxury-perfume photograph under a
+/* Site-wide ambient backdrop: a faint luxury-perfume photograph under a
    navy grade, with slow-drifting fog wisps. Fixed, behind all content
-   (z-index -1 paints above the body's background, below everything else),
+   (z-index 0; page content sits in .site-content at z-index 1),
    pointer-transparent. Fog motion is ambient only and fully disabled under
    prefers-reduced-motion. */
 
@@ -41,86 +41,49 @@
     );
 }
 
-/* Drifting fog banks: large soft radial washes, champagne + cool blue. */
-.fog {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  will-change: transform;
-}
-
-.fogGold {
-  width: 62vw;
-  height: 62vw;
-  left: -18vw;
-  top: -24vw;
-  background: radial-gradient(circle, rgba(201, 163, 95, 0.2) 0%, transparent 68%);
-  animation: driftGold 80s ease-in-out infinite alternate;
-}
-
-.fogBlue {
-  width: 55vw;
-  height: 55vw;
-  right: -16vw;
-  top: 22vh;
-  background: radial-gradient(circle, rgba(90, 130, 190, 0.18) 0%, transparent 68%);
-  animation: driftBlue 100s ease-in-out infinite alternate;
-}
-
-.fogLow {
-  width: 70vw;
-  height: 44vw;
-  left: 8vw;
-  bottom: -22vw;
-  background: radial-gradient(ellipse, rgba(227, 201, 143, 0.15) 0%, transparent 70%);
-  animation: driftLow 90s ease-in-out infinite alternate;
-}
-
-/* Visible drifting fog wisps: elongated soft puffs in cool moonlight and
-   warm champagne tones, placed in-view (not off-screen) and drifting
-   horizontally on long slow loops. */
+/* Drifting fog wisps: elongated soft puffs in cool moonlight and warm
+   champagne tones, placed in-view and drifting horizontally on long slow
+   loops. The softness is baked into the gradient stops (no filter), so the
+   layers stay on the plain paint path: background + transform animation. */
 .wisp {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(38px);
-  will-change: transform;
   animation: wispDriftA 80s ease-in-out infinite alternate;
 }
 
 .wisp1 {
   width: 46vw;
-  height: 11vw;
+  height: 12vw;
   left: 4%;
   top: 9%;
-  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.22) 0%, rgba(205, 216, 232, 0.07) 45%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.28) 0%, rgba(205, 216, 232, 0.1) 45%, transparent 72%);
   animation-duration: 70s;
 }
 
 .wisp2 {
   width: 40vw;
-  height: 9vw;
+  height: 10vw;
   right: 5%;
   top: 35%;
-  background: radial-gradient(ellipse at center, rgba(201, 163, 95, 0.2) 0%, rgba(201, 163, 95, 0.06) 45%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(201, 163, 95, 0.26) 0%, rgba(201, 163, 95, 0.09) 45%, transparent 72%);
   animation-name: wispDriftB;
   animation-duration: 95s;
 }
 
 .wisp3 {
   width: 52vw;
-  height: 12vw;
+  height: 13vw;
   left: 9%;
   top: 59%;
-  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.18) 0%, rgba(205, 216, 232, 0.06) 45%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.24) 0%, rgba(205, 216, 232, 0.08) 45%, transparent 72%);
   animation-duration: 85s;
 }
 
 .wisp4 {
   width: 38vw;
-  height: 9vw;
+  height: 10vw;
   right: 9%;
   top: 82%;
-  background: radial-gradient(ellipse at center, rgba(227, 201, 143, 0.18) 0%, rgba(227, 201, 143, 0.05) 45%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(227, 201, 143, 0.24) 0%, rgba(227, 201, 143, 0.08) 45%, transparent 72%);
   animation-name: wispDriftB;
   animation-duration: 105s;
 }
@@ -135,21 +98,6 @@
   to { transform: translate3d(-6vw, -1.5vh, 0); }
 }
 
-@keyframes driftGold {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to { transform: translate3d(7vw, 5vh, 0) scale(1.18); }
-}
-
-@keyframes driftBlue {
-  from { transform: translate3d(0, 0, 0) scale(1.1); }
-  to { transform: translate3d(-6vw, -4vh, 0) scale(0.95); }
-}
-
-@keyframes driftLow {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to { transform: translate3d(-5vw, 3vh, 0) scale(1.12); }
-}
-
 /* Soft vignette to seat the page edges. */
 .vignette {
   position: absolute;
@@ -158,9 +106,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fogGold,
-  .fogBlue,
-  .fogLow,
   .wisp1,
   .wisp2,
   .wisp3,
