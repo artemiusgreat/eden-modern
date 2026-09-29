@@ -17,9 +17,9 @@
 }
 
 .navbarInner .brand {
-  font-family: var(--font-serif);
-  font-size: 1.45rem;
-  font-weight: 600;
+  font-family: var(--font-logo, var(--font-serif));
+  font-size: 1.65rem;
+  font-weight: 400;
   color: var(--ink);
   text-transform: uppercase;
   line-height: 1;
@@ -51,10 +51,11 @@
 }
 /* (0,3,0) beats MDB's .navbar-nav .nav-link (0,2,0). */
 .menu .links .navLink {
-  font-size: 0.72rem;
+  font-family: var(--font-bodoni);
+  font-size: 0.85rem;
   text-transform: uppercase;
   color: var(--ink);
-  font-weight: 400;
+  font-weight: 500;
   padding: 0.4rem 0.6rem;
   position: relative;
   white-space: nowrap;

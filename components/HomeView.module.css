@@ -48,6 +48,78 @@
   line-height: 1.9;
 }
 
+/* ---------- hero featured products (right column) ---------- */
+.heroFeatured {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  justify-content: center;
+}
+.heroFeatKicker {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  margin: 0;
+}
+.heroFeatCard {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: rgba(22, 20, 19, 0.85);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0.7rem 0.9rem;
+  text-decoration: none;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.heroFeatCard:hover {
+  transform: scale(1.02);
+  border-color: var(--line-strong);
+}
+.heroFeatCard img {
+  width: 54px;
+  height: 66px;
+  object-fit: contain;
+  background: var(--surface);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.heroFeatBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.heroFeatName {
+  font-family: var(--font-card-title, var(--font-serif));
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.heroFeatPrice {
+  font-family: var(--font-price);
+  font-weight: 100;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.heroFeatArrow {
+  color: var(--muted);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.heroFeatCard:hover .heroFeatArrow {
+  color: var(--gold-soft);
+}
+@media (max-width: 991.98px) {
+  .heroFeatured {
+    margin-top: 2rem;
+  }
+}
+
 /* ---------- promise cards ---------- */
 .promiseCard {
   border: 1px solid var(--line);

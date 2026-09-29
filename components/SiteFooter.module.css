@@ -47,7 +47,7 @@
 }
 
 .brand {
-  font-family: var(--font-serif);
+  font-family: var(--font-logo, var(--font-serif));
   font-size: 1.6rem;
   color: var(--ink);
   text-transform: uppercase;

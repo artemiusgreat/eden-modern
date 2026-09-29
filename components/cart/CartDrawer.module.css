@@ -62,8 +62,17 @@
   margin: -0.55rem -0.55rem -0.2rem 0.25rem;
   color: var(--muted);
   line-height: 1;
+  /* MDB's .btn-link sets --mdb-btn-hover-bg: whitesmoke — keep the
+     button transparent on a dark drawer in every state. */
+  --mdb-btn-hover-bg: transparent;
+  --mdb-btn-active-bg: transparent;
+  --mdb-btn-focus-shadow-rgb: 201, 163, 95;
 }
 .removeBtn.removeBtn:hover,
-.removeBtn.removeBtn:focus-visible {
+.removeBtn.removeBtn:focus-visible,
+.removeBtn.removeBtn:active {
   color: var(--ink);
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }

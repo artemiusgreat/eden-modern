@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Inter, Bodoni_Moda } from 'next/font/google';
+import { Playfair_Display, Inter, Bodoni_Moda, Milonga } from 'next/font/google';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import './globals.css';
 import { CartProvider } from '@/components/cart/CartProvider';
@@ -31,6 +31,14 @@ const bodoni = Bodoni_Moda({
   display: 'swap',
 });
 
+// Picked 2026-09-29: Milonga for the wordmark logo.
+const milonga = Milonga({
+  weight: ['400'],
+  subsets: ['latin'],
+  variable: '--font-logo',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: {
     default: 'Indemos — Luxury Fragrances & Beauty',
@@ -54,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         />
       </head>
-      <body className={`${sans.variable} ${serif.variable} ${bodoni.variable}`} data-build={BUILD_ID}>
+      <body className={`${sans.variable} ${serif.variable} ${bodoni.variable} ${milonga.variable}`} data-build={BUILD_ID}>
         <CartProvider>
           <AnnouncementBar />
           <SiteNavbar categories={categories} />
