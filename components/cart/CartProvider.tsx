@@ -103,12 +103,7 @@ function CartDrawer() {
       <aside className={`${styles.drawer}${drawerOpen ? ` ${styles.show}` : ''}`} aria-hidden={!drawerOpen}>
         <div className="d-flex align-items-center justify-content-between p-4 border-bottom">
           <h5 className="mb-0 font-serif" style={{ fontSize: '1.5rem' }}>
-            Your Bag{' '}
-            {cart && cart.items_count > 0 && (
-              <MDBBadge notification className="ms-2 position-static">
-                {cart.items_count}
-              </MDBBadge>
-            )}
+            Your Bag
           </h5>
           <button
             type="button"
