@@ -61,7 +61,7 @@ export const metadata: Metadata = {
 };
 
 // Bump on every shipped build so we can tell (via View Source) which build is live.
-const BUILD_ID = '2026-09-29-prata';
+const BUILD_ID = '2026-09-29-prata-fix';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const categories = await getCategories().catch(() => []);
