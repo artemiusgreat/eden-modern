@@ -53,11 +53,11 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
           )}
         </Link>
       </div>
-      <MDBCardBody className="d-flex flex-column p-3">
-        <h3 className={`${styles.name} mb-2`}>
+      <MDBCardBody className={`${styles.cardBody} p-3`}>
+        <h3 className={styles.name}>
           <Link href={`/products/${product.slug}`}>{product.name}</Link>
         </h3>
-        <div className="mb-3">
+        <div>
           <RatingStars rating={rating} />
         </div>
         <div className={styles.buyRow}>

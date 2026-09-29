@@ -37,6 +37,17 @@ html {
   background: var(--bg);
 }
 
+/* Default heading rhythm — the `html` prefix beats MDB's reboot
+   regardless of stylesheet order. Components may still set their own. */
+html h1,
+html h2,
+html h3,
+html h4,
+html h5,
+html h6 {
+  line-height: 1.4;
+}
+
 /* NOTE: `html body` (not just `body`) — Next.js emits the MDB stylesheet
    AFTER globals.css in production, and MDB's `body` rule would otherwise
    win on equal specificity and paint the page white. */

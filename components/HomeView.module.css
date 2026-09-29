@@ -153,7 +153,7 @@
 }
 .heroSlideName {
   font-family: var(--font-card-title, var(--font-serif));
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   line-height: 1.35;
   color: var(--ink);
   display: -webkit-box;
@@ -238,7 +238,7 @@
     gap: 0.9rem;
   }
   .heroSlideName {
-    font-size: 1.02rem;
+    font-size: 1.12rem;
   }
   .heroSlidePrice {
     font-size: 1.2rem;

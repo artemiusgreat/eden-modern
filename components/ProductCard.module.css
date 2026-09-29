@@ -46,6 +46,17 @@
   background: transparent;
 }
 
+/* Even rhythm: one uniform gap between title, rating and buy row,
+   instead of mixed mb-2/mb-3 utilities. */
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.cardBody > * {
+  margin-bottom: 0;
+}
+
 /* Inter Light prices, scoped to product cards — PDP and cart keep Bodoni. */
 .card.card :global(.price-regular),
 .card.card :global(.price-sale),
