@@ -251,9 +251,13 @@ export default function HomeView({
             <MDBRow className="g-0">
               <MDBCol md="6">
                 <div className={styles.storyMedia}>
-                  {storyCat.image && (
-                    <img src={storyCat.image.src} alt={storyCat.name} loading="lazy" />
-                  )}
+                  {/* Category image when one is set in WooCommerce; otherwise
+                      the brand collage so the half never renders empty. */}
+                  <img
+                    src={storyCat.image?.src ?? '/images/ambient-perfume.jpg'}
+                    alt={storyCat.image?.name || storyCat.name}
+                    loading="lazy"
+                  />
                 </div>
               </MDBCol>
               <MDBCol md="6">
