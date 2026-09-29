@@ -99,7 +99,7 @@ export default function HomeView({
         <div className={styles.heroShade} />
         <MDBContainer className={`${styles.heroContent} py-5`}>
           <MDBRow>
-            <MDBCol lg="8">
+            <MDBCol lg="7">
               <h1>
                 Scents That
                 <br />
@@ -116,7 +116,7 @@ export default function HomeView({
               </Link>
             </MDBCol>
             {featured.length > 0 && (
-              <MDBCol lg="4">
+              <MDBCol lg="5">
                 <HeroFeatured products={featured} />
               </MDBCol>
             )}
