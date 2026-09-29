@@ -16,6 +16,11 @@
 
 .card h2 {
   color: var(--ink);
+  font-family: var(--font-card-title, var(--font-serif));
+}
+
+.card h6 {
+  font-family: var(--font-card-title, var(--font-sans));
 }
 
 .card h6 {

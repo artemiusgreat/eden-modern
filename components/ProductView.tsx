@@ -122,7 +122,7 @@ export default function ProductView({
                 <span className="price-regular fs-5">
                   {formatPrice(prices.regular_price, prices.currency_minor_unit, prices.currency_symbol)}
                 </span>
-                <span className="font-serif" style={{ fontSize: '2.2rem', fontWeight: 700 }}>
+                <span style={{ fontSize: '2.2rem', fontFamily: 'var(--font-price)', fontWeight: 100 }}>
                   {formatPrice(prices.sale_price, prices.currency_minor_unit, prices.currency_symbol)}
                 </span>
                 {discount !== null && (
@@ -132,7 +132,7 @@ export default function ProductView({
                 )}
               </>
             ) : (
-              <span className="font-serif" style={{ fontSize: '2.2rem', fontWeight: 700 }}>
+              <span style={{ fontSize: '2.2rem', fontFamily: 'var(--font-price)', fontWeight: 100 }}>
                 {formatPrice(prices.price, prices.currency_minor_unit, prices.currency_symbol)}
               </span>
             )}
