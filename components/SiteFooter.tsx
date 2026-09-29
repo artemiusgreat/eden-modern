@@ -58,11 +58,9 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
             <h6>Quick links</h6>
             <Link href="/" className={styles.flink}>Home</Link>
             <Link href="/search" className={styles.flink}>Shop</Link>
-            <Link href="/blog" className={styles.flink}>Journal</Link>
+            <Link href="/blog" className={styles.flink}>Magazine</Link>
             <Link href="/account" className={styles.flink}>Account</Link>
             <Link href="/contacts" className={styles.flink}>Contact</Link>
-            <Link href="/refunds-and-returns" className={styles.flink}>Refunds and Returns</Link>
-            <Link href="/privacy" className={styles.flink}>Privacy Policy</Link>
           </MDBCol>
 
           <MDBCol md="2" sm="6" className="mb-4">

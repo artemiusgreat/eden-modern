@@ -54,14 +54,7 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
         </MDBNavbarToggler>
         <MDBCollapse navbar open={open} id="lux-navbar" className={styles.menu}>
           <div className="d-flex align-items-center">
-            <MDBNavbarNav className={styles.links}>
-              <MDBNavbarItem>
-                <Link href="/" passHref legacyBehavior>
-                  <MDBNavbarLink className={styles.navLink} onClick={() => setOpen(false)}>
-                    Home
-                  </MDBNavbarLink>
-                </Link>
-              </MDBNavbarItem>
+            <MDBNavbarNav className={`${styles.links} mx-auto w-auto`}>
               {navCats.map((c) => (
                 <MDBNavbarItem key={c.id}>
                   <Link href={`/category/${c.slug}`} passHref legacyBehavior>
@@ -74,7 +67,7 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
               <MDBNavbarItem>
                 <Link href="/blog" passHref legacyBehavior>
                   <MDBNavbarLink className={styles.navLink} onClick={() => setOpen(false)}>
-                    Journal
+                    Magazine
                   </MDBNavbarLink>
                 </Link>
               </MDBNavbarItem>
