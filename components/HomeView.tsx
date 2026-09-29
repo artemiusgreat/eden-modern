@@ -117,7 +117,7 @@ export default function HomeView({
     <>
       {/* ============ HERO ============ */}
       <section className={styles.hero}>
-        {heroImg && <HeroParallax src={heroImg.src} />}
+        {heroImg && <HeroParallax src="/images/ambient-perfume.jpg" />}
         <div className={styles.heroShade} />
         <div className={styles.heroGlow} aria-hidden="true" />
         <MDBContainer className={`${styles.heroContent} py-5`}>
