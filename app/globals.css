@@ -2,7 +2,7 @@
    INDEMOS — NOIR theme (MDB React UI Kit base)
    Palette: deep blue-black, warm white, champagne gold accents.
    Type: Playfair Display (headings) + Inter (body),
-         Bodoni Moda (prices, card titles, nav), Milonga (logo).
+         Prata (prices, card titles, nav), Milonga (logo).
    No italics. No letter-spacing.
    ============================================================ */
 
@@ -25,7 +25,7 @@
   --danger: #d4695f;
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  /* Review pick 2026-09-29: Prata for all prices; Bodoni Moda kept for card headings. */
+  /* Review pick 2026-09-29: Prata for all prices and card headings. */
   /* Fine film grain (SVG turbulence) for card/hero texture overlays. */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
 }
@@ -61,7 +61,7 @@ html body {
      element, and <html> cannot see the font variables defined on <body>,
      which made --font-price/--font-card-title permanently invalid. */
   --font-price: var(--font-prata);
-  --font-card-title: var(--font-bodoni);
+  --font-card-title: var(--font-prata);
 }
 
 .font-serif,

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Inter, Bodoni_Moda, Milonga } from 'next/font/google';
+import { Playfair_Display, Inter, Milonga } from 'next/font/google';
 import localFont from 'next/font/local';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import './globals.css';
@@ -24,14 +24,6 @@ const sans = Inter({
   display: 'swap',
 });
 
-// Picked 2026-09-29: Bodoni Moda for card headings and nav links.
-const bodoni = Bodoni_Moda({
-  style: ['normal'],
-  subsets: ['latin'],
-  variable: '--font-bodoni',
-  display: 'swap',
-});
-
 // Picked 2026-09-29: Milonga for the wordmark logo.
 const milonga = Milonga({
   weight: ['400'],
@@ -40,11 +32,9 @@ const milonga = Milonga({
   display: 'swap',
 });
 
-// Picked 2026-09-29: Prata for all prices site-wide.
+// Picked 2026-09-29: Prata for all prices, card headings, and nav links.
 // Self-hosted via next/font/local (not /google): the Google Fonts download
-// is flaky in some networks, and next/font emits a DIFFERENT variable-class
-// hash when the download fails, which desyncs the <body> class from the CSS
-// and silently drops --font-prata (prices fell back to Playfair).
+// is flaky on some networks, so the critical display font ships with the repo.
 const prata = localFont({
   src: './fonts/prata-latin-400.woff2',
   variable: '--font-prata',
@@ -61,7 +51,7 @@ export const metadata: Metadata = {
 };
 
 // Bump on every shipped build so we can tell (via View Source) which build is live.
-const BUILD_ID = '2026-09-29-prata-fix';
+const BUILD_ID = '2026-09-29-prata-all';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const categories = await getCategories().catch(() => []);
@@ -74,7 +64,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         />
       </head>
-      <body className={`${sans.variable} ${serif.variable} ${bodoni.variable} ${milonga.variable} ${prata.variable}`} data-build={BUILD_ID}>
+      <body className={`${sans.variable} ${serif.variable} ${milonga.variable} ${prata.variable}`} data-build={BUILD_ID}>
         <CartProvider>
           <AnnouncementBar />
           <SiteNavbar categories={categories} />
