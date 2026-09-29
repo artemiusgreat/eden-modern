@@ -1,6 +1,12 @@
 /* Scoped MDB pagination restyle. Each selector beats MDB's specificity
    without !important. */
 
+.pager :global(.pagination) {
+  gap: 0.6rem;
+}
+.pager :global(.page-item .page-link) {
+  border-radius: 3px;
+}
 .pager :global(.page-link) {
   background: var(--surface);
   border-color: var(--line);
