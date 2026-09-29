@@ -11,7 +11,7 @@
   text-transform: uppercase;
   font-weight: 600;
   margin-bottom: 1.2rem;
-  font-family: var(--font-sans);
+  font-family: var(--font-card-title);
 }
 .footer a {
   color: var(--muted);
@@ -49,7 +49,7 @@
 }
 
 .brand {
-  font-family: var(--font-bodoni, var(--font-serif));
+  font-family: var(--font-card-title, var(--font-serif));
   font-size: 1.6rem;
   color: var(--ink);
   text-transform: uppercase;
