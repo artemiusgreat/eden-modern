@@ -36,7 +36,7 @@
 
 .name {
   font-size: 1.15rem;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.35;
 }
 .name a {
@@ -45,4 +45,30 @@
 }
 .name a:hover {
   color: var(--gold-soft);
+}
+
+/* Price + add-to-bag row. flex-wrap is the safety net: the button wraps to
+   its own line instead of being pushed out and clipped by .card's
+   overflow: hidden on narrow columns. */
+.buyRow {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+/* Label shown only when the button goes full-width (see media query in
+   AddToCartButton.module.css). */
+.cartLabel {
+  display: none;
+  margin-left: 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+@media (max-width: 1199.98px) {
+  .cartLabel {
+    display: inline;
+  }
 }

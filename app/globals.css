@@ -257,13 +257,13 @@ em {
   border-radius: 2px;
 }
 .badge-sale {
-  background: var(--ink);
-  color: #0b0a09;
+  background: #0b0a09;
+  color: var(--ink);
 }
 .badge-new {
-  background: transparent;
+  background: #0b0a09;
   color: var(--ink);
-  border: 1px solid var(--line-strong);
+  border: 1px solid #0b0a09;
 }
 
 

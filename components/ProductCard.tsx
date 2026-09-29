@@ -60,7 +60,7 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
         <div className="mb-3">
           <RatingStars rating={rating} />
         </div>
-        <div className="mt-auto d-flex align-items-center justify-content-between gap-2">
+        <div className={styles.buyRow}>
           <div className="d-flex align-items-baseline gap-2">
             {product.on_sale ? (
               <>
@@ -85,6 +85,7 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
             ariaLabel={purchasable ? `Add ${product.name} to bag` : 'Out of stock'}
           >
             <MDBIcon fas icon="cart-shopping" />
+            <span className={styles.cartLabel}>Add to Bag</span>
           </AddToCartButton>
         </div>
       </MDBCardBody>
