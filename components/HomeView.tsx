@@ -258,6 +258,7 @@ export default function HomeView({
                     alt={storyCat.image?.name || storyCat.name}
                     loading="lazy"
                   />
+                  <div className={styles.storyShade} aria-hidden="true" />
                 </div>
               </MDBCol>
               <MDBCol md="6">
