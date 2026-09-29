@@ -38,7 +38,7 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
 
   return (
     <MDBNavbar expand="xl" className={styles.navbar} sticky>
-      <div className={styles.navbarInner}>
+      <div className={`${styles.navbarInner} container`}>
         <Link href="/" passHref legacyBehavior className="mr-5">
           <MDBNavbarBrand className={styles.brand}>
             Indemos<small>Beauty & Fragrance</small>

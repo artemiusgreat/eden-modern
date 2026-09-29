@@ -252,7 +252,7 @@ export default function HomeView({
                   </p>
                   <div className="mt-3">
                     <Link href="/blog" className="btn-outline-noir">
-                      Read the journal
+                      Read the magazine
                     </Link>
                   </div>
                 </div>

@@ -17,7 +17,7 @@
 }
 
 .navbarInner .brand {
-  font-family: var(--font-logo, var(--font-serif));
+  font-family: var(--font-bodoni, var(--font-serif));
   font-size: 1.65rem;
   font-weight: 400;
   color: var(--ink);
