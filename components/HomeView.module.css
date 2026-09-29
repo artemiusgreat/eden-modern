@@ -339,7 +339,6 @@
 /* ---------- story split ---------- */
 .storyPanel {
   background: #060b15;
-  border: 1px solid var(--line);
   border-left: none;
   padding: clamp(2rem, 5vw, 4.5rem);
   display: flex;
@@ -387,7 +386,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.22;
+  opacity: 0.25;
   background: linear-gradient(180deg, #03060c 0%, #0a1120 50%, #03060c 100%);
 }
 .storyMedia img {
