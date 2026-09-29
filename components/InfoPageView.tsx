@@ -10,9 +10,9 @@ export default function InfoPageView({ title, content }: { title: string; conten
       <div className="info-hero">
         <MDBContainer className="py-5">
           <MDBBreadcrumb className="mb-3">
-            <Link href="/" passHref legacyBehavior>
-              <MDBBreadcrumbItem>Home</MDBBreadcrumbItem>
-            </Link>
+            <MDBBreadcrumbItem>
+              <Link href="/">Home</Link>
+            </MDBBreadcrumbItem>
             <MDBBreadcrumbItem active>{title}</MDBBreadcrumbItem>
           </MDBBreadcrumb>
           <h1 className="font-serif" style={{ fontSize: '3rem' }}>{title}</h1>

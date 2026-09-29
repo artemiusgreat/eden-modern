@@ -253,9 +253,10 @@ function toPost(p: WpPostRaw, withContent: boolean): WpPost {
 }
 
 export async function getPosts(perPage = 9): Promise<WpPost[]> {
+  // NOTE: `_fields` is intentionally not used here — WordPress skips `_embed`
+  // when `_fields` is present, which broke featured images.
   const posts = await wpGet<WpPostRaw[]>('/posts', {
     per_page: perPage,
-    _fields: 'id,slug,date,title,excerpt,_embedded',
     _embed: 'wp:featuredmedia',
   });
   return posts.map((p) => toPost(p, false));
@@ -264,7 +265,6 @@ export async function getPosts(perPage = 9): Promise<WpPost[]> {
 export async function getPostBySlug(slug: string): Promise<WpPost | null> {
   const posts = await wpGet<WpPostRaw[]>('/posts', {
     slug,
-    _fields: 'id,slug,date,title,excerpt,content,_embedded',
     _embed: 'wp:featuredmedia',
   });
   return posts[0] ? toPost(posts[0], true) : null;

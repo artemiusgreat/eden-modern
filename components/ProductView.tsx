@@ -86,13 +86,13 @@ export default function ProductView({
   return (
     <MDBContainer className={`py-5 ${styles.pdp}`}>
       <MDBBreadcrumb className="mb-4">
-        <Link href="/" passHref legacyBehavior>
-          <MDBBreadcrumbItem>Home</MDBBreadcrumbItem>
-        </Link>
+        <MDBBreadcrumbItem>
+          <Link href="/">Home</Link>
+        </MDBBreadcrumbItem>
         {product.categories[0] && (
-          <Link href={`/category/${product.categories[0].slug}`} passHref legacyBehavior>
-            <MDBBreadcrumbItem>{product.categories[0].name}</MDBBreadcrumbItem>
-          </Link>
+          <MDBBreadcrumbItem>
+            <Link href={`/category/${product.categories[0].slug}`}>{product.categories[0].name}</Link>
+          </MDBBreadcrumbItem>
         )}
         <MDBBreadcrumbItem active>{product.name}</MDBBreadcrumbItem>
       </MDBBreadcrumb>

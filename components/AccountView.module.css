@@ -30,4 +30,8 @@
 .perkIcon {
   color: var(--gold);
   flex-shrink: 0;
+  font-size: 1.05rem;
+  /* Same line box as the label so the glyph centers on the first text line.
+     (FA's fa-lg sets a near-zero line-height, which misaligns in flex rows.) */
+  line-height: 1.4;
 }

@@ -23,9 +23,9 @@ export default function CategoryView({
       <div className="info-hero">
         <MDBContainer className="py-5">
           <MDBBreadcrumb className="mb-3">
-            <Link href="/" passHref legacyBehavior>
-              <MDBBreadcrumbItem>Home</MDBBreadcrumbItem>
-            </Link>
+            <MDBBreadcrumbItem>
+              <Link href="/">Home</Link>
+            </MDBBreadcrumbItem>
             <MDBBreadcrumbItem active>{category.name}</MDBBreadcrumbItem>
           </MDBBreadcrumb>
           <p className="kicker mb-2">The collection</p>

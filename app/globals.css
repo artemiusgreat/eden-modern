@@ -509,3 +509,41 @@ em {
 .text-gold { color: var(--gold); }
 .text-muted-dark { color: var(--muted); }
 .bg-surface { background: var(--surface); }
+
+/* Breadcrumb links are real anchors: pointer cursor + theme hover. */
+.breadcrumb-item a {
+  cursor: pointer;
+  color: var(--muted);
+  text-decoration: none;
+}
+.breadcrumb-item a:hover {
+  color: var(--gold-soft);
+}
+
+/* WordPress/Elementor content hardening — Elementor's own stylesheet is not
+   loaded, so its icon SVGs (no width/height attrs) would render gigantic. */
+.prose-wp .elementor-social-icons-wrapper {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+.prose-wp .elementor-social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--gold-soft);
+  flex-shrink: 0;
+}
+.prose-wp .elementor-social-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+.prose-wp .elementor-icon-box-icon .elementor-icon svg {
+  width: 26px;
+  height: 26px;
+}

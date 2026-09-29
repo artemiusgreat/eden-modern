@@ -1,0 +1,291 @@
+/* Scoped checkout styles. */
+
+.title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  color: var(--ink);
+  margin-bottom: 2rem;
+}
+
+.h2 {
+  font-family: var(--font-card-title, var(--font-serif));
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+}
+
+.section {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 1.8rem;
+  margin-bottom: 1.4rem;
+}
+
+/* MDB inputs on dark: keep the theme's voice. */
+.section :global(.form-outline .form-control),
+.section :global(.form-control) {
+  background: var(--bg);
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+.section :global(.form-outline .form-control:focus),
+.section :global(.form-control:focus) {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold);
+  color: var(--ink);
+  background: var(--bg);
+}
+.section :global(.form-label) {
+  color: var(--muted);
+}
+
+.selectLabel {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+.select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  color: var(--ink);
+  padding: 0.55rem 0.75rem;
+  font-size: 0.95rem;
+}
+.select:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.ghostBtn {
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  padding: 0.7rem 1.4rem;
+  box-shadow: none;
+}
+.ghostBtn:hover,
+.ghostBtn:focus {
+  border-color: var(--gold);
+  color: var(--gold-soft);
+  background: transparent;
+  box-shadow: none;
+}
+
+.radioRow {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  margin-bottom: 0.7rem;
+  cursor: pointer;
+  transition: border-color 0.25s ease;
+}
+.radioRow:hover {
+  border-color: var(--line-strong);
+}
+.radioRow input[type='radio'] {
+  accent-color: var(--gold);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+.radioRow.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.radioText {
+  flex: 1;
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+.radioText small {
+  color: var(--muted);
+}
+.radioText strong {
+  font-weight: 500;
+}
+.radioPrice {
+  font-family: var(--font-price, var(--font-serif));
+  color: var(--gold-soft);
+  font-size: 1.05rem;
+}
+
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--ink);
+  font-size: 0.92rem;
+  cursor: pointer;
+  margin-bottom: 1.2rem;
+}
+.checkRow input[type='checkbox'] {
+  accent-color: var(--gold);
+  width: 1rem;
+  height: 1rem;
+}
+
+.stripeBox {
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 1.2rem;
+  margin-top: 0.9rem;
+  background: var(--bg);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 0.7rem;
+}
+
+.error {
+  color: #e0655f;
+  background: rgba(224, 101, 95, 0.08);
+  border: 1px solid rgba(224, 101, 95, 0.35);
+  border-radius: 3px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.92rem;
+}
+
+.placeBtn {
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold-deep));
+  color: #14100a;
+  border: none;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 1rem 2.2rem;
+  width: 100%;
+  box-shadow: none;
+}
+.placeBtn:hover:not(:disabled),
+.placeBtn:focus:not(:disabled) {
+  filter: brightness(1.08);
+  color: #14100a;
+  box-shadow: none;
+}
+.placeBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Order summary */
+.summary {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 1.8rem;
+  position: sticky;
+  top: 1.5rem;
+}
+.line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+.lineName {
+  color: var(--ink);
+}
+.lineName small {
+  color: var(--muted);
+}
+.linePrice {
+  font-family: var(--font-price, var(--font-serif));
+  color: var(--ink);
+  white-space: nowrap;
+}
+.totals {
+  margin: 1rem 0 0;
+}
+.totals > div {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  font-size: 0.9rem;
+}
+.totals dt {
+  color: var(--muted);
+  font-weight: 400;
+}
+.totals dd {
+  color: var(--ink);
+  margin: 0;
+}
+.totals .grand {
+  border-top: 1px solid var(--line-strong);
+  margin-top: 0.6rem;
+  padding-top: 0.9rem;
+}
+.totals .grand dt,
+.totals .grand dd {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.totals .grand dd {
+  font-family: var(--font-price, var(--font-serif));
+  color: var(--gold-soft);
+  font-size: 1.35rem;
+}
+
+/* Confirmation */
+.check {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  color: var(--gold-soft);
+  font-size: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+.goldBtn {
+  display: inline-block;
+  margin-top: 1.4rem;
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold-deep));
+  color: #14100a;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 0.9rem 2rem;
+  border-radius: 3px;
+  text-decoration: none;
+}
+.goldBtn:hover {
+  color: #14100a;
+  filter: brightness(1.08);
+}
+
+.spinner {
+  color: var(--gold);
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+@media (max-width: 991.98px) {
+  .summary {
+    position: static;
+    margin-top: 1.4rem;
+  }
+}

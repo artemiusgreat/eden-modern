@@ -15,12 +15,12 @@ export default function BlogPostView({ post, related }: { post: WpPost; related:
   return (
     <MDBContainer className="py-5">
       <MDBBreadcrumb className="mb-4">
-        <Link href="/" passHref legacyBehavior>
-          <MDBBreadcrumbItem>Home</MDBBreadcrumbItem>
-        </Link>
-        <Link href="/blog" passHref legacyBehavior>
-          <MDBBreadcrumbItem>Journal</MDBBreadcrumbItem>
-        </Link>
+        <MDBBreadcrumbItem>
+          <Link href="/">Home</Link>
+        </MDBBreadcrumbItem>
+        <MDBBreadcrumbItem>
+          <Link href="/blog">Journal</Link>
+        </MDBBreadcrumbItem>
         <MDBBreadcrumbItem active>{post.title}</MDBBreadcrumbItem>
       </MDBBreadcrumb>
 
