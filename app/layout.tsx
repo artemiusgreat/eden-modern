@@ -5,6 +5,7 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import './globals.css';
 import { CartProvider } from '@/components/cart/CartProvider';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import SiteBackdrop from '@/components/SiteBackdrop';
 import SiteNavbar from '@/components/SiteNavbar';
 import SiteFooter from '@/components/SiteFooter';
 import { getCategories } from '@/lib/woo';
@@ -51,7 +52,7 @@ export const metadata: Metadata = {
 };
 
 // Bump on every shipped build so we can tell (via View Source) which build is live.
-const BUILD_ID = '2026-09-29-prata-all';
+const BUILD_ID = '2026-09-29-ambient';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const categories = await getCategories().catch(() => []);
@@ -65,6 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className={`${sans.variable} ${serif.variable} ${milonga.variable} ${prata.variable}`} data-build={BUILD_ID}>
+        <SiteBackdrop />
         <CartProvider>
           <AnnouncementBar />
           <SiteNavbar categories={categories} />
