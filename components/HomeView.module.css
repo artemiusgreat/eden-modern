@@ -335,6 +335,7 @@
   transform: scale(1.05);
 }
 .collectionCard h3 {
+  font-family: var(--font-card-title, var(--font-serif));
   font-size: 1.05rem;
   text-transform: uppercase;
   color: var(--ink);
