@@ -7,7 +7,10 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  /* z-index 0 + the .site-content wrapper at z-index 1: positive, explicit
+     layering. (A negative z-index here is unreliable: it can end up behind
+     the body's own background box depending on background propagation.) */
+  z-index: 0;
   overflow: hidden;
   pointer-events: none;
   background: var(--bg);
@@ -20,7 +23,7 @@
   inset: -70px;
   background: url('/images/ambient-perfume.jpg') center 30% / cover no-repeat;
   filter: blur(30px) saturate(1.15);
-  opacity: 0.55;
+  opacity: 0.62;
   transform: scale(1.05);
 }
 
@@ -31,10 +34,10 @@
   background:
     linear-gradient(
       180deg,
-      rgba(11, 18, 32, 0.78) 0%,
-      rgba(11, 18, 32, 0.42) 28%,
-      rgba(11, 18, 32, 0.38) 62%,
-      rgba(11, 18, 32, 0.88) 100%
+      rgba(11, 18, 32, 0.72) 0%,
+      rgba(11, 18, 32, 0.32) 28%,
+      rgba(11, 18, 32, 0.3) 62%,
+      rgba(11, 18, 32, 0.85) 100%
     );
 }
 
@@ -51,7 +54,7 @@
   height: 62vw;
   left: -18vw;
   top: -24vw;
-  background: radial-gradient(circle, rgba(201, 163, 95, 0.16) 0%, transparent 68%);
+  background: radial-gradient(circle, rgba(201, 163, 95, 0.2) 0%, transparent 68%);
   animation: driftGold 80s ease-in-out infinite alternate;
 }
 
@@ -60,7 +63,7 @@
   height: 55vw;
   right: -16vw;
   top: 22vh;
-  background: radial-gradient(circle, rgba(90, 130, 190, 0.14) 0%, transparent 68%);
+  background: radial-gradient(circle, rgba(90, 130, 190, 0.18) 0%, transparent 68%);
   animation: driftBlue 100s ease-in-out infinite alternate;
 }
 
@@ -69,7 +72,7 @@
   height: 44vw;
   left: 8vw;
   bottom: -22vw;
-  background: radial-gradient(ellipse, rgba(227, 201, 143, 0.1) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(227, 201, 143, 0.13) 0%, transparent 70%);
   animation: driftLow 90s ease-in-out infinite alternate;
 }
 

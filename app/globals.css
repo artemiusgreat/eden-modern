@@ -64,6 +64,14 @@ html body {
   --font-card-title: var(--font-prata);
 }
 
+/* Lifts all page content above the fixed SiteBackdrop (z-index 0).
+   One wrapper = one stacking context; sticky nav, fixed drawers and
+   modals keep working exactly as before inside it. */
+.site-content {
+  position: relative;
+  z-index: 1;
+}
+
 .font-serif,
 h1, h2, h3, .display-serif {
   font-family: var(--font-serif);

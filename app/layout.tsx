@@ -52,7 +52,7 @@ export const metadata: Metadata = {
 };
 
 // Bump on every shipped build so we can tell (via View Source) which build is live.
-const BUILD_ID = '2026-09-29-ambient';
+const BUILD_ID = '2026-09-29-ambient2';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const categories = await getCategories().catch(() => []);
@@ -67,12 +67,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className={`${sans.variable} ${serif.variable} ${milonga.variable} ${prata.variable}`} data-build={BUILD_ID}>
         <SiteBackdrop />
-        <CartProvider>
-          <AnnouncementBar />
-          <SiteNavbar categories={categories} />
-          <main>{children}</main>
-          <SiteFooter categories={categories} />
-        </CartProvider>
+        <div className="site-content">
+          <CartProvider>
+            <AnnouncementBar />
+            <SiteNavbar categories={categories} />
+            <main>{children}</main>
+            <SiteFooter categories={categories} />
+          </CartProvider>
+        </div>
       </body>
     </html>
   );
