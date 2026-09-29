@@ -254,7 +254,7 @@ export default function HomeView({
                   {/* Category image when one is set in WooCommerce; otherwise
                       the brand collage so the half never renders empty. */}
                   <img
-                    src={storyCat.image?.src ?? '/images/ambient-perfume.jpg'}
+                    src={storyCat.image?.src ?? '/images/story-image.jpg'}
                     alt={storyCat.image?.name || storyCat.name}
                     loading="lazy"
                   />
