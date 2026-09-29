@@ -190,7 +190,7 @@ export default function HomeView({
                         </div>
                       )}
                     </div>
-                    <h3>{c.name}</h3>
+                    <h3 className={styles.collectionCaption}>{c.name}</h3>
                     <p>{c.count} products</p>
                   </Link>
                 </MDBCol>
@@ -201,7 +201,7 @@ export default function HomeView({
                     <div className={styles.collectionMedia}>
                       <img src={onSale[0].images[0].src} alt="On sale" loading="lazy" />
                     </div>
-                    <h3>On Sale</h3>
+                    <h3 className={styles.collectionCaption}>On Sale</h3>
                     <p>{onSale.length} products</p>
                   </Link>
                 </MDBCol>
@@ -212,7 +212,7 @@ export default function HomeView({
                     <div className={styles.collectionMedia}>
                       <img src={newest[0].images[0].src} alt="New arrivals" loading="lazy" />
                     </div>
-                    <h3>New Arrivals</h3>
+                    <h3 className={styles.collectionCaption}>New Arrivals</h3>
                     <p>Just landed</p>
                   </Link>
                 </MDBCol>

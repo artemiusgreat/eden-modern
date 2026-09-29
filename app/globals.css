@@ -54,7 +54,7 @@ html body {
   background: var(--bg);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  font-weight: 400;
+  font-weight: 300;
   color-scheme: dark;
   /* Font tokens that chain through next/font variables MUST live here, not
      in :root: var() inside a custom property resolves on the defining

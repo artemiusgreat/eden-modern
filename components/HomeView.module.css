@@ -276,11 +276,12 @@
 .promiseCard h3 {
   font-family: var(--font-card-title, var(--font-sans));
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 300;
   text-transform: uppercase;
   line-height: 1.6;
   margin-bottom: 0.7rem;
   color: var(--ink);
+  overflow-wrap: anywhere;
 }
 .promiseCard p {
   font-family: var(--font-sans);
@@ -312,6 +313,10 @@
 }
 .collectionCard:hover {
   color: inherit;
+}
+.collectionCaption {
+  font-size: 0.8rem;
+  font-family: var(--font-card-title);
 }
 .collectionMedia {
   aspect-ratio: 4 / 5;
