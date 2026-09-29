@@ -1,8 +1,7 @@
 /* Site-wide ambient backdrop: a faint luxury-perfume photograph under a
-   navy grade, with slow-drifting fog wisps. Fixed, behind all content
-   (z-index 0; page content sits in .site-content at z-index 1),
-   pointer-transparent. Fog motion is ambient only and fully disabled under
-   prefers-reduced-motion. */
+   dark navy grade, with one static, barely-there haze veil over the page.
+   Fixed, behind all content (z-index 0; page content sits in .site-content
+   at z-index 1), pointer-transparent. No animation anywhere. */
 
 .backdrop {
   position: fixed;
@@ -27,75 +26,35 @@
   transform: scale(1.05);
 }
 
-/* Navy grade over the photo: keeps text readable, deepens top/bottom. */
+/* Dark grade over the photo.
+   === BRIGHTNESS KNOB ===
+   Change only the opacity below: 0 shows the photo fully, 1 hides it
+   completely. The gradient keeps the top and bottom of the page deeper
+   than the middle. */
 .tint {
   position: absolute;
   inset: 0;
+  opacity: 0.9;
   background:
     linear-gradient(
       180deg,
-      rgba(11, 18, 32, 0.72) 0%,
-      rgba(11, 18, 32, 0.32) 28%,
-      rgba(11, 18, 32, 0.3) 62%,
-      rgba(11, 18, 32, 0.85) 100%
+      rgba(11, 18, 32, 0.8) 0%,
+      rgba(11, 18, 32, 0.5) 30%,
+      rgba(11, 18, 32, 0.48) 62%,
+      rgba(11, 18, 32, 0.92) 100%
     );
 }
 
-/* Drifting fog wisps: elongated soft puffs in cool moonlight and warm
-   champagne tones, placed in-view and drifting horizontally on long slow
-   loops. The softness is baked into the gradient stops (no filter), so the
-   layers stay on the plain paint path: background + transform animation. */
-.wisp {
+/* One static atmosphere veil: barely-there cool/champagne haze over the
+   whole page. A single paint-once layer: no animation, no filters. */
+.haze {
   position: absolute;
-  animation: wispDriftA 80s ease-in-out infinite alternate;
-}
-
-.wisp1 {
-  width: 46vw;
-  height: 12vw;
-  left: 4%;
-  top: 9%;
-  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.42) 0%, rgba(205, 216, 232, 0.16) 45%, transparent 72%);
-  animation-duration: 70s;
-}
-
-.wisp2 {
-  width: 40vw;
-  height: 10vw;
-  right: 5%;
-  top: 35%;
-  background: radial-gradient(ellipse at center, rgba(201, 163, 95, 0.4) 0%, rgba(201, 163, 95, 0.15) 45%, transparent 72%);
-  animation-name: wispDriftB;
-  animation-duration: 95s;
-}
-
-.wisp3 {
-  width: 52vw;
-  height: 13vw;
-  left: 9%;
-  top: 59%;
-  background: radial-gradient(ellipse at center, rgba(205, 216, 232, 0.36) 0%, rgba(205, 216, 232, 0.13) 45%, transparent 72%);
-  animation-duration: 85s;
-}
-
-.wisp4 {
-  width: 38vw;
-  height: 10vw;
-  right: 9%;
-  top: 82%;
-  background: radial-gradient(ellipse at center, rgba(227, 201, 143, 0.34) 0%, rgba(227, 201, 143, 0.12) 45%, transparent 72%);
-  animation-name: wispDriftB;
-  animation-duration: 105s;
-}
-
-@keyframes wispDriftA {
-  from { transform: translate3d(-7vw, 0, 0); }
-  to { transform: translate3d(7vw, 1.5vh, 0); }
-}
-
-@keyframes wispDriftB {
-  from { transform: translate3d(6vw, 0, 0); }
-  to { transform: translate3d(-6vw, -1.5vh, 0); }
+  inset: 0;
+  background:
+    radial-gradient(90% 55% at 18% 10%, rgba(205, 216, 232, 0.05) 0%, transparent 60%),
+    radial-gradient(70% 50% at 86% 32%, rgba(201, 163, 95, 0.045) 0%, transparent 60%),
+    radial-gradient(85% 60% at 28% 80%, rgba(205, 216, 232, 0.04) 0%, transparent 60%),
+    radial-gradient(70% 55% at 78% 90%, rgba(227, 201, 143, 0.04) 0%, transparent 60%);
 }
 
 /* Soft vignette to seat the page edges. */
@@ -103,13 +62,4 @@
   position: absolute;
   inset: 0;
   background: radial-gradient(120% 90% at 50% 38%, transparent 52%, rgba(3, 6, 12, 0.6) 100%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wisp1,
-  .wisp2,
-  .wisp3,
-  .wisp4 {
-    animation: none;
-  }
 }
