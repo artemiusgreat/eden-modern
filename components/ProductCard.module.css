@@ -35,6 +35,7 @@
 }
 
 .name {
+  font-family: var(--font-card-title, var(--font-serif));
   font-size: 1.15rem;
   font-weight: 400;
   line-height: 1.35;

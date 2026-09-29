@@ -273,14 +273,14 @@ em {
   color: var(--faint);
   text-decoration: line-through;
   font-size: 0.92rem;
-  font-family: var(--font-serif);
+  font-family: var(--font-price, var(--font-serif));
 }
 .price-sale,
 .price-now {
   color: var(--ink);
   font-weight: 600;
   font-size: 1.15rem;
-  font-family: var(--font-serif);
+  font-family: var(--font-price, var(--font-serif));
 }
 
 
