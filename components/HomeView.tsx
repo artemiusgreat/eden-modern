@@ -7,6 +7,7 @@ import type { StoreProduct, StoreCategory, WpPost } from '@/lib/woo';
 import { stripHtml } from '@/lib/format';
 import ProductCard from './ProductCard';
 import HeroFeatured from './HeroFeatured';
+import HeroParallax from './HeroParallax';
 import TrustpilotStars from './TrustpilotStars';
 import styles from './HomeView.module.css';
 
@@ -91,12 +92,9 @@ export default function HomeView({
     <>
       {/* ============ HERO ============ */}
       <section className={styles.hero}>
-        {heroImg && (
-          <div className={styles.heroBg}>
-            <img src={heroImg.src} alt="" aria-hidden="true" />
-          </div>
-        )}
+        {heroImg && <HeroParallax src={heroImg.src} />}
         <div className={styles.heroShade} />
+        <div className={styles.heroGlow} aria-hidden="true" />
         <MDBContainer className={`${styles.heroContent} py-5`}>
           <MDBRow>
             <MDBCol lg="7">

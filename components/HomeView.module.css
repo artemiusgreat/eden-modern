@@ -10,7 +10,11 @@
 }
 .hero .heroBg {
   position: absolute;
-  inset: 0;
+  top: -180px;
+  left: 0;
+  right: 0;
+  height: calc(100% + 180px);
+  will-change: transform;
 }
 .hero .heroBg img {
   width: 100%;
@@ -22,6 +26,15 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(100deg, rgba(8, 12, 22, 0.9) 0%, rgba(8, 12, 22, 0.5) 55%, rgba(8, 12, 22, 0.18) 100%);
+}
+/* Ambient light: champagne glow near the slideshow, cool blue wash low-left. */
+.hero .heroGlow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(40% 55% at 76% 16%, rgba(201, 163, 95, 0.14), transparent 70%),
+    radial-gradient(55% 75% at 10% 90%, rgba(70, 116, 180, 0.18), transparent 70%);
 }
 .hero .heroContent {
   position: relative;
@@ -97,6 +110,7 @@
 }
 /* Visual card: even padding all around, 50/50 photo/text, wider not taller. */
 .heroSlideInner {
+  position: relative;
   display: flex;
   align-items: stretch;
   gap: 1.2rem;
@@ -105,6 +119,16 @@
   border-radius: 4px;
   padding: 1.4rem;
   transition: transform 0.3s ease, border-color 0.3s ease;
+}
+/* Fine film grain over the card. */
+.heroSlideInner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: var(--grain);
+  opacity: 0.05;
+  pointer-events: none;
 }
 .heroSlideInner:hover {
   transform: scale(1.015);
