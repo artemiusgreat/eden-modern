@@ -8,7 +8,6 @@ import { stripHtml } from '@/lib/format';
 import ProductCard from './ProductCard';
 import HeroFeatured from './HeroFeatured';
 import HeroParallax from './HeroParallax';
-import TrustpilotStars from './TrustpilotStars';
 import styles from './HomeView.module.css';
 
 const PROMISES = [
@@ -24,12 +23,6 @@ const STEPS = [
   { icon: 'credit-card', num: '03', title: 'Checkout', text: 'Fast, encrypted checkout in under a minute.' },
   { icon: 'truck-fast', num: '04', title: 'Delivery', text: 'Carefully packed and shipped straight to your door.' },
   { icon: 'star', num: '05', title: 'Enjoy', text: 'Unbox, indulge, and make it unmistakably yours.' },
-];
-
-const TESTIMONIALS = [
-  { quote: 'The fragrances are unmistakably authentic and arrived beautifully packed. My new favorite beauty destination.', name: 'Sofia M.', detail: 'Verified buyer' },
-  { quote: 'Ordered a perfume that was sold out everywhere else. Fast shipping, genuine product, wonderful experience.', name: 'Daniel K.', detail: 'Verified buyer' },
-  { quote: 'Great prices on designer skincare and the customer care team answered within hours. Highly recommended.', name: 'Amara O.', detail: 'Verified buyer' },
 ];
 
 function NewsletterCta() {
@@ -69,6 +62,39 @@ function NewsletterCta() {
   );
 }
 
+function MagazineCard({ post }: { post: WpPost }) {
+  const date = new Date(post.date).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+  return (
+    <Link href={`/blog/${post.slug}`} className="journal-card-dark">
+      <div className="journal-media-dark">
+        {post.image ? (
+          <img src={post.image} alt={post.title} loading="lazy" />
+        ) : (
+          <div className="w-100 h-100 d-flex align-items-center justify-content-center">
+            <MDBIcon fas icon="pen-nib" size="2x" style={{ color: 'var(--gold-soft)' }} />
+          </div>
+        )}
+      </div>
+      <div className="p-4">
+        <p className="kicker mb-2" style={{ fontSize: '0.62rem' }}>{date}</p>
+        <h2 className="mb-2" style={{ fontSize: '1.5rem' }}>{post.title}</h2>
+        <div
+          className="prose-wp small"
+          style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+          dangerouslySetInnerHTML={{ __html: post.excerpt }}
+        />
+        <span className="text-gold" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
+          Read story <MDBIcon fas icon="arrow-right" className="ms-1" />
+        </span>
+      </div>
+    </Link>
+  );
+}
+
 export default function HomeView({
   onSale,
   newest,
@@ -83,7 +109,6 @@ export default function HomeView({
   const heroProduct = newest[0] ?? onSale[0];
   const heroImg = heroProduct?.images[0];
   const storyCat = topCats.find((c) => c.image) ?? topCats[0];
-  void posts;
   // Featured slideshow for the hero's right column — newest after the
   // hero product, falling back to on-sale items.
   const featured = newest.length > 2 ? newest.slice(1, 5) : onSale.slice(0, 4);
@@ -287,35 +312,24 @@ export default function HomeView({
         </MDBContainer>
       </section>
 
-      {/* ============ TESTIMONIALS ============ */}
+      {/* ============ MAGAZINE ============ */}
       <section className="noir-section" style={{ paddingTop: '2rem' }}>
         <MDBContainer>
-          <p className="noir-kicker">Kind words</p>
-          <h2 className="noir-title">Our clients say it best.</h2>
-          <MDBRow>
-            {TESTIMONIALS.map((t) => (
-              <MDBCol md="4" className="mb-4" key={t.name}>
-                <div className={styles.quoteCard}>
-                  <span className={styles.qmark}>&ldquo;</span>
-                  <blockquote>{t.quote}</blockquote>
-                  <p className={styles.qwho}>
-                    <strong>— {t.name}</strong>
-                    {t.detail}
-                  </p>
-                </div>
-              </MDBCol>
-            ))}
-          </MDBRow>
+          <p className="noir-kicker">From the magazine</p>
+          <h2 className="noir-title">Stories & rituals.</h2>
+          {posts.length > 0 && (
+            <MDBRow>
+              {posts.map((p) => (
+                <MDBCol md="4" className="mb-4" key={p.id}>
+                  <MagazineCard post={p} />
+                </MDBCol>
+              ))}
+            </MDBRow>
+          )}
           <div className="text-center mt-4">
-            <a
-              href="https://www.trustpilot.com/review/eden.indemos.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="d-inline-flex align-items-center gap-2 text-decoration-none"
-            >
-              <TrustpilotStars />
-              <span className="small" style={{ color: 'var(--muted)' }}>See our reviews on Trustpilot</span>
-            </a>
+            <Link href="/blog" className="text-gold text-decoration-none" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
+              View all stories <MDBIcon fas icon="arrow-right" className="ms-1" />
+            </Link>
           </div>
         </MDBContainer>
       </section>

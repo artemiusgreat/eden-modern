@@ -433,42 +433,6 @@
   margin: 0;
 }
 
-/* ---------- quote cards ---------- */
-.quoteCard {
-  border: 1px solid var(--line);
-  background: var(--surface);
-  border-radius: 3px;
-  padding: 2.4rem 2rem;
-  height: 100%;
-  position: relative;
-}
-.quoteCard .qmark {
-  font-family: var(--font-serif);
-  font-size: 2.6rem;
-  line-height: 1;
-  color: var(--faint);
-  display: block;
-  margin-bottom: 1rem;
-}
-.quoteCard blockquote {
-  font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: 1.12rem;
-  line-height: 1.7;
-  color: var(--ink);
-  margin-bottom: 1.4rem;
-}
-.quoteCard .qwho {
-  font-size: 0.74rem;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.quoteCard .qwho strong {
-  display: block;
-  color: var(--ink);
-  font-weight: 600;
-  margin-bottom: 0.2rem;
-}
 
 /* ---------- newsletter CTA band (dark, gold button) ---------- */
 .ctaBand {
