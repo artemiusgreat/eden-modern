@@ -11,7 +11,7 @@ const SOCIALS: { label: string; href: string; icon: string }[] = [
   { label: 'Instagram', href: 'https://www.instagram.com/eden.indemos', icon: 'instagram' },
   { label: 'Threads', href: 'https://www.threads.com/@eden.indemos', icon: 'threads' },
   { label: 'Pinterest', href: 'https://www.pinterest.com/edenindemos', icon: 'pinterest-p' },
-  { label: 'YouTube', href: 'https://www.youtube.com/@eden.indemos', icon: 'youtube' },
+  { label: 'YouTube', href: 'https://www.youtube.com/@eden-indemos', icon: 'youtube' },
   { label: 'TikTok', href: 'https://www.tiktok.com/@eden.indemos', icon: 'tiktok' },
   { label: 'X', href: 'https://x.com/edenindemos', icon: 'x-twitter' },
 ];
