@@ -164,7 +164,7 @@ export default function CatalogFilters(props: Props) {
 
       <div className={`${styles.sideBody} ${open ? styles.sideOpen : ''}`}>
         <div className={styles.group}>
-          <h3 className={styles.groupTitle}>Category</h3>
+          <h3 className={`${styles.groupTitle} text-uppercase`}>Category</h3>
           {renderCats(tree, 0)}
         </div>
 

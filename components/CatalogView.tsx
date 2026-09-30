@@ -71,27 +71,11 @@ export default function CatalogView(props: Props) {
         <MDBContainer className={styles.bannerInner}>
           <p className={styles.kicker}>The Collection</p>
           <h1 className={styles.title}>Our Catalog</h1>
-          <p className={styles.sub}>Every piece, in one place — filter by what matters to you.</p>
+          <p className={styles.sub}>Every piece, in one place - filter by what matters to you.</p>
         </MDBContainer>
       </section>
 
       <MDBContainer className={styles.wrap}>
-        {/* Top-level category shortcuts */}
-        <div className={styles.chips} role="navigation" aria-label="Top categories">
-          {topCats.map((c) => {
-            const active = selectedCategoryIds.length === 1 && selectedCategoryIds[0] === c.id;
-            return (
-              <Link
-                key={c.id}
-                href={active ? '/catalog' : `/catalog?category=${c.id}`}
-                className={`${styles.chip} ${active ? styles.chipActive : ''}`}>
-                {c.name}
-                <span className={styles.chipCount}>{c.count}</span>
-              </Link>
-            );
-          })}
-        </div>
-
         <div className={styles.layout}>
           <CatalogFilters
             params={params}
