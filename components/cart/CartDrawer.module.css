@@ -72,6 +72,19 @@
 /* Remove (trash) button: generous tap target with breathing room; the
    negative margins keep the visual alignment unchanged. Doubled class
    (0,2,0) beats MDB's .btn-link (0,1,0) without !important. */
+/* Drawer line-item name: real link to the product page, same serif look. */
+.itemName {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+.itemName:hover {
+  color: var(--gold-soft);
+}
+
 .removeBtn.removeBtn {
   padding: 0.55rem;
   margin: -0.55rem -0.55rem -0.2rem 0.25rem;

@@ -136,9 +136,27 @@ function CartDrawer() {
                 )}
                 <div className="flex-grow-1">
                   <div className="d-flex justify-content-between gap-2">
-                    <strong className="font-serif" style={{ fontSize: '1.05rem', fontWeight: 600 }}>
-                      {item.name}
-                    </strong>
+                    {(() => {
+                      // Store API permalink: https://…/product/<slug>/ → headless route /products/<slug>
+                      const slug = item.permalink
+                        ?.split('?')[0]
+                        .split('#')[0]
+                        .split('/')
+                        .filter(Boolean)
+                        .pop();
+                      return slug ? (
+                        <Link
+                          href={`/products/${slug}`}
+                          onClick={() => setDrawerOpen(false)}
+                          className={styles.itemName}>
+                          {item.name}
+                        </Link>
+                      ) : (
+                        <strong className="font-serif" style={{ fontSize: '1.05rem', fontWeight: 600 }}>
+                          {item.name}
+                        </strong>
+                      );
+                    })()}
                     <button
                       type="button"
                       className={`btn btn-link ${styles.removeBtn}`}

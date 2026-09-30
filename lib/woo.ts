@@ -107,6 +107,7 @@ export interface StoreCartItem {
   name: string;
   short_description: string;
   sku: string;
+  permalink: string;
   images: { id: number; src: string; thumbnail: string; alt: string; name: string }[];
   prices: StorePrices & { line_subtotal: string; line_total: string };
   totals: { line_subtotal: string; line_total: string };

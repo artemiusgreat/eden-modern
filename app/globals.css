@@ -181,6 +181,12 @@ em {
   font-weight: 300;
 }
 
+/* Link-style buttons get the same 300-weight treatment as the other
+   buttons. (0,2,0) beats MDB's .btn-link (0,1,0). */
+.btn-link.btn-link {
+  font-weight: 300;
+}
+
 .announcement-bar {
   background: #080d17;
   color: #b5b5b5;
