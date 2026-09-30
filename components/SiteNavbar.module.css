@@ -50,13 +50,14 @@
   display: flex;
 }
 /* (0,3,0) beats MDB's .navbar-nav .nav-link (0,2,0). */
+.menu .links {
+  margin-right: 30px;
+}
 .menu .links .navLink {
   font-family: var(--font-prata, var(--font-serif));
   font-size: 0.85rem;
   text-transform: uppercase;
   color: var(--ink);
-  font-weight: 500;
-  padding: 0.4rem 0.6rem;
   position: relative;
   white-space: nowrap;
 }
@@ -163,7 +164,6 @@
 @media (min-width: 1280px) {
   .cta {
     display: inline-flex;
-    margin-right: 0.5rem;
   }
   .menu:global(.navbar-collapse) {
     gap: 1.5rem;

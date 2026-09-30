@@ -54,7 +54,7 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
         </MDBNavbarToggler>
         <MDBCollapse navbar open={open} id="lux-navbar" className={styles.menu}>
           <div className="d-flex align-items-center">
-            <MDBNavbarNav className={`${styles.links} mx-auto w-auto`}>
+            <MDBNavbarNav className={`${styles.links} mx-auto w-auto me-5`}>
               {navCats.map((c) => (
                 <MDBNavbarItem key={c.id}>
                   <Link href={`/category/${c.slug}`} passHref legacyBehavior>
@@ -104,7 +104,7 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
                 onClick={() => setDrawerOpen(true)}>
                 <MDBIcon fas icon="bag-shopping" />
                 {cart && cart.items_count > 0 && (
-                  <MDBBadge notification className="ms-2 position-static">
+                  <MDBBadge color="danger" className="ms-2 position-static">
                     {cart.items_count}
                   </MDBBadge>
                 )}

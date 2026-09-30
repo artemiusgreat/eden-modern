@@ -27,8 +27,8 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
             <div className={`${styles.brand} mb-3`}>
               Indemos<small>Beauty & Fragrance</small>
             </div>
-            <p style={{ fontSize: '0.85rem', maxWidth: 260 }}>
-              Timeless beauty. Thoughtful curation. Elevated living.
+            <p className="me-5" style={{ fontSize: '0.85rem' }}>
+              Indemos LLC offers a select collection of skincare, cosmetics, and fragrances from trusted brands around the world.
             </p>
             <a
               href="https://www.trustpilot.com/review/eden.indemos.com"
