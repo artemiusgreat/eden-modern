@@ -380,6 +380,11 @@
   border-color: var(--gold-soft);
   color: var(--gold-soft);
 }
+.catExpanderSpacer {
+  flex-shrink: 0;
+  width: 1.7rem;
+  height: 1.7rem;
+}
 .catKids {
   padding-top: 0.35rem;
 }
@@ -409,6 +414,11 @@
 .subExpander.subExpander:hover {
   border-color: var(--gold-soft);
   color: var(--gold-soft);
+}
+.subExpanderSpacer {
+  flex-shrink: 0;
+  width: 1.4rem;
+  height: 1.4rem;
 }
 
 /* ---------- Mobile ---------- */

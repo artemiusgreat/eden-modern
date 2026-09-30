@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { MDBIcon } from 'mdb-react-ui-kit';
 import type { CatalogAttribute, StoreCategory } from '@/lib/woo';
+import { decodeEntities } from '@/lib/woo';
 import styles from './Catalog.module.css';
 
 interface Props {
@@ -109,6 +110,13 @@ export default function CatalogFilters(props: Props) {
   const onToggleCat = (id: number) =>
     pushUrl(router, params, { category: toggleList(params.category, String(id)) });
 
+  // Tooltip for each category: its description when set in WP,
+  // otherwise name + product count.
+  const catTip = (c: StoreCategory): string => {
+    const d = decodeEntities(c.description).trim();
+    return d || `${c.name} — ${c.count} products`;
+  };
+
   const renderCats = (nodes: CatNode[], depth: number): ReactNode =>
     nodes.map((n) => {
       const hasKids = n.children.length > 0;
@@ -119,12 +127,7 @@ export default function CatalogFilters(props: Props) {
           <div
             className={depth === 0 ? `${styles.catBtn} ${checked ? styles.catBtnSelected : ''}` : styles.subRow}
             style={depth > 0 ? { paddingLeft: `${depth * 1.1}rem` } : undefined}>
-            <label className={depth === 0 ? styles.catBtnLabel : styles.check}>
-              <input type="checkbox" checked={checked} onChange={() => onToggleCat(n.cat.id)} />
-              <span className={styles.checkLabel}>{n.cat.name}</span>
-              <span className={styles.checkCount}>{depth === 0 ? `(${n.cat.count})` : n.cat.count}</span>
-            </label>
-            {hasKids && (
+            {hasKids ? (
               <button
                 type="button"
                 className={depth === 0 ? styles.catExpander : styles.subExpander}
@@ -133,7 +136,17 @@ export default function CatalogFilters(props: Props) {
                 onClick={() => toggleExpand(n.cat.id)}>
                 <MDBIcon fas icon={isOpen ? 'minus' : 'plus'} />
               </button>
+            ) : (
+              <span
+                className={depth === 0 ? styles.catExpanderSpacer : styles.subExpanderSpacer}
+                aria-hidden="true"
+              />
             )}
+            <label className={depth === 0 ? styles.catBtnLabel : styles.check} title={catTip(n.cat)}>
+              <input type="checkbox" checked={checked} onChange={() => onToggleCat(n.cat.id)} />
+              <span className={styles.checkLabel}>{n.cat.name}</span>
+              <span className={styles.checkCount}>{depth === 0 ? `(${n.cat.count})` : n.cat.count}</span>
+            </label>
           </div>
           {hasKids && isOpen && (
             <div className={depth === 0 ? styles.catKids : undefined}>{renderCats(n.children, depth + 1)}</div>
