@@ -29,14 +29,14 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
   return (
     <MDBCard className={`h-100 ${styles.card}`}>
       <div className={styles.media}>
-        {pct !== null ? (
-          <span className="product-badge badge-sale">-{pct}%</span>
-        ) : badge === 'new' ? (
-          <span className="product-badge badge-new">New</span>
-        ) : badge === 'bestseller' ? (
-          <span className="product-badge badge-new">Best seller</span>
-        ) : null}
-        <Link href={`/products/${product.slug}`} aria-label={product.name}>
+        <Link href={`/products/${product.slug}`} aria-label={product.name} className="position-relative">
+          {pct !== null ? (
+            <span className="product-badge badge-sale">-{pct}%</span>
+          ) : badge === 'new' ? (
+            <span className="product-badge badge-new">New</span>
+          ) : badge === 'bestseller' ? (
+            <span className="product-badge badge-new">Best seller</span>
+          ) : null}
           {img ? (
             <Image
               src={img.src}
@@ -57,9 +57,6 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
         <h3 className={styles.name}>
           <Link href={`/products/${product.slug}`}>{product.name}</Link>
         </h3>
-        <div>
-          <RatingStars rating={rating} />
-        </div>
         <div className={styles.buyRow}>
           <div className="d-flex align-items-baseline gap-2">
             {product.on_sale ? (

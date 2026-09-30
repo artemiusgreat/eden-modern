@@ -223,7 +223,7 @@ export async function getCategoryBySlug(slug: string): Promise<StoreCategory | n
   return c ? { ...c, name: decodeEntities(c.name) } : null;
 }
 
-export async function getRelatedProducts(productId: number, perPage = 4) {
+export async function getRelatedProducts(productId: number, perPage = 3) {
   const products = await wooGet<StoreProduct[]>('/products', {
     related: productId,
     per_page: perPage,
