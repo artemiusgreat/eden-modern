@@ -179,8 +179,8 @@ export default function HomeView({
               </Link>
             </div>
             <MDBRow>
-              {newest.slice(0, 4).map((p) => (
-                <MDBCol md="3" sm="6" className="mb-4" key={p.id}>
+              {newest.slice(0, 3).map((p) => (
+                <MDBCol md="4" sm="6" className="mb-4" key={p.id}>
                   <ProductCard product={p} badge="bestseller" />
                 </MDBCol>
               ))}

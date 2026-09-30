@@ -35,7 +35,7 @@ export default function SearchView({
         <>
           <MDBRow>
             {products.map((p) => (
-              <MDBCol md="3" sm="6" className="mb-4" key={p.id}>
+              <MDBCol md="4" sm="6" className="mb-4" key={p.id}>
                 <ProductCard product={p} />
               </MDBCol>
             ))}

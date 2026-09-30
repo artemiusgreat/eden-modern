@@ -10,8 +10,8 @@ export default function Loading() {
       <div className="skel mb-2" style={{ height: 52, width: '45%' }} />
       <div className="skel mb-4" style={{ height: 18, width: '60%' }} />
       <MDBRow>
-        {[0, 1, 2, 3].map((i) => (
-          <MDBCol md="3" sm="6" className="mb-4" key={i}>
+        {[0, 1, 2].map((i) => (
+          <MDBCol md="4" sm="6" className="mb-4" key={i}>
             <div className="skel" style={{ aspectRatio: '4 / 5' }} />
             <div className="skel mt-3" style={{ height: 18 }} />
             <div className="skel mt-2" style={{ height: 18, width: '50%' }} />

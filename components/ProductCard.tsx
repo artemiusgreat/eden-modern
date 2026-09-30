@@ -44,7 +44,7 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
               width={500}
               height={625}
               loading="lazy"
-              sizes="(max-width: 768px) 50vw, 300px"
+              sizes="(max-width: 768px) 50vw, 360px"
             />
           ) : (
             <span style={{ color: 'var(--faint)' }}>
@@ -81,7 +81,6 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
             productId={product.id}
             disabled={!purchasable}
             className={btnStyles.cartBtn}
-            compact
             ariaLabel={purchasable ? `Add ${product.name} to bag` : 'Out of stock'}
           >
             <MDBIcon fas icon="cart-shopping" />
