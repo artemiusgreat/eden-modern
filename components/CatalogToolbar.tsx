@@ -12,6 +12,7 @@ interface Props {
   perPageOptions: number[];
   orderby: string;
   orderbyLabels: Record<string, string>;
+  search: string | null;
 }
 
 export default function CatalogToolbar({
@@ -23,6 +24,7 @@ export default function CatalogToolbar({
   perPageOptions,
   orderby,
   orderbyLabels,
+  search,
 }: Props) {
   const router = useRouter();
 
@@ -41,6 +43,11 @@ export default function CatalogToolbar({
     <div className={styles.toolbar}>
       <p className={styles.showing}>
         Showing {from}–{to} of {total} {total === 1 ? 'product' : 'products'}
+        {search && (
+          <>
+            {' '}for <span className={styles.searchTerm}>“{search}”</span>
+          </>
+        )}
       </p>
       <div className={styles.toolbarControls}>
         <label className={styles.selectWrap}>

@@ -94,6 +94,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: SP }
   const perPageRaw = parseInt(first(searchParams.per_page) ?? '', 10);
   const perPage = PER_PAGE_OPTIONS.includes(perPageRaw) ? perPageRaw : 12;
   const page = Math.max(1, parseInt(first(searchParams.page) ?? '', 10) || 1);
+  const search = (first(searchParams.search) ?? '').trim();
 
   // Attribute filters: ?pa_brand=slug1,slug2 — resolved slug -> term id.
   const attrFilters: { taxonomy: string; name: string; termIds: number[]; terms: { slug: string; name: string }[] }[] = [];
@@ -120,6 +121,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: SP }
 
   const filters: CatalogQuery = {
     categoryIds,
+    search: search || undefined,
     minPrice: minPrice !== null ? Math.round(minPrice * 100) : undefined,
     maxPrice: maxPrice !== null ? Math.round(maxPrice * 100) : undefined,
     rating: rating ?? undefined,
@@ -140,6 +142,9 @@ export default async function CatalogPage({ searchParams }: { searchParams: SP }
 
   // ---- Active filter chips ----
   const chips: ActiveChip[] = [];
+  if (search) {
+    chips.push({ label: `Search: “${search}”`, href: withoutFilter(flat, 'search') });
+  }
   for (const id of categoryIds) {
     const c = catById.get(id);
     if (c) chips.push({ label: c.name, href: withoutFilter(flat, 'category', String(id)) });
@@ -189,6 +194,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: SP }
         topCats={topCats}
         attributes={attributes}
         chips={chips}
+        search={search || null}
         selectedCategoryIds={categoryIds}
         minPrice={minPrice}
         maxPrice={maxPrice}

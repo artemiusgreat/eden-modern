@@ -35,3 +35,47 @@
      (FA's fa-lg sets a near-zero line-height, which misaligns in flex rows.) */
   line-height: 1.4;
 }
+
+/* ---------- Sign in / Register tabs ---------- */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--line);
+}
+.tab.tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 0.65rem 0.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+}
+.tab.tab:hover {
+  color: var(--ink);
+}
+.tabActive.tabActive {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+/* Dark-theme form fields (MDB's .form-control defaults to white). */
+.input.input {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--ink);
+}
+.input.input:focus {
+  background: var(--bg);
+  border-color: var(--gold-soft);
+  color: var(--ink);
+  box-shadow: none;
+}
+.input.input::placeholder {
+  color: var(--faint);
+}

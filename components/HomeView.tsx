@@ -25,13 +25,14 @@ const STEPS = [
   { icon: 'star', num: '05', title: 'Enjoy', text: 'Unbox, indulge, and make it unmistakably yours.' },
 ];
 
-/* Featured collections: hardcoded links, no API requests. Three tiles, one
-   row. `image` is optional — set a /images/... path to show a photo,
-   otherwise the tile renders the tag-icon placeholder. */
+/* Featured collections: hardcoded links, but the tile photo comes from the
+   WooCommerce category image (set in WP: Products > Categories > Thumbnail)
+   via the `slug` — passed in as collectionImages. Tiles without a category
+   (or without an image set) render the tag-icon placeholder. */
 const COLLECTIONS = [
-  { name: 'Health & Beauty', href: '/category/health-beauty', sub: 'Fragrance · Skincare · Body', image: null as string | null },
-  { name: 'Home & Garden', href: '/category/home-garden', sub: 'Decor · Home fragrance', image: null as string | null },
-  { name: 'On Sale', href: '/search?on_sale=1', sub: 'Limited-time offers', image: null as string | null },
+  { name: 'Health & Beauty', href: '/category/health-beauty', slug: 'health-beauty', sub: 'Fragrance · Skincare · Body' },
+  { name: 'Home & Garden', href: '/category/home-garden', slug: 'home-garden', sub: 'Decor · Home fragrance' },
+  { name: 'On Sale', href: '/catalog?on_sale=1', slug: null as string | null, sub: 'Limited-time offers' },
 ];
 
 function NewsletterCta() {
@@ -109,11 +110,13 @@ export default function HomeView({
   newest,
   topCats,
   posts,
+  collectionImages,
 }: {
   onSale: StoreProduct[];
   newest: StoreProduct[];
   topCats: StoreCategory[];
   posts: WpPost[];
+  collectionImages: Record<string, string>;
 }) {
   const heroProduct = newest[0] ?? onSale[0];
   const heroImg = heroProduct?.images[0];
@@ -180,7 +183,7 @@ export default function HomeView({
           <MDBContainer>
             <div className="noir-head-split">
               <h2>Best sellers</h2>
-              <Link href="/search">
+              <Link href="/catalog">
                 View all <MDBIcon fas icon="arrow-right" className="ms-1" />
               </Link>
             </div>
@@ -200,17 +203,19 @@ export default function HomeView({
         <MDBContainer>
           <div className="noir-head-split">
             <h2>Featured collections</h2>
-            <Link href="/search">
+            <Link href="/catalog">
               View all <MDBIcon fas icon="arrow-right" className="ms-1" />
             </Link>
           </div>
           <MDBRow>
-            {COLLECTIONS.map((c) => (
+            {COLLECTIONS.map((c) => {
+              const image = c.slug ? (collectionImages[c.slug] ?? null) : null;
+              return (
               <MDBCol md="4" sm="6" className="mb-4" key={c.name}>
                 <Link href={c.href} className={styles.collectionCard}>
                   <div className={styles.collectionMedia}>
-                    {c.image ? (
-                      <img src={c.image} alt={c.name} loading="lazy" />
+                    {image ? (
+                      <img src={image} alt={c.name} loading="lazy" />
                     ) : (
                       <div className="w-100 h-100 d-flex align-items-center justify-content-center">
                         <MDBIcon fas icon="tags" size="2x" style={{ color: 'var(--faint)' }} />
@@ -221,7 +226,8 @@ export default function HomeView({
                   <p>{c.sub}</p>
                 </Link>
               </MDBCol>
-            ))}
+              );
+            })}
           </MDBRow>
         </MDBContainer>
       </section>

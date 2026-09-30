@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Playfair_Display, Inter, Milonga } from 'next/font/google';
 import localFont from 'next/font/local';
+import { Suspense } from 'react';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import './globals.css';
 import { CartProvider } from '@/components/cart/CartProvider';
@@ -8,6 +9,7 @@ import AnnouncementBar from '@/components/AnnouncementBar';
 import SiteBackdrop from '@/components/SiteBackdrop';
 import SiteNavbar from '@/components/SiteNavbar';
 import SiteFooter from '@/components/SiteFooter';
+import RouteProgress from '@/components/RouteProgress';
 import { getCategories } from '@/lib/woo';
 
 const serif = Playfair_Display({
@@ -52,7 +54,7 @@ export const metadata: Metadata = {
 };
 
 // Bump on every shipped build so we can tell (via View Source) which build is live.
-const BUILD_ID = '2026-09-29-ambient2';
+const BUILD_ID = '2026-09-30-acct-search';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const categories = await getCategories().catch(() => []);
@@ -66,6 +68,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className={`${sans.variable} ${serif.variable} ${milonga.variable} ${prata.variable}`} data-build={BUILD_ID}>
+        <Suspense fallback={null}>
+          <RouteProgress />
+        </Suspense>
         <SiteBackdrop />
         <div className="site-content">
           <CartProvider>

@@ -57,7 +57,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
           <MDBCol md="2" sm="6" className="mb-4">
             <h6>Quick links</h6>
             <Link href="/" className={styles.flink}>Home</Link>
-            <Link href="/search" className={styles.flink}>Shop</Link>
+            <Link href="/catalog" className={styles.flink}>Shop</Link>
             <Link href="/blog" className={styles.flink}>Magazine</Link>
             <Link href="/account" className={styles.flink}>Account</Link>
             <Link href="/contacts" className={styles.flink}>Contact</Link>
@@ -70,7 +70,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
                 {c.name}
               </Link>
             ))}
-            <Link href="/search?on_sale=1" className={styles.flink}>On sale</Link>
+            <Link href="/catalog?on_sale=1" className={styles.flink}>On sale</Link>
           </MDBCol>
 
           <MDBCol md="3" className="mb-4">
@@ -83,7 +83,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
               <MDBIcon fas icon="location-dot" />
               <span>Store 1250, 701 State Route 440 Ste 16, Jersey City, NJ 07304</span>
             </div>
-            <Link href="/search?on_sale=1" className="btn-outline-noir mt-3">
+            <Link href="/catalog?on_sale=1" className="btn-outline-noir mt-3">
               Shop the sale
             </Link>
           </MDBCol>

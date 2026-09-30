@@ -1,24 +1,19 @@
-import { getProducts } from '@/lib/woo';
-import SearchView from '@/components/SearchView';
+import { redirect } from 'next/navigation';
 
-export const revalidate = 3600;
+// Legacy route: the old /search page now lives at /catalog. Map the old
+// query params (?q=, ?on_sale=, ?page=) so bookmarks keep working.
+type SP = Record<string, string | string[] | undefined>;
 
-const PER_PAGE = 12;
+const first = (v: string | string[] | undefined): string | undefined =>
+  Array.isArray(v) ? v[0] : v;
 
-export default async function SearchPage({
-  searchParams,
-}: {
-  searchParams: { q?: string; page?: string; on_sale?: string };
-}) {
-  const q = searchParams.q ?? '';
-  const onSale = searchParams.on_sale === '1';
-  const page = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1);
-  const products = await getProducts({
-    search: q || undefined,
-    on_sale: onSale || undefined,
-    per_page: PER_PAGE,
-    page,
-  }).catch(() => []);
-
-  return <SearchView q={q} onSale={onSale} products={products} page={page} />;
+export default function SearchRedirect({ searchParams }: { searchParams: SP }) {
+  const p = new URLSearchParams();
+  const q = (first(searchParams.q) ?? '').trim();
+  if (q) p.set('search', q);
+  if (first(searchParams.on_sale) === '1') p.set('on_sale', '1');
+  const page = first(searchParams.page);
+  if (page) p.set('page', page);
+  const s = p.toString();
+  redirect(s ? `/catalog?${s}` : '/catalog');
 }

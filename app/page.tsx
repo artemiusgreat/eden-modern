@@ -12,5 +12,19 @@ export default async function HomePage() {
   ]);
 
   const topCats = categories.filter((c) => c.parent === 0).slice(0, 6);
-  return <HomeView onSale={onSale} newest={newest} topCats={topCats} posts={posts} />;
+  // slug -> category image for the Featured collections tiles (task: the
+  // Health & Beauty thumbnail set in WP now shows on its card).
+  const collectionImages: Record<string, string> = {};
+  for (const c of categories) {
+    if (c.image?.src) collectionImages[c.slug] = c.image.src;
+  }
+  return (
+    <HomeView
+      onSale={onSale}
+      newest={newest}
+      topCats={topCats}
+      posts={posts}
+      collectionImages={collectionImages}
+    />
+  );
 }

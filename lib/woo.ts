@@ -298,6 +298,7 @@ export interface CatalogAttribute {
 
 export interface CatalogFilters {
   categoryIds: number[];
+  search?: string; // Store API full-text search
   minPrice?: number; // minor units (cents)
   maxPrice?: number; // minor units (cents)
   rating?: number; // minimum average rating, 1-5
@@ -340,6 +341,7 @@ export async function getCatalogProducts(f: CatalogFilters): Promise<CatalogResu
     orderby: f.orderby,
   };
   if (f.categoryIds.length) params.category = f.categoryIds.join(',');
+  if (f.search) params.search = f.search;
   if (f.minPrice !== undefined) params.min_price = f.minPrice;
   if (f.maxPrice !== undefined) params.max_price = f.maxPrice;
   if (f.rating) params.rating = f.rating;

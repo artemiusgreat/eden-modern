@@ -205,6 +205,9 @@
   font-size: 0.85rem;
   font-weight: 300;
 }
+.searchTerm {
+  color: var(--ink);
+}
 .toolbarControls {
   display: flex;
   gap: 0.8rem;

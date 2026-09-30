@@ -30,6 +30,7 @@ interface Props {
   topCats: StoreCategory[];
   attributes: CatalogAttribute[];
   chips: ActiveChip[];
+  search: string | null;
   selectedCategoryIds: number[];
   minPrice: number | null;
   maxPrice: number | null;
@@ -55,6 +56,7 @@ export default function CatalogView(props: Props) {
     topCats,
     attributes,
     chips,
+    search,
     selectedCategoryIds,
     minPrice,
     maxPrice,
@@ -99,6 +101,7 @@ export default function CatalogView(props: Props) {
               perPageOptions={perPageOptions}
               orderby={orderby}
               orderbyLabels={orderbyLabels}
+              search={search}
             />
 
             {chips.length > 0 && (

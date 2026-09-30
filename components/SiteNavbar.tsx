@@ -44,7 +44,7 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
     e.preventDefault();
     if (query.trim()) {
       setOpen(false);
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      router.push(`/catalog?search=${encodeURIComponent(query.trim())}`);
     }
   };
 
@@ -122,7 +122,7 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
             </form>
 
             <div className={styles.actions}>
-              <Link href="/search?on_sale=1" className={`btn-outline-noir ${styles.cta}`}>
+              <Link href="/catalog?on_sale=1" className={`btn-outline-noir ${styles.cta}`}>
                 Shop Sale
               </Link>
               <Link href="/account" passHref legacyBehavior>
