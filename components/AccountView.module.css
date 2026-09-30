@@ -79,3 +79,176 @@
 .input.input::placeholder {
   color: var(--faint);
 }
+
+/* ---------- Account dashboard: orders / addresses / details ---------- */
+
+.notice {
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  background: rgba(201, 162, 75, 0.08);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.notice_error {
+  border-color: rgba(200, 90, 90, 0.5);
+  background: rgba(200, 90, 90, 0.1);
+}
+.notice_ok {
+  border-color: rgba(110, 180, 130, 0.45);
+  background: rgba(110, 180, 130, 0.08);
+}
+
+.formH {
+  font-family: var(--font-card-title);
+  font-size: 1.25rem;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+.span2 {
+  grid-column: span 2;
+}
+@media (max-width: 575px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+  .span2 {
+    grid-column: span 1;
+  }
+}
+
+.orderWrap {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+}
+.orderRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: transparent;
+  border: 0;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+}
+.orderRow:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.orderMain {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.orderNum {
+  font-size: 1.02rem;
+}
+.orderMeta {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.orderSide {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-shrink: 0;
+}
+.orderTotal {
+  font-family: var(--font-price);
+  font-size: 1.05rem;
+  color: var(--gold);
+}
+.orderChevron {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.status {
+  font-size: 0.72rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.stPending {
+  color: #e3c37e;
+  border-color: rgba(227, 195, 126, 0.45);
+  background: rgba(227, 195, 126, 0.08);
+}
+.stProcessing {
+  color: #9ec7e8;
+  border-color: rgba(158, 199, 232, 0.45);
+  background: rgba(158, 199, 232, 0.08);
+}
+.stCompleted {
+  color: #a9d6b8;
+  border-color: rgba(169, 214, 184, 0.45);
+  background: rgba(169, 214, 184, 0.08);
+}
+.stCancelled {
+  color: #dfa3a3;
+  border-color: rgba(223, 163, 163, 0.45);
+  background: rgba(223, 163, 163, 0.08);
+}
+
+.orderDetail {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1.25rem;
+}
+.detailGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.detailGrid:last-child {
+  margin-bottom: 0;
+}
+@media (max-width: 767px) {
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
+}
+.detailH {
+  font-family: var(--font-card-title);
+  font-size: 1rem;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+}
+.lineItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+.lineTotal {
+  border-bottom: 0;
+  font-size: 1.02rem;
+}
+.lineTotal span:last-child {
+  font-family: var(--font-price);
+  color: var(--gold);
+}
+.addrText {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0;
+}
