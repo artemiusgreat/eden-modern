@@ -1,0 +1,119 @@
+/* Scoped cart-page styles. Doubled classes beat MDB without !important. */
+
+.page.page {
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+/* Line item rows. */
+.line.line {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--line);
+  align-items: flex-start;
+}
+.line.line:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.thumb {
+  width: 84px;
+  height: 96px;
+  object-fit: contain;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 6px;
+  flex-shrink: 0;
+}
+
+.itemName.itemName {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+.itemName.itemName:hover {
+  color: var(--gold-soft);
+}
+
+.unitPrice {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.lineTotal {
+  font-family: var(--font-price, var(--font-serif));
+  font-weight: 100;
+  font-size: 1.15rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.removeBtn.removeBtn {
+  padding: 0.55rem;
+  margin: -0.55rem -0.55rem -0.2rem 0.25rem;
+  color: var(--muted);
+  line-height: 1;
+}
+.removeBtn.removeBtn:hover {
+  color: var(--ink);
+}
+
+/* Summary card. */
+.summary.summary {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 1.8rem;
+  position: sticky;
+  top: 1.5rem;
+}
+.sumRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  font-size: 0.9rem;
+}
+.sumRow dt {
+  color: var(--muted);
+  font-weight: 400;
+}
+.sumRow dd {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-price, var(--font-serif));
+  font-size: 1.1rem;
+}
+.hint {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin: 0.8rem 0 1.2rem;
+}
+
+.empty {
+  text-align: center;
+  padding: 4rem 0;
+  color: var(--muted);
+}
+.emptyIcon {
+  font-size: 2.6rem;
+  color: var(--faint);
+  margin-bottom: 1.2rem;
+}

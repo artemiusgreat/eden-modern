@@ -77,6 +77,84 @@
   transform: scaleX(1);
 }
 
+/* Dropdown on the first nav item. Reveal is a fade + slight zoom-in
+   (no positional shift), on hover and on keyboard focus. */
+.menu .links .dropWrap {
+  position: relative;
+}
+.menu .links .dropMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 250px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+  padding: 0.5rem 0;
+  z-index: 1050;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.98);
+  transform-origin: top left;
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+}
+.menu .links .dropWrap:hover .dropMenu,
+.menu .links .dropWrap:focus-within .dropMenu {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+.menu .links .dropMenu a {
+  display: block;
+  padding: 0.65rem 1.3rem;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.menu .links .dropMenu a:hover {
+  color: var(--gold-soft);
+  background: rgba(255, 255, 255, 0.03);
+}
+.menu .links .dropMenu .dropAll {
+  border-top: 1px solid var(--line);
+  margin-top: 0.4rem;
+  padding-top: 0.9rem;
+  color: var(--gold-soft);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+/* Collapsed (mobile) menu: sub-links render as an indented static list. */
+@media (max-width: 1199.98px) {
+  .menu .links .dropMenu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border: 0;
+    border-left: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+    min-width: 0;
+    padding: 0.2rem 0 0.6rem;
+    margin-left: 0.2rem;
+  }
+  .menu .links .dropMenu a {
+    padding: 0.45rem 0 0.45rem 1rem;
+    font-size: 0.78rem;
+  }
+  .menu .links .dropMenu .dropAll {
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0.45rem;
+  }
+}
+
 .navbarInner :global(.navbar-toggler.navbar-toggler) {
   color: var(--ink);
   border-color: var(--line-strong);

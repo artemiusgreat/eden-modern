@@ -25,6 +25,15 @@ const STEPS = [
   { icon: 'star', num: '05', title: 'Enjoy', text: 'Unbox, indulge, and make it unmistakably yours.' },
 ];
 
+/* Featured collections: hardcoded links, no API requests. Three tiles, one
+   row. `image` is optional — set a /images/... path to show a photo,
+   otherwise the tile renders the tag-icon placeholder. */
+const COLLECTIONS = [
+  { name: 'Health & Beauty', href: '/category/health-beauty', sub: 'Fragrance · Skincare · Body', image: null as string | null },
+  { name: 'Home & Garden', href: '/category/home-garden', sub: 'Decor · Home fragrance', image: null as string | null },
+  { name: 'On Sale', href: '/search?on_sale=1', sub: 'Limited-time offers', image: null as string | null },
+];
+
 function NewsletterCta() {
   const [email, setEmail] = useState('');
   const [done, setDone] = useState(false);
@@ -190,59 +199,35 @@ export default function HomeView({
       )}
 
       {/* ============ COLLECTIONS ============ */}
-      {topCats.length > 0 && (
-        <section className="noir-section" style={{ paddingTop: '2rem' }}>
-          <MDBContainer>
-            <div className="noir-head-split">
-              <h2>Featured collections</h2>
-              <Link href="/search">
-                View all <MDBIcon fas icon="arrow-right" className="ms-1" />
-              </Link>
-            </div>
-            <MDBRow>
-              {topCats.slice(0, 4).map((c) => (
-                <MDBCol md="3" sm="6" className="mb-4" key={c.id}>
-                  <Link href={`/category/${c.slug}`} className={styles.collectionCard}>
-                    <div className={styles.collectionMedia}>
-                      {c.image ? (
-                        <img src={c.image.src} alt={c.name} loading="lazy" />
-                      ) : (
-                        <div className="w-100 h-100 d-flex align-items-center justify-content-center">
-                          <MDBIcon fas icon="tags" size="2x" style={{ color: 'var(--faint)' }} />
-                        </div>
-                      )}
-                    </div>
-                    <h3 className={styles.collectionCaption}>{c.name}</h3>
-                    <p>{c.count} products</p>
-                  </Link>
-                </MDBCol>
-              ))}
-              {onSale[0]?.images[0] && (
-                <MDBCol md="3" sm="6" className="mb-4">
-                  <Link href="/search?on_sale=1" className={styles.collectionCard}>
-                    <div className={styles.collectionMedia}>
-                      <img src={onSale[0].images[0].src} alt="On sale" loading="lazy" />
-                    </div>
-                    <h3 className={styles.collectionCaption}>On Sale</h3>
-                    <p>{onSale.length} products</p>
-                  </Link>
-                </MDBCol>
-              )}
-              {newest[0]?.images[0] && (
-                <MDBCol md="3" sm="6" className="mb-4">
-                  <Link href="/search" className={styles.collectionCard}>
-                    <div className={styles.collectionMedia}>
-                      <img src={newest[0].images[0].src} alt="New arrivals" loading="lazy" />
-                    </div>
-                    <h3 className={styles.collectionCaption}>New Arrivals</h3>
-                    <p>Just landed</p>
-                  </Link>
-                </MDBCol>
-              )}
-            </MDBRow>
-          </MDBContainer>
-        </section>
-      )}
+      <section className="noir-section" style={{ paddingTop: '2rem' }}>
+        <MDBContainer>
+          <div className="noir-head-split">
+            <h2>Featured collections</h2>
+            <Link href="/search">
+              View all <MDBIcon fas icon="arrow-right" className="ms-1" />
+            </Link>
+          </div>
+          <MDBRow>
+            {COLLECTIONS.map((c) => (
+              <MDBCol md="4" sm="6" className="mb-4" key={c.name}>
+                <Link href={c.href} className={styles.collectionCard}>
+                  <div className={styles.collectionMedia}>
+                    {c.image ? (
+                      <img src={c.image} alt={c.name} loading="lazy" />
+                    ) : (
+                      <div className="w-100 h-100 d-flex align-items-center justify-content-center">
+                        <MDBIcon fas icon="tags" size="2x" style={{ color: 'var(--faint)' }} />
+                      </div>
+                    )}
+                  </div>
+                  <h3 className={styles.collectionCaption}>{c.name}</h3>
+                  <p>{c.sub}</p>
+                </Link>
+              </MDBCol>
+            ))}
+          </MDBRow>
+        </MDBContainer>
+      </section>
 
       {/* ============ STORY ============ */}
       {storyCat && (

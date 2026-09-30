@@ -28,6 +28,18 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
 
   const navCats = categories.filter((c) => c.parent === 0).slice(0, 5);
 
+  /* Dropdown on the first menu item: its child + grandchild categories
+     (all existing pages) plus a "shop all" link. */
+  const firstCat = navCats[0];
+  const firstChildIds = new Set(
+    firstCat ? categories.filter((c) => c.parent === firstCat.id).map((c) => c.id) : []
+  );
+  const dropCats = firstCat
+    ? categories
+        .filter((c) => c.parent === firstCat.id || firstChildIds.has(c.parent))
+        .slice(0, 6)
+    : [];
+
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
@@ -55,15 +67,36 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
         <MDBCollapse navbar open={open} id="lux-navbar" className={styles.menu}>
           <div className="d-flex align-items-center">
             <MDBNavbarNav className={`${styles.links} mx-auto w-auto me-5`}>
-              {navCats.map((c) => (
-                <MDBNavbarItem key={c.id}>
-                  <Link href={`/category/${c.slug}`} passHref legacyBehavior>
-                    <MDBNavbarLink className={styles.navLink} onClick={() => setOpen(false)}>
-                      {c.name}
-                    </MDBNavbarLink>
-                  </Link>
-                </MDBNavbarItem>
-              ))}
+              {navCats.map((c, i) => {
+                const isFirst = i === 0 && dropCats.length > 0;
+                return (
+                  <MDBNavbarItem key={c.id} className={isFirst ? styles.dropWrap : undefined}>
+                    <Link href={`/category/${c.slug}`} passHref legacyBehavior>
+                      <MDBNavbarLink className={styles.navLink} onClick={() => setOpen(false)}>
+                        {c.name}
+                        {isFirst && (
+                          <MDBIcon fas icon="chevron-down" className="ms-2" style={{ fontSize: '0.6rem' }} />
+                        )}
+                      </MDBNavbarLink>
+                    </Link>
+                    {isFirst && (
+                      <div className={styles.dropMenu}>
+                        {dropCats.map((d) => (
+                          <Link key={d.id} href={`/category/${d.slug}`} onClick={() => setOpen(false)}>
+                            {d.name}
+                          </Link>
+                        ))}
+                        <Link
+                          href={`/category/${c.slug}`}
+                          onClick={() => setOpen(false)}
+                          className={styles.dropAll}>
+                          Shop all {c.name} <MDBIcon fas icon="arrow-right" className="ms-1" />
+                        </Link>
+                      </div>
+                    )}
+                  </MDBNavbarItem>
+                );
+              })}
               <MDBNavbarItem>
                 <Link href="/blog" passHref legacyBehavior>
                   <MDBNavbarLink className={styles.navLink} onClick={() => setOpen(false)}>
