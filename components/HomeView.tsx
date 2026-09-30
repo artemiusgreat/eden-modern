@@ -137,7 +137,6 @@ export default function HomeView({
                 <br />
                 Inspire
               </h1>
-              <div className={styles.heroRule} />
               <p className={`${styles.heroSub} me-3`}>
                 We offer organic skincare and signature perfumes designed to enhance your natural glow and leave a lasting impression.
               </p>
