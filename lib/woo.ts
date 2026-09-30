@@ -279,3 +279,107 @@ export async function getWpPage(slug: string): Promise<WpPage | null> {
   if (!pages[0]) return null;
   return { title: decodeEntities(pages[0].title.rendered), content: pages[0].content.rendered };
 }
+
+/* ---------------- Catalog (filterable product listing) ---------------- */
+
+export interface CatalogAttributeTerm {
+  id: number;
+  name: string;
+  slug: string;
+  count: number;
+}
+
+export interface CatalogAttribute {
+  id: number;
+  name: string;
+  taxonomy: string; // e.g. 'pa_brand', 'pa_gender'
+  terms: CatalogAttributeTerm[];
+}
+
+export interface CatalogFilters {
+  categoryIds: number[];
+  minPrice?: number; // minor units (cents)
+  maxPrice?: number; // minor units (cents)
+  rating?: number; // minimum average rating, 1-5
+  attributes: { taxonomy: string; termIds: number[] }[];
+  onSale?: boolean;
+  inStock?: boolean;
+  orderby: 'menu_order' | 'popularity' | 'rating' | 'date' | 'price' | 'price-desc';
+  page: number;
+  perPage: number;
+}
+
+export interface CatalogResult {
+  products: StoreProduct[];
+  total: number;
+  totalPages: number;
+}
+
+async function wooGetPaged<T>(
+  path: string,
+  params: Record<string, string | number | undefined> = {}
+): Promise<{ data: T; total: number; totalPages: number }> {
+  const res = await fetch(apiUrl(`/wp-json/wc/store/v1${path}`, params), {
+    headers: { Accept: 'application/json' },
+    next: { revalidate: 300 }, // catalog pages revalidate every 5 minutes
+  });
+  if (!res.ok) {
+    throw new Error(`Woo Store API ${path} failed: ${res.status}`);
+  }
+  return {
+    data: (await res.json()) as T,
+    total: parseInt(res.headers.get('X-WP-Total') ?? '0', 10) || 0,
+    totalPages: parseInt(res.headers.get('X-WP-TotalPages') ?? '0', 10) || 0,
+  };
+}
+
+export async function getCatalogProducts(f: CatalogFilters): Promise<CatalogResult> {
+  const params: Record<string, string | number | undefined> = {
+    per_page: f.perPage,
+    page: f.page,
+    orderby: f.orderby,
+  };
+  if (f.categoryIds.length) params.category = f.categoryIds.join(',');
+  if (f.minPrice !== undefined) params.min_price = f.minPrice;
+  if (f.maxPrice !== undefined) params.max_price = f.maxPrice;
+  if (f.rating) params.rating = f.rating;
+  if (f.onSale) params.on_sale = 'true';
+  if (f.inStock) params.stock_status = 'instock';
+  // The Store API accepts a single attribute filter per request — send the
+  // first and intersect any further selections in memory below.
+  const [firstAttr, ...restAttrs] = f.attributes;
+  if (firstAttr) {
+    params.attribute = firstAttr.taxonomy;
+    params.attribute_term = firstAttr.termIds.join(',');
+  }
+  const { data, total, totalPages } = await wooGetPaged<StoreProduct[]>('/products', params);
+  let products = data.map(decodeProduct);
+  for (const attr of restAttrs) {
+    const ids = new Set(attr.termIds);
+    products = products.filter((p) =>
+      (p.attributes ?? []).some(
+        (a) => a.taxonomy === attr.taxonomy && a.terms.some((t) => ids.has(t.id))
+      )
+    );
+  }
+  return { products, total, totalPages };
+}
+
+/** All product attributes that actually have terms (e.g. Brand, Gender). */
+export async function getProductAttributes(): Promise<CatalogAttribute[]> {
+  const attrs = await wooGet<{ id: number; name: string; taxonomy: string }[]>('/products/attributes');
+  const out: CatalogAttribute[] = [];
+  for (const a of attrs) {
+    const terms = await wooGet<CatalogAttributeTerm[]>(`/products/attributes/${a.id}/terms`, {
+      per_page: 100,
+    });
+    if (!terms.length) continue;
+    out.push({
+      id: a.id,
+      name: decodeEntities(a.name),
+      taxonomy: a.taxonomy,
+      terms: terms.map((t) => ({ ...t, name: decodeEntities(t.name) })),
+    });
+  }
+  return out;
+}
