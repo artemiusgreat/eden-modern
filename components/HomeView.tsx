@@ -236,8 +236,8 @@ export default function HomeView({
                   {/* Category image when one is set in WooCommerce; otherwise
                       the brand collage so the half never renders empty. */}
                   <img
-                    src={storyCat.image?.src ?? '/images/story-image.jpg'}
-                    alt={storyCat.image?.name || storyCat.name}
+                    src={'/images/story-image.jpg'}
+                    alt={storyCat.name}
                     loading="lazy"
                   />
                   <div className={styles.storyShade} aria-hidden="true" />
