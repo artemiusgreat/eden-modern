@@ -77,25 +77,70 @@ export default function CatalogFilters(props: Props) {
 
   const tree = buildTree(props.categories);
 
+  // Subcategories start collapsed; ancestors of URL-selected categories auto-expand
+  // so shared links like ?category=84 still reveal the checked child.
+  const parentOf = new Map<number, number>(props.categories.map((c) => [c.id, c.parent]));
+  const ancestorsOf = (ids: number[]): Set<number> => {
+    const out = new Set<number>();
+    for (const id of ids) {
+      let p = parentOf.get(id);
+      while (p && p !== 0) {
+        out.add(p);
+        p = parentOf.get(p);
+      }
+    }
+    return out;
+  };
+  const [expanded, setExpanded] = useState<Set<number>>(() => ancestorsOf(selectedCategoryIds));
+  const selectedKey = selectedCategoryIds.join(',');
+  useEffect(() => {
+    setExpanded((prev) => new Set([...prev, ...ancestorsOf(selectedCategoryIds)]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedKey]);
+
+  const toggleExpand = (id: number) =>
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  const onToggleCat = (id: number) =>
+    pushUrl(router, params, { category: toggleList(params.category, String(id)) });
+
   const renderCats = (nodes: CatNode[], depth: number): ReactNode =>
-    nodes.map((n) => (
-      <div key={n.cat.id}>
-        <label className={styles.check} style={{ paddingLeft: `${depth * 1.1}rem` }}>
-          <input
-            type="checkbox"
-            checked={selectedCategoryIds.includes(n.cat.id)}
-            onChange={() =>
-              pushUrl(router, params, {
-                category: toggleList(params.category, String(n.cat.id)),
-              })
-            }
-          />
-          <span className={styles.checkLabel}>{n.cat.name}</span>
-          <span className={styles.checkCount}>{n.cat.count}</span>
-        </label>
-        {renderCats(n.children, depth + 1)}
-      </div>
-    ));
+    nodes.map((n) => {
+      const hasKids = n.children.length > 0;
+      const isOpen = expanded.has(n.cat.id);
+      const checked = selectedCategoryIds.includes(n.cat.id);
+      return (
+        <div key={n.cat.id} className={depth === 0 ? styles.catGroup : undefined}>
+          <div
+            className={depth === 0 ? `${styles.catBtn} ${checked ? styles.catBtnSelected : ''}` : styles.subRow}
+            style={depth > 0 ? { paddingLeft: `${depth * 1.1}rem` } : undefined}>
+            <label className={depth === 0 ? styles.catBtnLabel : styles.check}>
+              <input type="checkbox" checked={checked} onChange={() => onToggleCat(n.cat.id)} />
+              <span className={styles.checkLabel}>{n.cat.name}</span>
+              <span className={styles.checkCount}>{depth === 0 ? `(${n.cat.count})` : n.cat.count}</span>
+            </label>
+            {hasKids && (
+              <button
+                type="button"
+                className={depth === 0 ? styles.catExpander : styles.subExpander}
+                aria-expanded={isOpen}
+                aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${n.cat.name} subcategories`}
+                onClick={() => toggleExpand(n.cat.id)}>
+                <MDBIcon fas icon={isOpen ? 'minus' : 'plus'} />
+              </button>
+            )}
+          </div>
+          {hasKids && isOpen && (
+            <div className={depth === 0 ? styles.catKids : undefined}>{renderCats(n.children, depth + 1)}</div>
+          )}
+        </div>
+      );
+    });
 
   const applyPrice = () => {
     const clean = (s: string) => {
