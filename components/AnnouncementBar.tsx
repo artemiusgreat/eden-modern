@@ -15,10 +15,9 @@ export default function AnnouncementBar() {
           href="https://www.trustpilot.com/review/eden.indemos.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="d-flex align-items-center gap-2"
-        >
+          className="d-flex align-items-center gap-2">
           <TrustpilotStars size={14} />
-          <span className="d-none d-sm-inline">Rated Excellent</span>
+          <span className="d-none d-sm-inline">Trust Pilot Reviews</span>
         </a>
       </MDBContainer>
     </div>

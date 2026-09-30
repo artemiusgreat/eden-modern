@@ -114,7 +114,7 @@ export default function CatalogFilters(props: Props) {
   // otherwise name + product count.
   const catTip = (c: StoreCategory): string => {
     const d = decodeEntities(c.description).trim();
-    return d || `${c.name} — ${c.count} products`;
+    return d || `${c.name} - ${c.count} products`;
   };
 
   const renderCats = (nodes: CatNode[], depth: number): ReactNode =>
@@ -126,7 +126,7 @@ export default function CatalogFilters(props: Props) {
         <div key={n.cat.id} className={depth === 0 ? styles.catGroup : undefined}>
           <div
             className={depth === 0 ? `${styles.catBtn} ${checked ? styles.catBtnSelected : ''}` : styles.subRow}
-            style={depth > 0 ? { paddingLeft: `${depth * 1.1}rem` } : undefined}>
+            style={depth > 0 ? { paddingLeft: `${depth * 1}rem` } : undefined}>
             {hasKids ? (
               <button
                 type="button"
@@ -145,7 +145,7 @@ export default function CatalogFilters(props: Props) {
             <label className={depth === 0 ? styles.catBtnLabel : styles.check} title={catTip(n.cat)}>
               <input type="checkbox" checked={checked} onChange={() => onToggleCat(n.cat.id)} />
               <span className={styles.checkLabel}>{n.cat.name}</span>
-              <span className={styles.checkCount}>{depth === 0 ? `(${n.cat.count})` : n.cat.count}</span>
+              <span className={styles.checkCount}>{n.cat.count}</span>
             </label>
           </div>
           {hasKids && isOpen && (

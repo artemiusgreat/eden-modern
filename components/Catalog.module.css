@@ -126,6 +126,7 @@
   font-size: 0.88rem;
   color: var(--ink);
   font-weight: 300;
+  overflow: hidden;
 }
 .check input {
   accent-color: var(--gold);
@@ -134,12 +135,14 @@
   flex-shrink: 0;
   cursor: pointer;
 }
-.checkLabel {
-  flex-grow: 1;
-}
 .checkCount {
   color: var(--muted);
   font-size: 0.78rem;
+}
+.checkLabel {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .check:hover .checkLabel {
   color: var(--gold-soft);
@@ -363,27 +366,27 @@
 }
 .catExpander.catExpander {
   flex-shrink: 0;
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid var(--line);
+  border: 0;
   background: transparent;
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: 0.5rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
 }
 .catExpander.catExpander:hover {
-  border-color: var(--gold-soft);
+  border: 0;
   color: var(--gold-soft);
 }
 .catExpanderSpacer {
   flex-shrink: 0;
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 .catKids {
   padding-top: 0.35rem;
@@ -393,32 +396,29 @@
   align-items: center;
   gap: 0.5rem;
 }
-.subRow .check {
-  flex-grow: 1;
-}
 .subExpander.subExpander {
   flex-shrink: 0;
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid var(--line);
+  border: 0;
   background: transparent;
   color: var(--muted);
-  font-size: 0.6rem;
+  font-size: 0.5rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
 }
 .subExpander.subExpander:hover {
-  border-color: var(--gold-soft);
+  border: 0;
   color: var(--gold-soft);
 }
 .subExpanderSpacer {
   flex-shrink: 0;
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* ---------- Mobile ---------- */

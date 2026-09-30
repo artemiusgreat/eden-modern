@@ -293,11 +293,11 @@ em {
   border-radius: 2px;
 }
 .badge-sale {
-  background: var(--bg);
+  background: #386BC0;
   color: var(--ink);
 }
 .badge-new {
-  background: var(--bg);
+  background: #386BC0;
   color: var(--ink);
   border: 1px solid var(--bg);
 }
@@ -604,6 +604,12 @@ em {
 }
 
 /* Elementor form widget (contacts page): full dark-theme treatment. */
+.prose-wp .contact-container form {
+  margin: 30px 0;
+}
+.prose-wp .contact-container .elementor-field-type-submit {
+  justify-content: end;
+}
 .prose-wp .elementor-form-fields-wrapper {
   display: flex;
   flex-wrap: wrap;

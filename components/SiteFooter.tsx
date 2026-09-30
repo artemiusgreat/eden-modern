@@ -36,7 +36,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
               rel="noopener noreferrer"
               className="d-inline-flex align-items-center gap-2 mt-2">
               <TrustpilotStars size={16} />
-              <span style={{ fontSize: '0.78rem', color: 'var(--ink)' }}>Trustpilot</span>
+              <span style={{ fontSize: '0.78rem', color: 'var(--ink)' }}>Trust Pilot Reviews</span>
             </a>
             <div className="d-flex gap-2 mt-4 flex-wrap">
               {SOCIALS.map((s) => (

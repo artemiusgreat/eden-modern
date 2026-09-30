@@ -14,7 +14,7 @@ const PROMISES = [
   { icon: 'certificate', title: '100% Authentic', text: 'Genuine designer fragrances and beauty, sourced from trusted brands.', href: '/contacts' },
   { icon: 'truck-fast', title: 'Free Shipping', text: 'Complimentary shipping on all orders over $50, tracked door to door.', href: '/contacts' },
   { icon: 'lock', title: 'Secure Checkout', text: 'Encrypted payments and buyer protection on every single order.', href: '/privacy' },
-  { icon: 'headset', title: 'Expert Support', text: 'Real people, fast answers — here to help before and after you buy.', href: '/contacts' },
+  { icon: 'headset', title: 'Expert Support', text: 'Real people, fast answers - here to help before and after you buy.', href: '/contacts' },
 ];
 
 const STEPS = [

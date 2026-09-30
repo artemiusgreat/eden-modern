@@ -50,7 +50,6 @@ export default function AccountView() {
                 {[
                   ['box-open', 'Track orders', 'Follow every order from packing to delivery.'],
                   ['location-dot', 'Faster checkout', 'Saved addresses fill in automatically.'],
-                  ['heart', 'Wishlist', 'Keep the pieces you love in one place.'],
                   ['tag', 'Private offers', 'Early access to sales and new arrivals.'],
                 ].map(([icon, title, text]) => (
                   <div key={title} className="d-flex gap-3 mb-4">
