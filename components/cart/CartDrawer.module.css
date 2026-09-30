@@ -9,6 +9,7 @@
   transition: opacity 0.3s ease;
   z-index: 1040;
 }
+
 .backdrop.show {
   opacity: 1;
   pointer-events: auto;
@@ -30,6 +31,7 @@
   border-left: 1px solid var(--line);
   color: var(--ink);
 }
+
 .drawer.show {
   transform: translateX(0);
 }
@@ -40,6 +42,7 @@
   --mdb-btn-hover-bg: transparent;
   --mdb-btn-active-bg: transparent;
 }
+
 .closeBtn.closeBtn:hover,
 .closeBtn.closeBtn:focus-visible,
 .closeBtn.closeBtn:active {
@@ -61,7 +64,7 @@
 
 .thumb {
   width: 84px;
-  height: 96px;
+  height: 84px;
   object-fit: contain;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -74,13 +77,14 @@
    (0,2,0) beats MDB's .btn-link (0,1,0) without !important. */
 /* Drawer line-item name: real link to the product page, same serif look. */
 .itemName {
-  font-family: var(--font-serif);
+  font-family: var(--font-card-title);
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--ink);
   text-decoration: none;
   cursor: pointer;
 }
+
 .itemName:hover {
   color: var(--gold-soft);
 }
@@ -96,6 +100,7 @@
   --mdb-btn-active-bg: transparent;
   --mdb-btn-focus-shadow-rgb: 201, 163, 95;
 }
+
 .removeBtn.removeBtn:hover,
 .removeBtn.removeBtn:focus-visible,
 .removeBtn.removeBtn:active {

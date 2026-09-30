@@ -197,7 +197,7 @@ function CartDrawer() {
         {cart && cart.items.length > 0 && (
           <div className="p-4 border-top">
             <div className="d-flex justify-content-between mb-1">
-              <span style={{ color: 'var(--muted)' }}>Subtotal</span>
+              <span style={{ fontFamily: 'var(--font-card-title)' }}>Subtotal</span>
               <strong className="font-serif" style={{ fontSize: '1.3rem', fontFamily: 'var(--font-price)', fontWeight: 100 }}>
                 {formatPrice(cart.totals.total_price, cart.totals.currency_minor_unit, cart.totals.currency_symbol)}
               </strong>

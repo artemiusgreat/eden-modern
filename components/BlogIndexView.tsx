@@ -45,7 +45,7 @@ export default function BlogIndexView({ posts }: { posts: WpPost[] }) {
           <p className="kicker mb-2">Stories & rituals</p>
           <h1 className="font-serif" style={{ fontSize: '3rem' }}>The Magazine</h1>
           <div className="divider-gold" />
-          <p className="section-sub">Fragrance notes, skincare science and beauty rituals — from our editors.</p>
+          <p className="section-sub">Fragrance notes, skincare science and beauty rituals - from our editors.</p>
         </MDBContainer>
       </div>
       <MDBContainer className="py-5">

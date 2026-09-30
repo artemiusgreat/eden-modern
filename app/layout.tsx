@@ -44,11 +44,11 @@ const prata = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Indemos — Luxury Fragrances & Beauty',
-    template: '%s — Indemos',
+    default: 'Indemos - Luxury Fragrances & Beauty',
+    template: '%s - Indemos',
   },
   description:
-    'Authentic designer perfumes, skincare, and cosmetics from trusted brands around the world — at competitive prices.',
+    'Authentic designer perfumes, skincare, and cosmetics from trusted brands around the world - at competitive prices.',
 };
 
 // Bump on every shipped build so we can tell (via View Source) which build is live.

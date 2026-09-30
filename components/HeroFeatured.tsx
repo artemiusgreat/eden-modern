@@ -40,11 +40,11 @@ export default function HeroFeatured({ products }: { products: StoreProduct[] })
   );
 
   // Autoplay.
-  useEffect(() => {
-    if (count < 2 || paused || reducedMotion()) return;
-    const t = setInterval(() => go(indexRef.current + 1), AUTOPLAY_MS);
-    return () => clearInterval(t);
-  }, [count, paused, go]);
+  // useEffect(() => {
+  //   if (count < 2 || paused || reducedMotion()) return;
+  //   const t = setInterval(() => go(indexRef.current + 1), AUTOPLAY_MS);
+  //   return () => clearInterval(t);
+  // }, [count, paused, go]);
 
   // Unmount the outgoing slide once its fade-out finishes.
   useEffect(() => {

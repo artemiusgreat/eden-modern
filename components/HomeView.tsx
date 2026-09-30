@@ -135,13 +135,11 @@ export default function HomeView({
               <h1>
                 Scents That
                 <br />
-                Inspire.
+                Inspire
               </h1>
               <div className={styles.heroRule} />
-              <p className={styles.heroSub}>
-                Authentic luxury fragrances,
-                <br />
-                curated for you.
+              <p className={`${styles.heroSub} me-3`}>
+                We offer organic skincare and signature perfumes designed to enhance your natural glow and leave a lasting impression.
               </p>
               <Link href="#bestsellers" className="btn-noir">
                 Shop bestsellers
@@ -248,11 +246,11 @@ export default function HomeView({
               </MDBCol>
               <MDBCol md="6">
                 <div className={styles.storyPanel}>
-                  <p className="kicker mb-3">Our story</p>
+                  <p className={`${styles.kicker} kicker mb-3`}>Our story</p>
                   <h2>
-                    Beauty is personal.
+                    Beauty is personal
                     <br />
-                    We make it exceptional.
+                    We make it exceptional
                   </h2>
                   <p>
                     {stripHtml(storyCat.description || '').slice(0, 260) ||
@@ -278,7 +276,7 @@ export default function HomeView({
       <section className="noir-section" style={{ paddingTop: '2rem' }}>
         <MDBContainer>
           <p className="noir-kicker">Easy by design</p>
-          <h2 className="noir-title">From discovery to your doorstep.</h2>
+          <h2 className="noir-title">From discovery to your doorstep</h2>
           <div className={styles.processTrack}>
             <MDBRow>
               {STEPS.map((s) => (
@@ -303,7 +301,7 @@ export default function HomeView({
       <section className="noir-section" style={{ paddingTop: '2rem' }}>
         <MDBContainer>
           <p className="noir-kicker">From the magazine</p>
-          <h2 className="noir-title">Stories & rituals.</h2>
+          <h2 className="noir-title">Stories & rituals</h2>
           {posts.length > 0 && (
             <MDBRow>
               {posts.map((p) => (

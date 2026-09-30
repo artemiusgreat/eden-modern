@@ -234,7 +234,8 @@ em {
   color: var(--muted);
   text-decoration: none;
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 300;
+  color: var(--gold-soft);
   text-transform: uppercase;
 }
 .noir-head-split a:hover {
@@ -313,7 +314,7 @@ em {
 }
 .price-sale,
 .price-now {
-  color: var(--ink);
+  color: var(--gold-soft);
   font-weight: 100;
   font-size: 1.15rem;
   font-family: var(--font-price, var(--font-serif));
@@ -464,6 +465,22 @@ em {
   white-space: nowrap;
   border: 0;
 }
+
+/* Ads */
+
+.prose-wp .wc-block-product-gallery-large-image ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.prose-wp .wp-block-columns .cart {
+  margin: 1rem 0;
+}
+.prose-wp .wp-block-columns .stock, 
+.prose-wp .wp-block-columns .quantity {
+  display: none;
+}
+
 .blog-hero-img {
   border: 1px solid var(--line-strong);
   padding: 10px;

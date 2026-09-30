@@ -185,7 +185,7 @@ export default function ProductView({
               <MDBIcon fas icon="rotate-left" /> 15-day returns on eligible items
             </div>
             <div className={styles.perkRow} style={{ borderBottom: '1px solid var(--line)' }}>
-              <MDBIcon fas icon="shield-halved" /> 100% authentic — sourced from trusted brands
+              <MDBIcon fas icon="shield-halved" /> 100% authentic - sourced from trusted brands
             </div>
           </div>
 
