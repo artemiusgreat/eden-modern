@@ -9,6 +9,9 @@ import styles from './RouteProgress.module.css';
 // ms, so fast clicks never flash it — unobtrusive by design. Hidden as soon
 // as the new route renders.
 const SHOW_AFTER = 150;
+// Fail-safe: a failed or stalled navigation never changes the URL, which is
+// the only signal that hides the bar — so never leave it pinned indefinitely.
+const HIDE_AFTER = 10000;
 
 export default function RouteProgress() {
   const pathname = usePathname();
@@ -55,6 +58,14 @@ export default function RouteProgress() {
     }
     setActive(false);
   }, [pathname, searchParams]);
+
+  // Failed/aborted navigation: the URL never changes, so force-hide the bar
+  // instead of leaving it stuck at the top.
+  useEffect(() => {
+    if (!active) return;
+    const t = setTimeout(() => setActive(false), HIDE_AFTER);
+    return () => clearTimeout(t);
+  }, [active]);
 
   if (!active) return null;
   return (
