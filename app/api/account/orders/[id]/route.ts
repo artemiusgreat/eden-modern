@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSessionCustomerId, wcFetch, WcError } from '@/lib/wc-admin';
+import { getSessionCustomer, wcFetch, WcError } from '@/lib/wc-admin';
 
 // One order's full detail. The order id comes from the URL, but ownership is
 // re-checked: the order's customer_id must match the WP session user.
@@ -20,9 +20,13 @@ const addr = (a: any) =>
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   try {
-    const userId = await getSessionCustomerId();
-    if (!userId)
-      return NextResponse.json({ ok: false, error: 'Not signed in.' }, { status: 401 });
+    const session = await getSessionCustomer();
+    if (!session.id)
+      return NextResponse.json(
+        { ok: false, error: 'Not signed in.', reason: session.reason },
+        { status: 401 }
+      );
+    const userId = session.id;
     const orderId = Number(params.id);
     if (!Number.isFinite(orderId))
       return NextResponse.json({ ok: false, error: 'Invalid order.' }, { status: 400 });

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSessionCustomerId, wcFetch, WcError } from '@/lib/wc-admin';
+import { getSessionCustomer, wcFetch, WcError } from '@/lib/wc-admin';
 
 // The signed-in customer's own profile: email, name, billing & shipping
 // addresses. Everything is scoped to the WP session user — the id never
@@ -22,9 +22,13 @@ const err = (e: unknown) => {
 
 export async function GET() {
   try {
-    const userId = await getSessionCustomerId();
-    if (!userId)
-      return NextResponse.json({ ok: false, error: 'Not signed in.' }, { status: 401 });
+    const session = await getSessionCustomer();
+    if (!session.id)
+      return NextResponse.json(
+        { ok: false, error: 'Not signed in.', reason: session.reason },
+        { status: 401 }
+      );
+    const userId = session.id;
     const c = await wcFetch<any>(`/customers/${userId}`);
     return NextResponse.json({ ok: true, customer: pickCustomer(c) });
   } catch (e) {
@@ -56,9 +60,13 @@ const cleanAddress = (a: any) => {
 
 export async function PUT(req: Request) {
   try {
-    const userId = await getSessionCustomerId();
-    if (!userId)
-      return NextResponse.json({ ok: false, error: 'Not signed in.' }, { status: 401 });
+    const session = await getSessionCustomer();
+    if (!session.id)
+      return NextResponse.json(
+        { ok: false, error: 'Not signed in.', reason: session.reason },
+        { status: 401 }
+      );
+    const userId = session.id;
     const body = await req.json().catch(() => ({}));
 
     if (body.email !== undefined && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(body.email))) {

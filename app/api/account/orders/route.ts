@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSessionCustomerId, wcFetch, WcError } from '@/lib/wc-admin';
+import { getSessionCustomer, wcFetch, WcError } from '@/lib/wc-admin';
 
 // The signed-in customer's own orders, newest first. Scoped by WP session
 // user id — never by client input.
@@ -12,9 +12,13 @@ const pickLine = (li: any) => ({
 
 export async function GET() {
   try {
-    const userId = await getSessionCustomerId();
-    if (!userId)
-      return NextResponse.json({ ok: false, error: 'Not signed in.' }, { status: 401 });
+    const session = await getSessionCustomer();
+    if (!session.id)
+      return NextResponse.json(
+        { ok: false, error: 'Not signed in.', reason: session.reason },
+        { status: 401 }
+      );
+    const userId = session.id;
     const orders = await wcFetch<any[]>(
       `/orders?customer=${userId}&per_page=25&orderby=date&order=desc`,
     );

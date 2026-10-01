@@ -46,9 +46,21 @@ export class WcError extends Error {
   }
 }
 
-type CacheEntry = { customerId: number | null; expires: number };
+export type SessionReason = 'no_cookie' | 'session_invalid' | 'customer_not_found';
+export type SessionResolution = { id: number | null; reason: SessionReason | null };
+
+type CacheEntry = { resolution: SessionResolution; expires: number };
 const sessionCache = new Map<string, CacheEntry>();
 const CACHE_TTL_MS = 5 * 60 * 1000;
+
+function cacheResolution(key: string, resolution: SessionResolution): SessionResolution {
+  sessionCache.set(key, { resolution, expires: Date.now() + CACHE_TTL_MS });
+  if (sessionCache.size > 500) {
+    const oldest = sessionCache.keys().next();
+    if (!oldest.done) sessionCache.delete(oldest.value);
+  }
+  return resolution;
+}
 
 function cookieValue(raw: string): string {
   try {
@@ -94,11 +106,11 @@ async function customerIdForUsername(username: string): Promise<number | null> {
 }
 
 /**
- * Resolve the signed-in WP session to a WooCommerce customer id.
- * Returns null when there is no session, the cookie is forged/invalid,
- * or the user has no WooCommerce customer record.
+ * Resolve the signed-in WP session to a WooCommerce customer id, and say why
+ * when it can't (surfaced in the 401 body so the UI — and the user — can tell
+ * "no session" apart from "session fine, no customer record").
  */
-export async function getSessionCustomerId(): Promise<number | null> {
+export async function getSessionCustomer(): Promise<SessionResolution> {
   const jar = await cookies();
   const authCookies = jar
     .getAll()
@@ -107,27 +119,25 @@ export async function getSessionCustomerId(): Promise<number | null> {
         c.name.startsWith('wordpress_logged_in_') ||
         c.name.startsWith('wordpress_sec_logged_in_')
     );
-  if (!authCookies.length) return null;
+  if (!authCookies.length) return { id: null, reason: 'no_cookie' };
 
   const cookieHeader = authCookies.map((c) => `${c.name}=${c.value}`).join('; ');
 
   // Cache per exact cookie value: a different/forged cookie never hits
   // another session's entry, and re-login produces a new value.
   const cached = sessionCache.get(cookieHeader);
-  if (cached && cached.expires > Date.now()) return cached.customerId;
+  if (cached && cached.expires > Date.now()) return cached.resolution;
 
   const username = cookieValue(authCookies[0].value).split('|')[0]?.trim();
-  let customerId: number | null = null;
-  if (username && (await cookieIsValid(cookieHeader))) {
-    customerId = await customerIdForUsername(username);
+  if (!username || !(await cookieIsValid(cookieHeader))) {
+    return cacheResolution(cookieHeader, { id: null, reason: 'session_invalid' });
   }
 
-  sessionCache.set(cookieHeader, { customerId, expires: Date.now() + CACHE_TTL_MS });
-  if (sessionCache.size > 500) {
-    const oldest = sessionCache.keys().next();
-    if (!oldest.done) sessionCache.delete(oldest.value);
+  const customerId = await customerIdForUsername(username);
+  if (!customerId) {
+    return cacheResolution(cookieHeader, { id: null, reason: 'customer_not_found' });
   }
-  return customerId;
+  return cacheResolution(cookieHeader, { id: customerId, reason: null });
 }
 
 /**

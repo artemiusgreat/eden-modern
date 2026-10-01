@@ -73,6 +73,14 @@
   padding: 0.7rem 0.9rem;
   font-size: 0.95rem;
 }
+/* Browser autofill paints its own pale background; keep it on-theme and readable. */
+.input.input:-webkit-autofill,
+.input.input:-webkit-autofill:hover,
+.input.input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 1000px var(--bg) inset;
+  caret-color: var(--ink);
+}
 .input.input:focus {
   background: var(--bg);
   border-color: var(--gold-soft);

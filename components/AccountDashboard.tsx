@@ -78,6 +78,12 @@ function SetupNeeded({ message }: { message: string }) {
   );
 }
 
+// A 401 with reason=customer_not_found means the WordPress session is valid
+// but the account has no WooCommerce customer record — not an expired session.
+const isCustomerMissing = (data: any) => data?.reason === 'customer_not_found';
+const noCustomerMsg =
+  'You are signed in, but this account has no customer record in the store yet. Place an order or contact us and we will link it up.';
+
 /* ---------- Orders ---------- */
 
 type OrderSummary = {
@@ -104,7 +110,7 @@ function OrdersTab() {
       try {
         const res = await fetch('/api/account/orders');
         const data = await res.json();
-        if (res.status === 401) return setExpired(true);
+        if (res.status === 401) return isCustomerMissing(data) ? setError(noCustomerMsg) : setExpired(true);
         if (!data.ok) {
           if (res.status === 503) return setSetup(data.error);
           return setError(data.error ?? 'Could not load orders.');
@@ -312,7 +318,7 @@ function AddressesTab() {
       try {
         const res = await fetch('/api/account/customer');
         const data = await res.json();
-        if (res.status === 401) return setExpired(true);
+        if (res.status === 401) return isCustomerMissing(data) ? setError(noCustomerMsg) : setExpired(true);
         if (!data.ok) {
           if (res.status === 503) return setSetup(data.error);
           return setError(data.error ?? 'Could not load addresses.');
@@ -336,7 +342,7 @@ function AddressesTab() {
         body: JSON.stringify({ billing, shipping }),
       });
       const data = await res.json();
-      if (res.status === 401) return setExpired(true);
+      if (res.status === 401) return isCustomerMissing(data) ? setError(noCustomerMsg) : setExpired(true);
       if (!data.ok) return setError(data.error ?? 'Could not save addresses.');
       setBilling(data.customer.billing ?? {});
       setShipping(data.customer.shipping ?? {});
@@ -392,7 +398,7 @@ function AccountTab() {
       try {
         const res = await fetch('/api/account/customer');
         const data = await res.json();
-        if (res.status === 401) return setExpired(true);
+        if (res.status === 401) return isCustomerMissing(data) ? setError(noCustomerMsg) : setExpired(true);
         if (!data.ok) {
           if (res.status === 503) return setSetup(data.error);
           return setError(data.error ?? 'Could not load account details.');
@@ -424,7 +430,7 @@ function AccountTab() {
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (res.status === 401) return setExpired(true);
+      if (res.status === 401) return isCustomerMissing(data) ? setError(noCustomerMsg) : setExpired(true);
       if (!data.ok) return setError(data.error ?? 'Could not save details.');
       setFirst(data.customer.first_name ?? '');
       setLast(data.customer.last_name ?? '');
