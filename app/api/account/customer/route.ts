@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSessionUserId, wcFetch, WcError } from '@/lib/wc-admin';
+import { getSessionCustomerId, wcFetch, WcError } from '@/lib/wc-admin';
 
 // The signed-in customer's own profile: email, name, billing & shipping
 // addresses. Everything is scoped to the WP session user — the id never
@@ -22,7 +22,7 @@ const err = (e: unknown) => {
 
 export async function GET() {
   try {
-    const userId = await getSessionUserId();
+    const userId = await getSessionCustomerId();
     if (!userId)
       return NextResponse.json({ ok: false, error: 'Not signed in.' }, { status: 401 });
     const c = await wcFetch<any>(`/customers/${userId}`);
@@ -56,7 +56,7 @@ const cleanAddress = (a: any) => {
 
 export async function PUT(req: Request) {
   try {
-    const userId = await getSessionUserId();
+    const userId = await getSessionCustomerId();
     if (!userId)
       return NextResponse.json({ ok: false, error: 'Not signed in.' }, { status: 401 });
     const body = await req.json().catch(() => ({}));
