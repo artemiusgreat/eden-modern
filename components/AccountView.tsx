@@ -73,7 +73,7 @@ function SignInForm() {
           {error}
         </p>
       )}
-      <button type="submit" className="btn-gold w-100" disabled={busy}>
+      <button type="submit" className="btn-gold" disabled={busy}>
         {busy ? 'Signing in…' : 'Sign in'}
       </button>
       <p className="small mt-3 mb-0 text-center">
@@ -151,7 +151,7 @@ function RegisterForm() {
           {error}
         </p>
       )}
-      <button type="submit" className="btn-gold w-100" disabled={busy}>
+      <button type="submit" className="btn-gold" disabled={busy}>
         {busy ? 'Creating account…' : 'Create account'}
       </button>
       <p className="small mt-3 mb-0 text-center" style={{ color: 'var(--muted)' }}>

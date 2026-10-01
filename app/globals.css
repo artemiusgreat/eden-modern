@@ -152,6 +152,9 @@ em {
   background: var(--ink);
   color: var(--bg);
 }
+.btn-gold {
+  justify-self: stretch;
+}
 .btn-gold.btn-gold {
   background: linear-gradient(135deg, #d9b46c, #b08a2e);
   color: #14100b;
@@ -161,7 +164,7 @@ em {
   font-weight: 300;
   padding: 0.95rem 2.2rem;
   border-radius: 2px;
-  display: inline-flex;
+  display: block;
   align-items: center;
   gap: 0.6rem;
   text-decoration: none;
