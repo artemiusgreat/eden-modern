@@ -59,10 +59,16 @@ export async function GET() {
   }
 
   const bust = `musedebug=${Date.now()}`;
+  // Flap test: 5 sequential identical probes. A mix of 200/302 across them
+  // means requests land on different origin servers with divergent salts.
+  const flap: unknown[] = [];
+  for (let i = 0; i < 5; i++) {
+    flap.push(await probe('/wp-admin/profile.php', header));
+  }
   return NextResponse.json({
     cookieNames: authCookies.map((c) => c.name),
     cookie_value_shape: shape,
-    profile_with_cookie: await probe('/wp-admin/profile.php', header),
+    profile_flap_5x: flap,
     profile_cachebusted_with_cookie: await probe(
       `/wp-admin/profile.php?${bust}`,
       header
