@@ -8,10 +8,15 @@ import { cookies } from 'next/headers';
  * unauthenticated (wp_set_current_user(0) -> 401). We can't mint a wp_rest
  * nonce server-side (needs WP salts), so REST cookie auth can never work here.
  * Instead:
- *   1. Read the username from the auth cookie (first segment, plaintext).
- *   2. Validate the cookie is genuine with plain WP cookie auth on a
- *      non-REST page (wp-admin/profile.php: 200 = valid, 302 to wp-login =
- *      not). No nonce required for regular pages.
+ *   1. Read the username from the logged_in cookie (first segment, plaintext).
+ *   2. Validate the session with plain WP cookie auth on a non-REST page
+ *      (wp-admin/profile.php: 200 = valid, 302 to wp-login = not). No nonce
+ *      required for regular pages. NOTE: wp-admin/admin.php calls
+ *      auth_redirect() unconditionally, and that validates the AUTH cookie
+ *      (wordpress_sec_*) via wp_validate_auth_cookie(), NOT the logged_in
+ *      one — so the proxy must forward BOTH cookies. The login relay widens
+ *      WP's Path=/wp-admin-scoped auth cookie to Path=/ so the browser
+ *      actually sends it back to us.
  *   3. Map username -> WooCommerce customer id via /wc/v3/customers?search=
  *      with an exact username match (WP usernames are unique).
  * The REST API keys then do all data access, scoped to that customer id.
@@ -112,13 +117,10 @@ async function customerIdForUsername(username: string): Promise<number | null> {
  */
 export async function getSessionCustomer(): Promise<SessionResolution> {
   const jar = await cookies();
-  const authCookies = jar
-    .getAll()
-    .filter(
-      (c) =>
-        c.name.startsWith('wordpress_logged_in_') ||
-        c.name.startsWith('wordpress_sec_logged_in_')
-    );
+  // Forward every WP cookie: profile.php's auth_redirect() validates the
+  // AUTH cookie (wordpress_sec_*), while the username comes from the
+  // logged_in cookie. Both are needed.
+  const authCookies = jar.getAll().filter((c) => c.name.startsWith('wordpress_'));
   if (!authCookies.length) return { id: null, reason: 'no_cookie' };
 
   const cookieHeader = authCookies.map((c) => `${c.name}=${c.value}`).join('; ');
@@ -128,7 +130,9 @@ export async function getSessionCustomer(): Promise<SessionResolution> {
   const cached = sessionCache.get(cookieHeader);
   if (cached && cached.expires > Date.now()) return cached.resolution;
 
-  const username = cookieValue(authCookies[0].value).split('|')[0]?.trim();
+  const loginCookie =
+    authCookies.find((c) => c.name.startsWith('wordpress_logged_in_')) ?? authCookies[0];
+  const username = cookieValue(loginCookie.value).split('|')[0]?.trim();
   if (!username || !(await cookieIsValid(cookieHeader))) {
     return cacheResolution(cookieHeader, { id: null, reason: 'session_invalid' });
   }

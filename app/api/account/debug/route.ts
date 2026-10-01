@@ -30,19 +30,17 @@ async function probe(path: string, cookieHeader: string) {
 
 export async function GET() {
   const jar = await cookies();
-  const authCookies = jar
-    .getAll()
-    .filter(
-      (c) =>
-        c.name.startsWith('wordpress_logged_in_') ||
-        c.name.startsWith('wordpress_sec_logged_in_')
-    );
+  // All WP cookies, not just the logged_in one: the session oracle needs the
+  // AUTH cookie (wordpress_sec_*) too.
+  const authCookies = jar.getAll().filter((c) => c.name.startsWith('wordpress_'));
   const header = authCookies.map((c) => `${c.name}=${c.value}`).join('; ');
 
-  // Shape of the cookie value (never the value itself).
+  // Shape of the logged_in cookie value (never the value itself).
   let shape: Record<string, unknown> | null = null;
   try {
-    const raw = decodeURIComponent(authCookies[0]?.value ?? '');
+    const loginCookie =
+      authCookies.find((c) => c.name.startsWith('wordpress_logged_in_')) ?? authCookies[0];
+    const raw = decodeURIComponent(loginCookie?.value ?? '');
     const parts = raw ? raw.split('|') : [];
     const exp = parts.length >= 2 ? Number(parts[1]) : NaN;
     shape = {

@@ -1,10 +1,25 @@
 import { NextResponse } from 'next/server';
 
 // Storefront-native sign-in: proxies credentials to wp-login.php on the WP
-// backend and relays the wordpress_logged_in_* auth cookie to the browser.
+// backend and relays the WP auth cookies to the browser.
 // Works in production where the storefront runs on eden.indemos.com (the
 // cookie is host-only for that domain). No WP plugin or REST key needed.
 const WP = 'https://eden.indemos.com';
+
+/**
+ * WP scopes its auth cookie (wordpress_sec_*) to Path=/wp-admin and
+ * Path=/wp-content/plugins, so the browser would never send it back to the
+ * Next.js app — and WP's own auth_redirect() (called unconditionally by every
+ * wp-admin page, including our profile.php session oracle) validates THAT
+ * cookie via wp_validate_auth_cookie(), not the logged_in one. Widen every
+ * relayed cookie to Path=/ so the whole session round-trips.
+ */
+function widenPath(setCookie: string): string {
+  if (/;\s*path=/i.test(setCookie)) {
+    return setCookie.replace(/;\s*path=[^;]*/i, '; path=/');
+  }
+  return `${setCookie}; path=/`;
+}
 
 export async function POST(req: Request) {
   try {
@@ -50,10 +65,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: 'Invalid username or password.' });
     }
 
-    // 3. Relay the auth cookies to the browser verbatim.
-    const out = NextResponse.json({ ok: true });
-    for (const c of setCookies) out.headers.append('set-cookie', c);
-    return out;
+    // Relay the auth cookies to the browser, widened to Path=/ (see
+    // widenPath). Headers are passed as an array of tuples so every
+    // Set-Cookie survives as its own header.
+    const relayed = setCookies.map(widenPath);
+    return new NextResponse(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: [
+        ['content-type', 'application/json'],
+        ['x-relayed-cookies', String(relayed.length)],
+        ...relayed.map((c): [string, string] => ['set-cookie', c]),
+      ],
+    });
   } catch {
     return NextResponse.json(
       { ok: false, error: 'Could not reach the store backend. Please try again.' },
