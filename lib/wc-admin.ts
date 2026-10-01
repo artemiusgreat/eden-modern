@@ -6,7 +6,11 @@ import { cookies } from 'next/headers';
 // the signed-in WP user: the user id comes from validating their WP auth
 // cookies against /wp/v2/users/me, never from client input.
 
-const WC_URL = (process.env.WC_STORE_URL ?? 'https://eden.indemos.com').replace(/\/$/, '');
+const WC_URL = (
+  process.env.WC_STORE_URL ??
+  process.env.WOO_STORE_URL ??
+  'https://eden.indemos.com'
+).replace(/\/$/, '');
 
 export function wcKeysConfigured(): boolean {
   return Boolean(process.env.WC_CONSUMER_KEY && process.env.WC_CONSUMER_SECRET);
