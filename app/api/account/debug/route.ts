@@ -63,9 +63,47 @@ export async function GET() {
   for (let i = 0; i < 5; i++) {
     flap.push(await probe('/wp-admin/profile.php', header));
   }
+
+  // Why /api/account/orders can still 401 with reason=customer_not_found even
+  // though the session is valid: customerIdForUsername() needs the WC REST
+  // keys (missing/restart-needed .env.local?) and an exact username match in
+  // /wc/v3/customers (an admin WP user often has no customer row). Report
+  // both, without echoing any secret.
+  const wcKey = process.env.WC_CONSUMER_KEY;
+  const wcSecret = process.env.WC_CONSUMER_SECRET;
+  const keysConfigured = !!(wcKey && wcSecret);
+  const username = typeof shape?.username === 'string' ? shape.username : '';
+  let customerLookup: Record<string, unknown> | null = null;
+  if (keysConfigured && username) {
+    try {
+      const r = await fetch(
+        `${WC_URL}/wp-json/wc/v3/customers?search=${encodeURIComponent(username)}&per_page=20`,
+        {
+          headers: {
+            Authorization:
+              'Basic ' + Buffer.from(`${wcKey}:${wcSecret}`).toString('base64'),
+            'User-Agent': 'EdenStorefront/1.0',
+          },
+          cache: 'no-store',
+        }
+      );
+      const list: unknown = await r.json().catch(() => null);
+      const arr = Array.isArray(list) ? list : null;
+      customerLookup = {
+        status: r.status,
+        result_count: arr ? arr.length : null,
+        usernames: arr ? arr.map((c: any) => c?.username ?? null) : null,
+        exact_match: arr ? arr.some((c: any) => c?.username === username) : false,
+      };
+    } catch (e) {
+      customerLookup = { error: String(e).slice(0, 120) };
+    }
+  }
   return NextResponse.json({
     cookieNames: authCookies.map((c) => c.name),
     cookie_value_shape: shape,
+    wc_keys_configured: keysConfigured,
+    customer_lookup: customerLookup,
     profile_flap_5x: flap,
     profile_cachebusted_with_cookie: await probe(
       `/wp-admin/profile.php?${bust}`,
