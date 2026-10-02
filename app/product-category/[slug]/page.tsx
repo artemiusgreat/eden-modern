@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCategoryBySlug, getProducts } from '@/lib/woo';
+import { getCategoryBySlug, getProductsPaged } from '@/lib/woo';
 import { stripHtml } from '@/lib/format';
 import CategoryView from '@/components/CategoryView';
 
@@ -28,7 +28,9 @@ export default async function CategoryPage({
   if (!category) notFound();
 
   const page = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1);
-  const products = await getProducts({ category: category.id, per_page: PER_PAGE, page }).catch(() => []);
+  const { products, totalPages } = await getProductsPaged({ category: category.id, per_page: PER_PAGE, page }).catch(
+    () => ({ products: [], totalPages: 0 })
+  );
 
-  return <CategoryView category={category} products={products} page={page} />;
+  return <CategoryView category={category} products={products} page={page} totalPages={totalPages} />;
 }

@@ -187,8 +187,8 @@ export interface ProductQuery {
   orderby?: 'menu_order' | 'popularity' | 'rating' | 'date' | 'price' | 'price-desc';
 }
 
-export async function getProducts(q: ProductQuery = {}) {
-  const products = await wooGet<StoreProduct[]>('/products', {
+function productParams(q: ProductQuery): Record<string, string | number | undefined> {
+  return {
     per_page: q.per_page ?? 12,
     page: q.page,
     category: q.category,
@@ -196,8 +196,18 @@ export async function getProducts(q: ProductQuery = {}) {
     slug: q.slug,
     on_sale: q.on_sale ? 'true' : undefined,
     orderby: q.orderby,
-  });
+  };
+}
+
+export async function getProducts(q: ProductQuery = {}) {
+  const products = await wooGet<StoreProduct[]>('/products', productParams(q));
   return products.map(decodeProduct);
+}
+
+/** Paged variant of getProducts: also returns the X-WP-TotalPages page count. */
+export async function getProductsPaged(q: ProductQuery = {}) {
+  const { data, totalPages } = await wooGetPaged<StoreProduct[]>('/products', productParams(q));
+  return { products: data.map(decodeProduct), totalPages };
 }
 
 export async function getProductBySlug(slug: string): Promise<StoreProduct | null> {

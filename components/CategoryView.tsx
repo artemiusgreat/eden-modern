@@ -5,16 +5,18 @@ import { MDBContainer, MDBRow, MDBCol, MDBBreadcrumb, MDBBreadcrumbItem } from '
 import type { StoreProduct, StoreCategory } from '@/lib/woo';
 import { stripHtml } from '@/lib/format';
 import ProductCard from './ProductCard';
-import Pagination from './Pagination';
+import CatalogPagination from './CatalogPagination';
 
 export default function CategoryView({
   category,
   products,
   page,
+  totalPages,
 }: {
   category: StoreCategory;
   products: StoreProduct[];
   page: number;
+  totalPages: number;
 }) {
   const description = stripHtml(category.description || '').slice(0, 220);
 
@@ -51,7 +53,12 @@ export default function CategoryView({
                 </MDBCol>
               ))}
             </MDBRow>
-            <Pagination page={page} basePath={`/product-category/${category.slug}`} />
+            <CatalogPagination
+              page={page}
+              totalPages={totalPages}
+              params={{}}
+              basePath={`/product-category/${category.slug}`}
+            />
           </>
         )}
       </MDBContainer>

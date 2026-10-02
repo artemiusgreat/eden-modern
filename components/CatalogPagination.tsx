@@ -8,14 +8,16 @@ interface Props {
   page: number;
   totalPages: number;
   params: Record<string, string>;
+  /** URL base the ?page= param attaches to. Defaults to /catalog. */
+  basePath?: string;
 }
 
-function pageUrl(params: Record<string, string>, page: number): string {
+function pageUrl(basePath: string, params: Record<string, string>, page: number): string {
   const p = new URLSearchParams(params);
   if (page <= 1) p.delete('page');
   else p.set('page', String(page));
   const s = p.toString();
-  return s ? `/catalog?${s}` : '/catalog';
+  return s ? `${basePath}?${s}` : basePath;
 }
 
 /** Page numbers with ellipsis: 1 … p-1 p p+1 … N */
@@ -30,12 +32,12 @@ function pageWindow(page: number, totalPages: number): (number | '…')[] {
   return out;
 }
 
-export default function CatalogPagination({ page, totalPages, params }: Props) {
+export default function CatalogPagination({ page, totalPages, params, basePath = '/catalog' }: Props) {
   if (totalPages <= 1) return null;
   return (
-    <nav className={styles.pagination} aria-label="Catalog pages">
+    <nav className={styles.pagination} aria-label="Pagination">
       {page > 1 ? (
-        <Link href={pageUrl(params, page - 1)} className={styles.pageLink} aria-label="Previous page">
+        <Link href={pageUrl(basePath, params, page - 1)} className={styles.pageLink} aria-label="Previous page">
           <MDBIcon fas icon="chevron-left" />
         </Link>
       ) : (
@@ -51,7 +53,7 @@ export default function CatalogPagination({ page, totalPages, params }: Props) {
         ) : (
           <Link
             key={n}
-            href={pageUrl(params, n)}
+            href={pageUrl(basePath, params, n)}
             aria-current={n === page ? 'page' : undefined}
             className={`${styles.pageLink} ${n === page ? styles.pageCurrent : ''}`}>
             {n}
@@ -59,7 +61,7 @@ export default function CatalogPagination({ page, totalPages, params }: Props) {
         )
       )}
       {page < totalPages ? (
-        <Link href={pageUrl(params, page + 1)} className={styles.pageLink} aria-label="Next page">
+        <Link href={pageUrl(basePath, params, page + 1)} className={styles.pageLink} aria-label="Next page">
           <MDBIcon fas icon="chevron-right" />
         </Link>
       ) : (
