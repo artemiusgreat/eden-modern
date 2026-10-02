@@ -13,6 +13,7 @@ import {
   MDBSpinner,
 } from 'mdb-react-ui-kit';
 import { useCart } from '@/components/cart/CartProvider';
+import { cartLineToGaItem, minorToDecimal, trackBeginCheckout, trackPurchase } from '@/lib/analytics';
 import type { StoreCart } from '@/lib/woo';
 import type {
   CheckoutAddress,
@@ -272,6 +273,20 @@ export default function CheckoutView() {
     }
   }
 
+  // GA4 begin_checkout — once per checkout visit that has items in the bag.
+  const beganCheckout = useRef(false);
+  useEffect(() => {
+    if (beganCheckout.current || orderNumber) return;
+    const items = cartData?.items;
+    const totals = cartData?.totals;
+    if (!items || items.length === 0 || !totals) return;
+    beganCheckout.current = true;
+    trackBeginCheckout(
+      items.map((i) => cartLineToGaItem(i, i.quantity)),
+      minorToDecimal(totals.total_price, totals.currency_minor_unit)
+    );
+  }, [cartData, orderNumber]);
+
   async function placeOrder() {
     const bad = validate();
     if (bad) {
@@ -336,13 +351,22 @@ export default function CheckoutView() {
         throw new Error(msg);
       }
 
+      // Snapshot the purchased bag for the GA4 purchase event before emptying it.
+      const purchasedItems = (cartData?.items ?? []).map((i) => cartLineToGaItem(i, i.quantity));
+      const purchasedValue = minorToDecimal(
+        cartData?.totals?.total_price,
+        cartData?.totals?.currency_minor_unit
+      );
+
       // Success — empty the purchased cart, then show confirmation.
       if (cart?.items?.length) {
         for (const item of cart.items) {
           await removeItem(item.key).catch(() => null);
         }
       }
-      setOrderNumber(result.order_number || String(result.order_id));
+      const txnId = result.order_number || String(result.order_id);
+      setOrderNumber(txnId);
+      trackPurchase(txnId, purchasedValue, purchasedItems);
     } catch (e) {
       showError(e instanceof Error ? e.message : 'Order could not be placed.');
     } finally {

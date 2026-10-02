@@ -6,6 +6,7 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import './globals.css';
 import { CartProvider } from '@/components/cart/CartProvider';
 import AddToCartParam from '@/components/AddToCartParam';
+import Analytics from '@/components/Analytics';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import SiteBackdrop from '@/components/SiteBackdrop';
 import SiteNavbar from '@/components/SiteNavbar';
@@ -69,6 +70,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className={`${sans.variable} ${serif.variable} ${milonga.variable} ${prata.variable}`} data-build={BUILD_ID}>
+        <Analytics />
         <Suspense fallback={null}>
           <RouteProgress />
         </Suspense>

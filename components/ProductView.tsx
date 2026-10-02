@@ -18,6 +18,7 @@ import {
 } from 'mdb-react-ui-kit';
 import type { StoreProduct } from '@/lib/woo';
 import { formatPrice } from '@/lib/format';
+import TrackViewItem from './TrackViewItem';
 import ProductCard from './ProductCard';
 import AddToCartButton from './AddToCartButton';
 import RatingStars from './RatingStars';
@@ -85,6 +86,7 @@ export default function ProductView({
 
   return (
     <MDBContainer className={`py-5 ${styles.pdp}`}>
+      <TrackViewItem product={product} />
       <MDBBreadcrumb className="mb-4">
         <MDBBreadcrumbItem>
           <Link href="/">Home</Link>

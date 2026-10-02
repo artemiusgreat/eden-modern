@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { MDBBtn, MDBBadge, MDBSpinner, MDBIcon } from 'mdb-react-ui-kit';
 import type { StoreCart } from '@/lib/woo';
 import { formatPrice } from '@/lib/format';
+import { cartLineToGaItem, trackAddToCart } from '@/lib/analytics';
 import styles from './CartDrawer.module.css';
 
 interface CartContextValue {
@@ -66,11 +67,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const addItem = useCallback(
-    (id: number, quantity = 1) =>
-      mutate(() => cartApi('add', { id, quantity })).then(() => setDrawerOpen(true)),
-    [mutate]
-  );
+  const addItem = useCallback((id: number, quantity = 1) => {
+    // Own mutate path (instead of the shared `mutate`) so the fresh cart is
+    // available for the GA4 add_to_cart event.
+    setBusy(true);
+    return cartApi('add', { id, quantity })
+      .then((next) => {
+        setCart(next);
+        const added = next.items.find((i) => i.id === id);
+        if (added) trackAddToCart(cartLineToGaItem(added, quantity));
+        setDrawerOpen(true);
+      })
+      .finally(() => setBusy(false));
+  }, []);
   const updateQuantity = useCallback(
     (key: string, quantity: number) =>
       quantity <= 0 ? mutate(() => cartApi('remove', { key })) : mutate(() => cartApi('update', { key, quantity })),
