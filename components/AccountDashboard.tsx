@@ -619,7 +619,7 @@ export default function AccountDashboard() {
               {tab === 'account' && <AccountTab />}
             </MDBCardBody>
           </MDBCard>
-          <p className="small mt-4" style={{ color: 'var(--muted)' }}>
+          <p className="small mt-4 mb-5" style={{ color: 'var(--muted)' }}>
             Need help?{' '}
             <Link href="/contact" style={{ color: 'var(--gold)' }}>
               Contact us
