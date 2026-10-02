@@ -317,6 +317,31 @@
   color: var(--muted);
   padding: 0 0.2rem;
 }
+.pageForm {
+  display: inline-flex;
+}
+.pageInput {
+  width: 3.4rem;
+  height: 2.5rem;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-family: inherit;
+}
+.pageInput:focus {
+  outline: none;
+  border-color: var(--gold-soft);
+  color: var(--gold-soft);
+}
+.pageOf {
+  color: var(--muted);
+  font-size: 0.88rem;
+  padding: 0 0.2rem;
+  white-space: nowrap;
+}
 
 /* ---------- Empty state ---------- */
 .empty {
