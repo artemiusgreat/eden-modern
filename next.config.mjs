@@ -7,6 +7,13 @@ const nextConfig = {
         hostname: 'eden.indemos.com',
         pathname: '/wp-content/uploads/**',
       },
+      // Post-migration WordPress host (WP moves to a subdomain; the apex
+      // entry stays so transitional URLs keep working).
+      {
+        protocol: 'https',
+        hostname: 'wp.eden.indemos.com',
+        pathname: '/wp-content/uploads/**',
+      },
     ],
   },
   async redirects() {
