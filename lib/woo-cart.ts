@@ -7,7 +7,7 @@
 import { cookies } from 'next/headers';
 import type { StoreCart } from './woo';
 
-const WOO = process.env.WOO_STORE_URL ?? 'https://eden.indemos.com';
+const WOO = process.env.WOO_STORE_URL ?? 'https://edenapi.indemos.com';
 const TOKEN_COOKIE = 'woo_cart_token';
 
 async function cartRequest(method: 'GET' | 'POST', path: string, body?: unknown): Promise<StoreCart> {

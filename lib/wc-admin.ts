@@ -28,7 +28,7 @@ import { cookies } from 'next/headers';
 const WC_URL = (
   process.env.WC_STORE_URL ??
   process.env.WOO_STORE_URL ??
-  'https://eden.indemos.com'
+  'https://edenapi.indemos.com'
 ).replace(/\/$/, '');
 
 const UA = { 'User-Agent': 'EdenStorefront/1.0' };

@@ -4,7 +4,7 @@
  * Server-side only: uses WOO_STORE_URL (never NEXT_PUBLIC_*).
  */
 
-const WOO_STORE_URL = process.env.WOO_STORE_URL ?? 'https://eden.indemos.com';
+const WOO_STORE_URL = process.env.WOO_STORE_URL ?? 'https://edenapi.indemos.com';
 
 /** Woo sometimes returns HTML entities (e.g. "Health &amp; Beauty") in plain-text
  *  fields. Decode them before rendering so "&" shows as "&". */

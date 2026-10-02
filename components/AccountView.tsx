@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBIcon } from 'mdb-react-ui-kit';
 import styles from './AccountView.module.css';
 
-const WP_LOST_PASSWORD = 'https://eden.indemos.com/my-account/lost-password/';
+const WP_LOST_PASSWORD = 'https://edenapi.indemos.com/my-account/lost-password/'; // WP backend moved to edenapi at the headless cutover
 
 function Field({
   label,
