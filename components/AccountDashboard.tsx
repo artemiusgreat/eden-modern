@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBIcon } from 'mdb-react-ui-kit';
+import { progressBegin, progressEnd } from '@/lib/progress';
 import styles from './AccountView.module.css';
 
 type Tab = 'orders' | 'addresses' | 'account';
@@ -84,6 +85,75 @@ const isCustomerMissing = (data: any) => data?.reason === 'customer_not_found';
 const noCustomerMsg =
   'You are signed in, but this account has no customer record in the store yet. Place an order or contact us and we will link it up.';
 
+/* ---------- Loading skeletons ----------
+   Shimmer placeholders shown while a section fetches. Each one approximates
+   the shape of its content so the layout doesn't shift when data arrives. */
+
+function OrdersSkeleton() {
+  return (
+    <div aria-hidden="true">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className={styles.skelOrderRow}>
+          <div style={{ flex: 1 }}>
+            <div className={styles.skel} style={{ height: '1rem', width: '42%', marginBottom: '0.5rem' }} />
+            <div className={styles.skel} style={{ height: '0.8rem', width: '30%' }} />
+          </div>
+          <div className={styles.skel} style={{ height: '0.9rem', width: '5.5rem', flexShrink: 0 }} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AddressesSkeleton() {
+  return (
+    <div aria-hidden="true">
+      <MDBRow>
+        {[0, 1].map((col) => (
+          <MDBCol key={col} md="6" className="mb-4">
+            <div className={styles.skel} style={{ height: '1.1rem', width: '45%', marginBottom: '1.25rem' }} />
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className={styles.skelField}>
+                <div className={styles.skel} style={{ height: '0.75rem', width: '28%', marginBottom: '0.45rem' }} />
+                <div className={styles.skel} style={{ height: '2.9rem' }} />
+              </div>
+            ))}
+          </MDBCol>
+        ))}
+      </MDBRow>
+      <div className={styles.skel} style={{ height: '2.75rem', width: '11rem' }} />
+    </div>
+  );
+}
+
+function AccountSkeleton() {
+  return (
+    <div aria-hidden="true" style={{ maxWidth: 560 }}>
+      <div className={styles.grid2} style={{ marginBottom: '1rem' }}>
+        {[0, 1].map((i) => (
+          <div key={i} className={styles.skelField} style={{ marginBottom: 0 }}>
+            <div className={styles.skel} style={{ height: '0.75rem', width: '35%', marginBottom: '0.45rem' }} />
+            <div className={styles.skel} style={{ height: '2.9rem' }} />
+          </div>
+        ))}
+      </div>
+      <div className={styles.skelField}>
+        <div className={styles.skel} style={{ height: '0.75rem', width: '30%', marginBottom: '0.45rem' }} />
+        <div className={styles.skel} style={{ height: '2.9rem' }} />
+      </div>
+      <div className={styles.skel} style={{ height: '1.1rem', width: '40%', margin: '1.75rem 0 1rem' }} />
+      <div className={styles.grid2}>
+        {[0, 1].map((i) => (
+          <div key={i} className={styles.skelField} style={{ marginBottom: 0 }}>
+            <div className={styles.skel} style={{ height: '0.75rem', width: '40%', marginBottom: '0.45rem' }} />
+            <div className={styles.skel} style={{ height: '2.9rem' }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ---------- Orders ---------- */
 
 type OrderSummary = {
@@ -107,6 +177,7 @@ function OrdersTab() {
 
   useEffect(() => {
     (async () => {
+      progressBegin();
       try {
         const res = await fetch('/api/account/orders');
         const data = await res.json();
@@ -118,6 +189,8 @@ function OrdersTab() {
         setOrders(data.orders);
       } catch {
         setError('Could not reach the store. Please try again.');
+      } finally {
+        progressEnd();
       }
     })();
   }, []);
@@ -144,7 +217,7 @@ function OrdersTab() {
   if (expired) return <SessionExpired />;
   if (setup) return <SetupNeeded message={setup} />;
   if (error) return <Notice kind="error">{error}</Notice>;
-  if (!orders) return <p style={{ color: 'var(--muted)' }}>Loading orders…</p>;
+  if (!orders) return <OrdersSkeleton />;
   if (!orders.length)
     return (
       <Notice kind="info">
@@ -315,6 +388,7 @@ function AddressesTab() {
 
   useEffect(() => {
     (async () => {
+      progressBegin();
       try {
         const res = await fetch('/api/account/customer');
         const data = await res.json();
@@ -327,6 +401,8 @@ function AddressesTab() {
         setShipping(data.customer.shipping ?? {});
       } catch {
         setError('Could not reach the store. Please try again.');
+      } finally {
+        progressEnd();
       }
     })();
   }, []);
@@ -335,6 +411,7 @@ function AddressesTab() {
     setBusy(true);
     setError(null);
     setSaved(false);
+    progressBegin();
     try {
       const res = await fetch('/api/account/customer', {
         method: 'PUT',
@@ -351,13 +428,14 @@ function AddressesTab() {
       setError('Could not reach the store. Please try again.');
     } finally {
       setBusy(false);
+      progressEnd();
     }
   };
 
   if (expired) return <SessionExpired />;
   if (setup) return <SetupNeeded message={setup} />;
   if (error && !billing) return <Notice kind="error">{error}</Notice>;
-  if (!billing || !shipping) return <p style={{ color: 'var(--muted)' }}>Loading addresses…</p>;
+  if (!billing || !shipping) return <AddressesSkeleton />;
 
   return (
     <div>
@@ -395,6 +473,7 @@ function AccountTab() {
 
   useEffect(() => {
     (async () => {
+      progressBegin();
       try {
         const res = await fetch('/api/account/customer');
         const data = await res.json();
@@ -409,6 +488,8 @@ function AccountTab() {
         setLoaded(true);
       } catch {
         setError('Could not reach the store. Please try again.');
+      } finally {
+        progressEnd();
       }
     })();
   }, []);
@@ -421,6 +502,7 @@ function AccountTab() {
       if (pw1.length < 8) return setError('New password must be at least 8 characters.');
     }
     setBusy(true);
+    progressBegin();
     try {
       const payload: Record<string, string> = { first_name: first, last_name: last, email };
       if (pw1) payload.password = pw1;
@@ -442,13 +524,14 @@ function AccountTab() {
       setError('Could not reach the store. Please try again.');
     } finally {
       setBusy(false);
+      progressEnd();
     }
   };
 
   if (expired) return <SessionExpired />;
   if (setup) return <SetupNeeded message={setup} />;
   if (error && !loaded) return <Notice kind="error">{error}</Notice>;
-  if (!loaded) return <p style={{ color: 'var(--muted)' }}>Loading…</p>;
+  if (!loaded) return <AccountSkeleton />;
 
   return (
     <div style={{ maxWidth: 560 }}>
@@ -476,26 +559,25 @@ function AccountTab() {
 
 /* ---------- Dashboard ---------- */
 
-export default function AccountDashboard({ username }: { username: string }) {
+export default function AccountDashboard() {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>('orders');
+  const [signingOut, setSigningOut] = useState(false);
 
   const signOut = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    if (signingOut) return;
+    setSigningOut(true);
+    progressBegin();
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      progressEnd();
+    }
     router.refresh();
   };
 
   return (
     <>
-      <div className="info-hero">
-        <MDBContainer className="py-5 text-center">
-          <p className="kicker mb-2">Welcome back</p>
-          <h1 className="font-serif mb-2" style={{ fontSize: '2.4rem' }}>
-            Hi, {username}
-          </h1>
-          <p style={{ color: 'var(--muted)' }}>You&apos;re signed in. Everything below is yours.</p>
-        </MDBContainer>
-      </div>
       <MDBContainer className="py-5">
         <div className={styles.tabs} role="tablist" aria-label="Account sections">
           {(
@@ -529,8 +611,8 @@ export default function AccountDashboard({ username }: { username: string }) {
           </MDBCol>
         </MDBRow>
         <div className="text-center mt-4">
-          <button type="button" className="btn btn-outline-light" onClick={signOut}>
-            Sign out
+          <button type="button" className="btn btn-outline-light" onClick={signOut} disabled={signingOut}>
+            {signingOut ? 'Signing out…' : 'Sign out'}
           </button>
           <p className="small mt-4" style={{ color: 'var(--muted)' }}>
             Need help?{' '}
