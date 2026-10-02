@@ -75,7 +75,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       .then((next) => {
         setCart(next);
         const added = next.items.find((i) => i.id === id);
-        if (added) trackAddToCart(cartLineToGaItem(added, quantity));
+        if (added) trackAddToCart(cartLineToGaItem(added, quantity), added.prices.currency_code);
         setDrawerOpen(true);
       })
       .finally(() => setBusy(false));

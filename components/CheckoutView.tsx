@@ -283,7 +283,8 @@ export default function CheckoutView() {
     beganCheckout.current = true;
     trackBeginCheckout(
       items.map((i) => cartLineToGaItem(i, i.quantity)),
-      minorToDecimal(totals.total_price, totals.currency_minor_unit)
+      minorToDecimal(totals.total_price, totals.currency_minor_unit),
+      items[0]?.prices.currency_code ?? 'USD'
     );
   }, [cartData, orderNumber]);
 
@@ -366,7 +367,12 @@ export default function CheckoutView() {
       }
       const txnId = result.order_number || String(result.order_id);
       setOrderNumber(txnId);
-      trackPurchase(txnId, purchasedValue, purchasedItems);
+      trackPurchase(
+        txnId,
+        purchasedValue,
+        purchasedItems,
+        cartData?.items?.[0]?.prices.currency_code ?? 'USD'
+      );
     } catch (e) {
       showError(e instanceof Error ? e.message : 'Order could not be placed.');
     } finally {

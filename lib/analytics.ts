@@ -12,8 +12,11 @@ import type { StoreProduct, StoreCartItem } from './woo';
  *   begin_checkout -> checkout page, purchase -> order confirmation.
  */
 
-const CURRENCY = 'USD';
-
+/**
+ * Push a GA4 ecommerce event to the GTM dataLayer. No-op during SSR.
+ * Currency comes from the Store API's currency_code on the priced object;
+ * callers pass it through, defaulting to USD.
+ */
 export interface GaItem {
   item_id: string;
   item_name: string;
@@ -61,30 +64,35 @@ export function cartLineToGaItem(item: StoreCartItem, quantity?: number): GaItem
   };
 }
 
-export function trackViewItem(item: GaItem) {
+export function trackViewItem(item: GaItem, currency = 'USD') {
   pushEcommerce('view_item', {
-    currency: CURRENCY,
+    currency,
     value: item.price,
     items: [item],
   });
 }
 
-export function trackAddToCart(item: GaItem) {
+export function trackAddToCart(item: GaItem, currency = 'USD') {
   pushEcommerce('add_to_cart', {
-    currency: CURRENCY,
+    currency,
     value: Number((item.price * item.quantity).toFixed(2)),
     items: [item],
   });
 }
 
-export function trackBeginCheckout(items: GaItem[], value: number) {
-  pushEcommerce('begin_checkout', { currency: CURRENCY, value, items });
+export function trackBeginCheckout(items: GaItem[], value: number, currency = 'USD') {
+  pushEcommerce('begin_checkout', { currency, value, items });
 }
 
-export function trackPurchase(transactionId: string, value: number, items: GaItem[]) {
+export function trackPurchase(
+  transactionId: string,
+  value: number,
+  items: GaItem[],
+  currency = 'USD'
+) {
   pushEcommerce('purchase', {
     transaction_id: transactionId,
-    currency: CURRENCY,
+    currency,
     value,
     items,
   });

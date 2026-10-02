@@ -10,7 +10,7 @@ export default function TrackViewItem({ product }: { product: StoreProduct }) {
   useEffect(() => {
     if (done.current) return;
     done.current = true;
-    trackViewItem(productToGaItem(product));
+    trackViewItem(productToGaItem(product), product.prices.currency_code);
   }, [product]);
   return null;
 }
