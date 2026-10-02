@@ -215,7 +215,7 @@ export default function AccountView() {
                   ['tag', 'Private offers', 'Early access to sales and new arrivals.'],
                 ].map(([icon, title, text]) => (
                   <div key={title} className="d-flex gap-3 mb-4">
-                    <MDBIcon fas icon={icon} className={styles.perkIcon} />
+                    <MDBIcon fas fixed icon={icon} className={styles.perkIcon} />
                     <div>
                       <h6 className="mb-1" style={{ textTransform: 'uppercase', fontSize: '0.8rem' }}>
                         {title}
