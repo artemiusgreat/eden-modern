@@ -108,13 +108,12 @@
 @media (max-width: 991.98px) {
   .sideNav {
     flex-direction: row;
-    overflow-x: auto;
+    flex-wrap: wrap;
     gap: 0.5rem;
-    padding-bottom: 0.25rem;
   }
   .sideItem.sideItem {
     width: auto;
-    flex-shrink: 0;
+    flex: 1 1 auto;
   }
 }
 
