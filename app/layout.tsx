@@ -75,7 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <div className="site-content">
           <CartProvider>
             <AnnouncementBar />
-            <SiteNavbar categories={categories} />
+            <SiteNavbar />
             <main>{children}</main>
             <SiteFooter categories={categories} />
           </CartProvider>

@@ -30,9 +30,9 @@ const STEPS = [
    via the `slug` — passed in as collectionImages. Tiles without a category
    (or without an image set) render the tag-icon placeholder. */
 const COLLECTIONS = [
-  { name: 'Health & Beauty', href: '/product-category/health-beauty', slug: 'health-beauty', sub: 'Fragrance · Skincare · Body' },
-  { name: 'Home & Garden', href: '/product-category/home-garden', slug: 'home-garden', sub: 'Decor · Home fragrance' },
-  { name: 'On Sale', href: '/catalog?on_sale=1', slug: null as string | null, sub: 'Limited-time offers' },
+  { name: 'Fragrances', href: '/product-category/perfumes-colognes', slug: 'perfumes-colognes', sub: 'Perfumes · Colognes · Home fragrance' },
+  { name: 'Skincare', href: '/product-category/skin-care-cosmetics', slug: 'skin-care-cosmetics', sub: 'Face · Body · Bath' },
+  { name: 'Sale', href: '/catalog?on_sale=1', slug: null as string | null, sub: 'Limited-time offers' },
 ];
 
 function NewsletterCta() {
