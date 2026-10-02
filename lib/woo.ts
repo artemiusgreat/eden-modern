@@ -1,10 +1,10 @@
 /**
  * Typed client for the WooCommerce Store API (wc/store/v1) plus the
  * WordPress REST API (wp/v2) for blog posts and info pages.
- * Server-side only: uses WOO_STORE_URL (never NEXT_PUBLIC_*).
+ * Server-side only: uses WC_STORE_URL (never NEXT_PUBLIC_*).
  */
 
-const WOO_STORE_URL = process.env.WOO_STORE_URL ?? 'https://edenapi.indemos.com';
+const WC_STORE_URL = process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com';
 
 /** Woo sometimes returns HTML entities (e.g. "Health &amp; Beauty") in plain-text
  *  fields. Decode them before rendering so "&" shows as "&". */
@@ -142,7 +142,7 @@ export interface WpPage {
 }
 
 function apiUrl(base: string, params: Record<string, string | number | undefined> = {}) {
-  const url = new URL(base, WOO_STORE_URL);
+  const url = new URL(base, WC_STORE_URL);
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== '') url.searchParams.set(k, String(v));
   }

@@ -7,7 +7,7 @@ import { NextResponse } from 'next/server';
 // WP backend host — moved to edenapi.indemos.com at the headless cutover.
 // Must never be the storefront host: this route would POST credentials to
 // the Next.js app itself and every login would fail as "invalid".
-const WP = (process.env.WOO_STORE_URL ?? 'https://edenapi.indemos.com').replace(/\/$/, '');
+const WP = (process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com').replace(/\/$/, '');
 
 /**
  * WP scopes its auth cookie (wordpress_sec_*) to Path=/wp-admin and

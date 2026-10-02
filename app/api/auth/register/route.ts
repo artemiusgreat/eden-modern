@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 // required by WP core). On success WP 302s to ?checkemail=registered;
 // on failure it returns 200 with the error in #login_error.
 // WP backend host — moved to edenapi.indemos.com at the headless cutover.
-const WP = (process.env.WOO_STORE_URL ?? 'https://edenapi.indemos.com').replace(/\/$/, '');
+const WP = (process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com').replace(/\/$/, '');
 
 function parseError(html: string): string {
   if (/registration is (currently )?not allowed/i.test(html)) {
