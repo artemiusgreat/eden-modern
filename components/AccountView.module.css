@@ -295,3 +295,34 @@
   color: var(--muted);
   margin: 0;
 }
+/* ---------- Loading skeletons ----------
+   Shimmer placeholders that hold the layout while a section fetches, so the
+   content doesn't jump when it arrives. Each skeleton approximates the shape
+   of the content it stands in for. */
+.skel {
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--surface-2) 25%, #22304d 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: skelShimmer 1.3s linear infinite;
+}
+@keyframes skelShimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skel {
+    animation: none;
+  }
+}
+.skelOrderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+.skelField {
+  margin-bottom: 1rem;
+}

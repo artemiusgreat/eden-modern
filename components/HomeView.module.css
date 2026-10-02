@@ -134,6 +134,7 @@
 .heroSlideInner img {
   flex: 0 0 calc(50% - 0.6rem);
   width: calc(50% - 0.6rem);
+  aspect-ratio: 4 / 4;
   object-fit: contain;
   background: var(--surface);
   border-radius: 3px;
