@@ -36,7 +36,7 @@ export default function CatalogPagination({ page, totalPages, params, basePath =
 
   const go = (n: number) => {
     const target = Math.min(Math.max(1, Math.floor(n) || 1), totalPages);
-    router.push(pageUrl(basePath, params, target));
+    router.push(pageUrl(basePath, params, target), { scroll: false });
   };
 
   const commit = () => {
@@ -51,7 +51,11 @@ export default function CatalogPagination({ page, totalPages, params, basePath =
         <MDBIcon fas icon={icon} />
       </span>
     ) : (
-      <Link href={pageUrl(basePath, params, target)} className={styles.pageLink} aria-label={label}>
+      <Link
+        href={pageUrl(basePath, params, target)}
+        scroll={false}
+        className={styles.pageLink}
+        aria-label={label}>
         <MDBIcon fas icon={icon} />
       </Link>
     );

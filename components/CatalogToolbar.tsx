@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { progressBegin } from '@/lib/progress';
 import styles from './Catalog.module.css';
 
 interface Props {
@@ -36,6 +37,7 @@ export default function CatalogToolbar({
     }
     p.delete('page');
     const s = p.toString();
+    progressBegin(); // selects navigate via router.push — no anchor click for RouteProgress to see
     router.push(s ? `/catalog?${s}` : '/catalog', { scroll: false });
   };
 

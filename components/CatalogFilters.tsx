@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { MDBIcon } from 'mdb-react-ui-kit';
+import { progressBegin } from '@/lib/progress';
 import type { CatalogAttribute, StoreCategory } from '@/lib/woo';
 import { decodeEntities } from '@/lib/woo';
 import styles from './Catalog.module.css';
@@ -29,6 +30,7 @@ function pushUrl(router: Router, params: Record<string, string>, updates: Record
   }
   p.delete('page'); // any filter change restarts at page 1
   const s = p.toString();
+  progressBegin(); // checkboxes/radios navigate via router.push — no anchor click for RouteProgress to see
   router.push(s ? `/catalog?${s}` : '/catalog', { scroll: false });
 }
 
