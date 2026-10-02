@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon, MDBSpinner } from 'mdb-react-ui-kit';
 import { useCart } from './cart/CartProvider';
 import { formatPrice } from '@/lib/format';
-import AddToCartParam from './AddToCartParam';
 import styles from './CartPageView.module.css';
 
 /** Headless slug from a Store API permalink (same derivation as the drawer). */
@@ -19,7 +18,6 @@ export default function CartPageView() {
 
   return (
     <MDBContainer className={styles.page}>
-      <AddToCartParam />
       <h1 className={styles.title}>Shopping Bag</h1>
       <p className={styles.sub}>
         {cart && cart.items_count > 0

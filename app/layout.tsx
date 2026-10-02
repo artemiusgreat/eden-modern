@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import './globals.css';
 import { CartProvider } from '@/components/cart/CartProvider';
+import AddToCartParam from '@/components/AddToCartParam';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import SiteBackdrop from '@/components/SiteBackdrop';
 import SiteNavbar from '@/components/SiteNavbar';
@@ -54,7 +55,7 @@ export const metadata: Metadata = {
 };
 
 // Bump on every shipped build so we can tell (via View Source) which build is live.
-const BUILD_ID = '2026-09-30-acct-search';
+const BUILD_ID = '2026-10-02-cutover-gaps';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const categories = await getCategories().catch(() => []);
@@ -74,6 +75,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SiteBackdrop />
         <div className="site-content">
           <CartProvider>
+            {/* Global WooCommerce-style ?add-to-cart= handling: works on every
+                page (homepage, product pages — the classic ad-link format),
+                not just /cart and /checkout. Renders nothing otherwise. */}
+            <Suspense fallback={null}>
+              <AddToCartParam />
+            </Suspense>
             <AnnouncementBar />
             <SiteNavbar />
             <main>{children}</main>
