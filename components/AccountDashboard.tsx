@@ -579,46 +579,54 @@ export default function AccountDashboard() {
   return (
     <>
       <MDBContainer className="py-5">
-        <div className={styles.tabs} role="tablist" aria-label="Account sections">
-          {(
-            [
-              ['orders', 'Orders'],
-              ['addresses', 'Addresses'],
-              ['account', 'Account details'],
-            ] as const
-          ).map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              role="tab"
-              aria-selected={tab === key}
-              className={`${styles.tab} ${tab === key ? styles.tabActive : ''}`}
-              onClick={() => setTab(key)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <MDBRow className="justify-content-center mt-4">
-            <MDBCard className={styles.card}>
-              <MDBCardBody className={`${styles.cardBody} p-4 p-md-5`}>
-                {tab === 'orders' && <OrdersTab />}
-                {tab === 'addresses' && <AddressesTab />}
-                {tab === 'account' && <AccountTab />}
-              </MDBCardBody>
-            </MDBCard>
-        </MDBRow>
-        <div className="text-center mt-4">
-          <button type="button" className="btn btn-outline-light" onClick={signOut} disabled={signingOut}>
-            {signingOut ? 'Signing out…' : 'Sign out'}
-          </button>
+        <MDBRow>
+          <MDBCol lg="3" className="mb-4 mb-lg-0">
+            <nav className={styles.sideNav} aria-label="Account sections">
+              {(
+                [
+                  ['orders', 'Orders', 'box-open'],
+                  ['addresses', 'Addresses', 'location-dot'],
+                  ['account', 'Account details', 'user'],
+                ] as const
+              ).map(([key, label, icon]) => (
+                <button
+                  key={key}
+                  type="button"
+                  aria-current={tab === key ? 'page' : undefined}
+                  className={`${styles.sideItem} ${tab === key ? styles.sideActive : ''}`}
+                  onClick={() => setTab(key)}
+                >
+                  <MDBIcon fas fixed icon={icon} className={styles.sideIcon} />
+                  {label}
+                </button>
+              ))}
+              <button
+                type="button"
+                className={styles.sideItem}
+                onClick={signOut}
+                disabled={signingOut}
+              >
+                <MDBIcon fas fixed icon="arrow-right-from-bracket" className={styles.sideIcon} />
+                {signingOut ? 'Signing out…' : 'Sign out'}
+              </button>
+            </nav>
+          </MDBCol>
+          <MDBCol lg="9">
+          <MDBCard className={styles.card}>
+            <MDBCardBody className={`${styles.cardBody} p-4 p-md-5`}>
+              {tab === 'orders' && <OrdersTab />}
+              {tab === 'addresses' && <AddressesTab />}
+              {tab === 'account' && <AccountTab />}
+            </MDBCardBody>
+          </MDBCard>
           <p className="small mt-4" style={{ color: 'var(--muted)' }}>
             Need help?{' '}
             <Link href="/contact" style={{ color: 'var(--gold)' }}>
               Contact us
             </Link>
           </p>
-        </div>
+        </MDBCol>
+        </MDBRow>
       </MDBContainer>
     </>
   );

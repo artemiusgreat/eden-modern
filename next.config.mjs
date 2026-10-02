@@ -9,6 +9,13 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // Legacy WooCommerce endpoints -> headless equivalents (301).
+      { source: '/my-account/:path*', destination: '/account', permanent: true },
+      { source: '/shop/:path*', destination: '/catalog', permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

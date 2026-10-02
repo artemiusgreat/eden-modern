@@ -11,7 +11,7 @@ function PostCard({ post }: { post: WpPost }) {
     year: 'numeric',
   });
   return (
-    <Link href={`/blog/${post.slug}`} className="journal-card-dark">
+    <Link href={`/magazine/${post.slug}`} className="journal-card-dark">
       <div className="journal-media-dark">
         {post.image ? (
           <img src={post.image} alt={post.title} loading="lazy" />

@@ -66,6 +66,58 @@
   border-bottom-color: var(--gold);
 }
 
+/* ---------- Account sidebar nav (signed-in dashboard) ----------
+   Vertical menu on desktop; horizontal scrollable row on mobile. */
+.sideNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.sideItem.sideItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.25s ease, background-color 0.25s ease;
+}
+.sideItem.sideItem:hover:not(:disabled) {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.03);
+}
+.sideItem.sideItem:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+.sideActive.sideActive {
+  color: var(--gold);
+  background: rgba(201, 163, 95, 0.08);
+}
+.sideIcon {
+  color: var(--gold);
+  font-size: 0.95rem;
+}
+@media (max-width: 991.98px) {
+  .sideNav {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-bottom: 0.25rem;
+  }
+  .sideItem.sideItem {
+    width: auto;
+    flex-shrink: 0;
+  }
+}
+
 /* Dark-theme form fields (MDB's .form-control defaults to white). */
 .input.input {
   background: var(--bg);
