@@ -451,7 +451,7 @@ function AccountTab() {
   if (!loaded) return <p style={{ color: 'var(--muted)' }}>Loading…</p>;
 
   return (
-    <div style={{ maxWidth: 560 }}>
+    <>
       {error && <Notice kind="error">{error}</Notice>}
       {saved && <Notice kind="ok">Details saved.</Notice>}
       <div className={styles.grid2}>
@@ -470,7 +470,7 @@ function AccountTab() {
       <button type="button" className="btn-gold mt-2" disabled={busy} onClick={save}>
         {busy ? 'Saving…' : 'Save changes'}
       </button>
-    </div>
+    </>
   );
 }
 
@@ -518,7 +518,6 @@ export default function AccountDashboard({ username }: { username: string }) {
           ))}
         </div>
         <MDBRow className="justify-content-center mt-4">
-          <MDBCol lg="10">
             <MDBCard className={styles.card}>
               <MDBCardBody className={`${styles.cardBody} p-4 p-md-5`}>
                 {tab === 'orders' && <OrdersTab />}
@@ -526,7 +525,6 @@ export default function AccountDashboard({ username }: { username: string }) {
                 {tab === 'account' && <AccountTab />}
               </MDBCardBody>
             </MDBCard>
-          </MDBCol>
         </MDBRow>
         <div className="text-center mt-4">
           <button type="button" className="btn btn-outline-light" onClick={signOut}>

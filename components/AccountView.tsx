@@ -224,8 +224,9 @@ export default function AccountView() {
                     </div>
                   </div>
                 ))}
-                <Link href="/contacts" className="text-decoration-none text-gold small" style={{ textTransform: 'uppercase' }}>
-                  Need help? Contact us
+                <span className="small">Need help?</span>&nbsp; 
+                <Link href="/contacts" className="text-decoration-none text-gold small">
+                  Contact us
                 </Link>
               </MDBCardBody>
             </MDBCard>
