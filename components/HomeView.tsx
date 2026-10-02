@@ -30,8 +30,8 @@ const STEPS = [
    via the `slug` — passed in as collectionImages. Tiles without a category
    (or without an image set) render the tag-icon placeholder. */
 const COLLECTIONS = [
-  { name: 'Health & Beauty', href: '/category/health-beauty', slug: 'health-beauty', sub: 'Fragrance · Skincare · Body' },
-  { name: 'Home & Garden', href: '/category/home-garden', slug: 'home-garden', sub: 'Decor · Home fragrance' },
+  { name: 'Health & Beauty', href: '/product-category/health-beauty', slug: 'health-beauty', sub: 'Fragrance · Skincare · Body' },
+  { name: 'Home & Garden', href: '/product-category/home-garden', slug: 'home-garden', sub: 'Decor · Home fragrance' },
   { name: 'On Sale', href: '/catalog?on_sale=1', slug: null as string | null, sub: 'Limited-time offers' },
 ];
 
@@ -79,7 +79,7 @@ function MagazineCard({ post }: { post: WpPost }) {
     year: 'numeric',
   });
   return (
-    <Link href={`/blog/${post.slug}`} className="journal-card-dark">
+    <Link href={`/magazine/${post.slug}`} className="journal-card-dark">
       <div className="journal-media-dark">
         {post.image ? (
           <img src={post.image} alt={post.title} loading="lazy" />
@@ -266,7 +266,7 @@ export default function HomeView({
                     chosen to elevate your everyday.
                   </p>
                   <div className="mt-3">
-                    <Link href="/blog" className="btn-outline-noir">
+                    <Link href="/magazine" className="btn-outline-noir">
                       Read the magazine
                     </Link>
                   </div>
@@ -317,7 +317,7 @@ export default function HomeView({
             </MDBRow>
           )}
           <div className="text-center mt-4">
-            <Link href="/blog" className="text-gold text-decoration-none" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
+            <Link href="/magazine" className="text-gold text-decoration-none" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
               View all stories <MDBIcon fas icon="arrow-right" className="ms-1" />
             </Link>
           </div>

@@ -19,7 +19,7 @@ export default function BlogPostView({ post, related }: { post: WpPost; related:
           <Link href="/">Home</Link>
         </MDBBreadcrumbItem>
         <MDBBreadcrumbItem>
-          <Link href="/blog">Journal</Link>
+          <Link href="/magazine">Journal</Link>
         </MDBBreadcrumbItem>
         <MDBBreadcrumbItem active>{post.title}</MDBBreadcrumbItem>
       </MDBBreadcrumb>
@@ -36,7 +36,7 @@ export default function BlogPostView({ post, related }: { post: WpPost; related:
       <div className="prose-wp" dangerouslySetInnerHTML={{ __html: post.content }} />
 
       <div className="mt-5 pt-4" style={{ borderTop: '1px solid var(--line)' }}>
-        <Link href="/blog" className="text-decoration-none text-gold" style={{ textTransform: 'uppercase', fontSize: '0.75rem' }}>
+        <Link href="/magazine" className="text-decoration-none text-gold" style={{ textTransform: 'uppercase', fontSize: '0.75rem' }}>
           <MDBIcon fas icon="arrow-left" className="me-2" />
           All stories
         </Link>
@@ -52,7 +52,7 @@ export default function BlogPostView({ post, related }: { post: WpPost; related:
           <MDBRow>
             {related.map((p) => (
               <MDBCol md="4" className="mb-4" key={p.id}>
-                <Link href={`/blog/${p.slug}`} className="journal-card-dark">
+                <Link href={`/magazine/${p.slug}`} className="journal-card-dark">
                   <div className="journal-media-dark">
                     {p.image && <img src={p.image} alt={p.title} loading="lazy" />}
                   </div>

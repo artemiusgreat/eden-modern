@@ -58,7 +58,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
             <h6>Quick links</h6>
             <Link href="/" className={styles.flink}>Home</Link>
             <Link href="/catalog" className={styles.flink}>Shop</Link>
-            <Link href="/blog" className={styles.flink}>Magazine</Link>
+            <Link href="/magazine" className={styles.flink}>Magazine</Link>
             <Link href="/account" className={styles.flink}>Account</Link>
             <Link href="/contacts" className={styles.flink}>Contact</Link>
           </MDBCol>
@@ -66,7 +66,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
           <MDBCol md="2" sm="6" className="mb-4">
             <h6>Shop</h6>
             {shopCats.map((c) => (
-              <Link key={c.id} href={`/category/${c.slug}`} className={styles.flink}>
+              <Link key={c.id} href={`/product-category/${c.slug}`} className={styles.flink}>
                 {c.name}
               </Link>
             ))}

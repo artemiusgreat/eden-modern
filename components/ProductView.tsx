@@ -91,7 +91,7 @@ export default function ProductView({
         </MDBBreadcrumbItem>
         {product.categories[0] && (
           <MDBBreadcrumbItem>
-            <Link href={`/category/${product.categories[0].slug}`}>{product.categories[0].name}</Link>
+            <Link href={`/product-category/${product.categories[0].slug}`}>{product.categories[0].name}</Link>
           </MDBBreadcrumbItem>
         )}
         <MDBBreadcrumbItem active>{product.name}</MDBBreadcrumbItem>

@@ -51,7 +51,7 @@ export default function CategoryView({
                 </MDBCol>
               ))}
             </MDBRow>
-            <Pagination page={page} basePath={`/category/${category.slug}`} />
+            <Pagination page={page} basePath={`/product-category/${category.slug}`} />
           </>
         )}
       </MDBContainer>

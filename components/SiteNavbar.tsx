@@ -71,7 +71,7 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
                 const isFirst = i === 0 && dropCats.length > 0;
                 return (
                   <MDBNavbarItem key={c.id} className={isFirst ? styles.dropWrap : undefined}>
-                    <Link href={`/category/${c.slug}`} passHref legacyBehavior>
+                    <Link href={`/product-category/${c.slug}`} passHref legacyBehavior>
                       <MDBNavbarLink className={styles.navLink} onClick={() => setOpen(false)}>
                         {c.name}
                         {isFirst && (
@@ -82,12 +82,12 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
                     {isFirst && (
                       <div className={styles.dropMenu}>
                         {dropCats.map((d) => (
-                          <Link key={d.id} href={`/category/${d.slug}`} onClick={() => setOpen(false)}>
+                          <Link key={d.id} href={`/product-category/${d.slug}`} onClick={() => setOpen(false)}>
                             {d.name}
                           </Link>
                         ))}
                         <Link
-                          href={`/category/${c.slug}`}
+                          href={`/product-category/${c.slug}`}
                           onClick={() => setOpen(false)}
                           className={styles.dropAll}>
                           Shop all {c.name} <MDBIcon fas icon="arrow-right" className="ms-1" />
@@ -98,7 +98,7 @@ export default function SiteNavbar({ categories }: { categories: StoreCategory[]
                 );
               })}
               <MDBNavbarItem>
-                <Link href="/blog" passHref legacyBehavior>
+                <Link href="/magazine" passHref legacyBehavior>
                   <MDBNavbarLink className={styles.navLink} onClick={() => setOpen(false)}>
                     Magazine
                   </MDBNavbarLink>
