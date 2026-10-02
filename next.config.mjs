@@ -7,11 +7,11 @@ const nextConfig = {
         hostname: 'eden.indemos.com',
         pathname: '/wp-content/uploads/**',
       },
-      // Post-migration WordPress host (WP moves to wp.indemos.com — one
-      // subdomain level, covered by the *.indemos.com Cloudflare cert).
+      // Post-migration WordPress host (WP moves to edenapi.indemos.com —
+      // one subdomain level, covered by the *.indemos.com Cloudflare cert).
       {
         protocol: 'https',
-        hostname: 'wp.indemos.com',
+        hostname: 'edenapi.indemos.com',
         pathname: '/wp-content/uploads/**',
       },
     ],
