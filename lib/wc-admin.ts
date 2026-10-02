@@ -17,8 +17,11 @@ import { cookies } from 'next/headers';
  *      one — so the proxy must forward BOTH cookies. The login relay widens
  *      WP's Path=/wp-admin-scoped auth cookie to Path=/ so the browser
  *      actually sends it back to us.
- *   3. Map username -> WooCommerce customer id via /wc/v3/customers?search=
- *      with an exact username match (WP usernames are unique).
+ *   3. Take the WP user id from the profile.php markup (a WC customer id IS the
+ *      WP user id) and address /wc/v3/customers/{id} and /orders?customer={id}
+ *      directly — this works for any WP user, including admins, whom the
+ *      role-filtered /customers?search= lookup misses. The ?search= exact
+ *      username match remains as a fallback if the markup ever changes.
  * The REST API keys then do all data access, scoped to that customer id.
  */
 
@@ -75,8 +78,16 @@ function cookieValue(raw: string): string {
   }
 }
 
-/** Validate the WP auth cookie via plain (non-REST) cookie auth. */
-async function cookieIsValid(cookieHeader: string): Promise<boolean> {
+/** Validate the WP auth cookie via plain (non-REST) cookie auth, and scrape
+ *  the WP user id from profile.php's long-stable core markup
+ *  (<input type="hidden" id="user_id" name="user_id" value="N" />).
+ *  A WooCommerce customer id IS the WordPress user id, so the id can address
+ *  /wc/v3/customers/{id} and /orders?customer={id} directly for ANY WP user
+ *  (admins included) — no ?search= lookup needed. Verified live 2026-10-01:
+ *  ?search=indemos returned 0 rows while /customers/1 returned 200. */
+async function validateSession(
+  cookieHeader: string
+): Promise<{ valid: boolean; userId: number | null }> {
   try {
     const res = await fetch(`${WC_URL}/wp-admin/profile.php`, {
       headers: { Cookie: cookieHeader, ...UA },
@@ -85,9 +96,14 @@ async function cookieIsValid(cookieHeader: string): Promise<boolean> {
     });
     // Logged in -> 200 (profile page is allowed for every role).
     // Logged out -> 302 to wp-login.php.
-    return res.status === 200;
+    if (res.status !== 200) return { valid: false, userId: null };
+    const html = await res.text();
+    const m =
+      html.match(/id="user_id"[^>]*value="(\d+)"/) ??
+      html.match(/name="user_id"[^>]*value="(\d+)"/);
+    return { valid: true, userId: m ? Number(m[1]) : null };
   } catch {
-    return false;
+    return { valid: false, userId: null };
   }
 }
 
@@ -133,10 +149,17 @@ export async function getSessionCustomer(): Promise<SessionResolution> {
   const loginCookie =
     authCookies.find((c) => c.name.startsWith('wordpress_logged_in_')) ?? authCookies[0];
   const username = cookieValue(loginCookie.value).split('|')[0]?.trim();
-  if (!username || !(await cookieIsValid(cookieHeader))) {
+  const { valid, userId } = await validateSession(cookieHeader);
+  if (!valid || !username) {
     return cacheResolution(cookieHeader, { id: null, reason: 'session_invalid' });
   }
 
+  // Prefer the scraped WP user id: it addresses the WC endpoints directly for
+  // any WP user. Fall back to the ?search= username lookup if the markup ever
+  // stops yielding an id.
+  if (userId) {
+    return cacheResolution(cookieHeader, { id: userId, reason: null });
+  }
   const customerId = await customerIdForUsername(username);
   if (!customerId) {
     return cacheResolution(cookieHeader, { id: null, reason: 'customer_not_found' });
