@@ -99,11 +99,56 @@ export async function GET() {
       customerLookup = { error: String(e).slice(0, 120) };
     }
   }
+  // Can the WC customer endpoints address this WP user BY ID? ?search=
+  // misses WP users without a customer row (e.g. admins), but
+  // /customers/{id} may serve any WP user id directly (WC customer id ===
+  // WP user id). Scrape the id from profile.php's long-stable core markup:
+  // <input type="hidden" id="user_id" name="user_id" value="N" />.
+  let wpUserId: number | null = null;
+  let customerById: Record<string, unknown> | null = null;
+  try {
+    const r = await fetch(`${WC_URL}/wp-admin/profile.php`, {
+      headers: { Cookie: header, 'User-Agent': 'EdenStorefront/1.0' },
+      cache: 'no-store',
+    });
+    const html = await r.text();
+    const m =
+      html.match(/id="user_id"[^>]*value="(\d+)"/) ??
+      html.match(/name="user_id"[^>]*value="(\d+)"/);
+    wpUserId = m ? Number(m[1]) : null;
+  } catch {
+    wpUserId = null;
+  }
+  if (wpUserId && keysConfigured) {
+    try {
+      const r = await fetch(`${WC_URL}/wp-json/wc/v3/customers/${wpUserId}`, {
+        headers: {
+          Authorization:
+            'Basic ' + Buffer.from(`${wcKey}:${wcSecret}`).toString('base64'),
+          'User-Agent': 'EdenStorefront/1.0',
+        },
+        cache: 'no-store',
+      });
+      const body = (await r.json().catch(() => null)) as any;
+      customerById = {
+        status: r.status,
+        id: body?.id ?? null,
+        username: body?.username ?? null,
+        email: body?.email ?? null,
+        role: body?.role ?? null,
+      };
+    } catch (e) {
+      customerById = { error: String(e).slice(0, 120) };
+    }
+  }
+
   return NextResponse.json({
     cookieNames: authCookies.map((c) => c.name),
     cookie_value_shape: shape,
     wc_keys_configured: keysConfigured,
     customer_lookup: customerLookup,
+    wp_user_id: wpUserId,
+    customer_by_id: customerById,
     profile_flap_5x: flap,
     profile_cachebusted_with_cookie: await probe(
       `/wp-admin/profile.php?${bust}`,
