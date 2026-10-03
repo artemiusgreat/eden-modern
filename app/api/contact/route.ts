@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
 
-// Forwards the Elementor contact form to WordPress's AJAX handler.
-// The headless frontend renders the form HTML but not Elementor's JS, so a
-// native submit would just reload the page. This route proxies to
-// admin-ajax.php?action=elementor_pro_forms_send_form, preserving the
-// store's existing Elementor email configuration.
+// Contact form submission. Forwards to the WordPress eden/v1/contact endpoint
+// (wp_mail to the admin email) — no Elementor, no extra plugin.
 const WP = (process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com').replace(/\/$/, '');
 
 export async function POST(req: Request) {
@@ -24,29 +21,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: 'Enter a valid email address.' }, { status: 400 });
     }
 
-    const body = new URLSearchParams({
-      action: 'elementor_pro_forms_send_form',
-      post_id: '120',
-      form_id: '053f3b0',
-      'form_fields[name]': name.trim(),
-      'form_fields[email]': email.trim(),
-      'form_fields[field_2d98634]': message.trim(),
-    });
-    const res = await fetch(`${WP}/wp-admin/admin-ajax.php`, {
+    const res = await fetch(`${WP}/wp-json/eden/v1/contact`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name.trim(), email: email.trim(), message: message.trim() }),
     });
     const data = (await res.json().catch(() => null)) as {
-      success?: boolean;
-      data?: { message?: string };
+      ok?: boolean;
+      message?: string;
     } | null;
-    if (data?.success) {
+    if (res.ok) {
       return NextResponse.json({ ok: true });
     }
     return NextResponse.json({
       ok: false,
-      error: data?.data?.message ?? 'Could not send your message. Please try again.',
+      error: data?.message ?? 'Could not send your message. Please try again.',
     });
   } catch {
     return NextResponse.json(

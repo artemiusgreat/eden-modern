@@ -129,6 +129,7 @@ export default function CheckoutView() {
   const totals = cartData ? (cartData.totals as unknown as CartTotalsFull) : null;
 
   const [email, setEmail] = useState('');
+  const [createAccount, setCreateAccount] = useState(false);
   const [ship, setShip] = useState<CheckoutAddress>(() => emptyAddress());
   const [billSame, setBillSame] = useState(true);
   const [bill, setBill] = useState<CheckoutAddress>(() => emptyAddress());
@@ -424,6 +425,7 @@ export default function CheckoutView() {
           payment_method: payMethod,
           payment_data,
           customer_note: note || undefined,
+          create_account: createAccount || undefined,
         }),
       })) as CheckoutResponse;
 
@@ -591,6 +593,11 @@ export default function CheckoutView() {
             <h2 className={styles.h2}>Contact</h2>
             <Field id="co-email" label="Email address *" type="email" value={email}
               onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+            <label className={styles.checkRow}>
+              <input type="checkbox" checked={createAccount}
+                onChange={(e) => setCreateAccount(e.target.checked)} />
+              Create an account for faster checkout next time
+            </label>
           </section>
 
           {/* Shipping address */}
