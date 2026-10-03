@@ -1,1 +1,23 @@
-{"dependencies":{"@stripe/stripe-js":"^9.17.0","mdb-react-ui-kit":"^9.0.0","next":"^14.2.0","react":"^18.3.1","react-dom":"^18.3.1"},"devDependencies":{"@types/node":"^22.0.0","@types/react":"^18.3.0","@types/react-dom":"^18.3.0","typescript":"^5.9.0"},"name":"eden-storefront","private":true,"scripts":{"build":"next build","dev":"next dev","start":"next start"},"version":"0.1.0"}
+{
+  "dependencies": {
+    "@stripe/stripe-js": "7.10.0",
+    "mdb-react-ui-kit": "^9.0.0",
+    "next": "^14.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.9.0"
+  },
+  "name": "eden-storefront",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start"
+  },
+  "version": "0.1.0"
+}

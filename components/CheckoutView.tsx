@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type InputHTMLAttributes } from 'react';
 import Link from 'next/link';
-import { loadStripe, type Stripe, type StripeElements, type StripeElement } from '@stripe/stripe-js';
+import { loadStripe, type Stripe, type StripeElements, type StripeElement, type StripeElementsOptionsMode } from '@stripe/stripe-js';
 import {
   MDBContainer,
   MDBRow,
@@ -206,39 +206,58 @@ export default function CheckoutView() {
       // the shopper's selection via stripeUpeTypes(), never a hardcoded list.
       const upeTypes = stripeUpeTypes(payMethod);
       if (!upeTypes || !stripePromise || !totals || !cardMountRef.current) return;
-      const stripe = await stripePromise;
-      if (!stripe || cancelled) return;
-      stripeRef.current = stripe;
-      paymentElRef.current?.destroy();
-      paymentElRef.current = null;
-      const elements = stripe.elements({
-        mode: 'payment',
-        amount: parseInt(totals.total_price, 10) || 0,
-        currency: totals.currency_code.toLowerCase(),
-        // Explicit (not automatic) payment method types: the backend creates
-        // the PaymentIntent with explicit payment_method_types for the same
-        // type, and Stripe rejects a confirmation token collected in
-        // automatic mode against it ("cannot be confirmed through the API
-        // configured with payment_method_types"). Matches the official
-        // blocks checkout, which also passes explicit paymentMethodTypes.
-        paymentMethodTypes: upeTypes,
-        appearance: {
-          theme: 'night',
-          variables: {
-            colorPrimary: '#c9a35f',
-            colorBackground: '#121b2e',
-            colorText: '#f2f2f2',
-            colorDanger: '#e0655f',
-            fontFamily: 'Inter, system-ui, sans-serif',
-            borderRadius: '3px',
+      try {
+        const stripe = await stripePromise;
+        if (cancelled) return;
+        if (!stripe) {
+          // loadStripe() resolved null: js.stripe.com was blocked (ad/privacy
+          // blocker) or failed to load. Tell the shopper instead of leaving
+          // an empty box.
+          console.error('Stripe.js failed to load (stripe is null).');
+          showError('Card payments could not be loaded. Please disable any ad blocker for this site or try another payment method.');
+          return;
+        }
+        stripeRef.current = stripe;
+        paymentElRef.current?.destroy();
+        paymentElRef.current = null;
+        // paymentMethodTypes is a runtime-supported Elements option (the
+        // official WooCommerce Stripe blocks checkout passes it too) but is
+        // absent from @stripe/stripe-js's TypeScript definitions.
+        type ElementsOptionsWithTypes = StripeElementsOptionsMode & { paymentMethodTypes: string[] };
+        const elements = stripe.elements({
+          mode: 'payment',
+          amount: parseInt(totals.total_price, 10) || 0,
+          currency: totals.currency_code.toLowerCase(),
+          // Explicit (not automatic) payment method types: the backend creates
+          // the PaymentIntent with explicit payment_method_types for the same
+          // type, and Stripe rejects a confirmation token collected in
+          // automatic mode against it ("cannot be confirmed through the API
+          // configured with payment_method_types"). Matches the official
+          // blocks checkout, which also passes explicit paymentMethodTypes.
+          paymentMethodTypes: upeTypes,
+          appearance: {
+            theme: 'night',
+            variables: {
+              colorPrimary: '#c9a35f',
+              colorBackground: '#121b2e',
+              colorText: '#f2f2f2',
+              colorDanger: '#e0655f',
+              fontFamily: 'Inter, system-ui, sans-serif',
+              borderRadius: '3px',
+            },
           },
-        },
-      });
-      if (cancelled) return;
-      elementsRef.current = elements;
-      const el = elements.create('payment');
-      paymentElRef.current = el;
-      el.mount(cardMountRef.current);
+        } as ElementsOptionsWithTypes);
+        if (cancelled) return;
+        elementsRef.current = elements;
+        const el = elements.create('payment');
+        paymentElRef.current = el;
+        el.mount(cardMountRef.current);
+      } catch (e) {
+        if (!cancelled) {
+          console.error('Stripe Payment Element failed to load', e);
+          showError('Card payments could not be loaded. Please try another payment method.');
+        }
+      }
     }
     build();
     return () => {
