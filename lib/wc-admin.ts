@@ -92,16 +92,26 @@ async function validateSession(
       redirect: 'manual',
       cache: 'no-store',
     });
-    // TEMP DEBUG: log what WP actually returns
-    console.log(`[validateSession] WP profile.php status: ${res.status}, location: ${res.headers.get('location')}`);
+    const location = res.headers.get('location') ?? '';
     // Logged in -> 200 (profile page is allowed for every role).
     // Logged out -> 302 to wp-login.php.
-    if (res.status !== 200) return { valid: false, userId: null };
-    const html = await res.text();
-    const m =
-      html.match(/id="user_id"[^>]*value="(\d+)"/) ??
-      html.match(/name="user_id"[^>]*value="(\d+)"/);
-    return { valid: true, userId: m ? Number(m[1]) : null };
+    // NOTE: WooCommerce redirects Customer-role users from wp-admin/profile.php
+    // to the frontend /account/ page (302 to /account/, NOT wp-login.php).
+    // That redirect PROVES the session is valid — only a wp-login.php redirect
+    // means "not logged in."
+    if (res.status === 200) {
+      const html = await res.text();
+      const m =
+        html.match(/id="user_id"[^>]*value="(\d+)"/) ??
+        html.match(/name="user_id"[^>]*value="(\d+)"/);
+      return { valid: true, userId: m ? Number(m[1]) : null };
+    }
+    if (res.status === 302 && !location.includes('wp-login.php')) {
+      // Valid session, redirected away from wp-admin (e.g. Customer -> /account/).
+      // Scrape the user ID from the logged_in cookie instead.
+      return { valid: true, userId: null };
+    }
+    return { valid: false, userId: null };
   } catch {
     return { valid: false, userId: null };
   }
