@@ -47,12 +47,13 @@ const PAYMENT_LABELS: Record<string, string> = {
 };
 
 /**
- * Map the selected gateway ID to the Stripe UPE payment method type(s) for
- * the Payment Element. The backend resolves the same type from payment_data's
- * `payment_method` entry ('stripe' -> 'card', 'stripe_klarna' -> 'klarna', …)
- * and creates the PaymentIntent with explicit payment_method_types, so the
- * Element must collect the confirmation token in the same explicit mode —
- * Stripe rejects automatic-mode tokens against explicit types.
+ * Detect whether the selected gateway is a Stripe UPE gateway. Returns the
+ * payment method type(s) for Stripe gateways ('stripe' -> ['card'],
+ * 'stripe_klarna' -> ['klarna'], …), null for non-Stripe gateways.
+ * NOTE: The return value is used ONLY for gateway detection (whether to mount
+ * the Payment Element and use the confirmation-token flow). The Element itself
+ * runs in automatic mode (no paymentMethodTypes) to match the backend's
+ * Dynamic Payment Methods behavior.
  * Returns null for non-Stripe gateways (no Element for those).
  */
 function stripeUpeTypes(gatewayId: string): string[] | null {
@@ -233,21 +234,16 @@ export default function CheckoutView() {
         stripeRef.current = stripe;
         paymentElRef.current?.destroy();
         paymentElRef.current = null;
-        // paymentMethodTypes is a runtime-supported Elements option (the
-        // official WooCommerce Stripe blocks checkout passes it too) but is
-        // absent from @stripe/stripe-js's TypeScript definitions.
-        type ElementsOptionsWithTypes = StripeElementsOptionsMode & { paymentMethodTypes: string[] };
         const elements = stripe.elements({
           mode: 'payment',
           amount: parseInt(totals.total_price, 10) || 0,
           currency: totals.currency_code.toLowerCase(),
-          // Explicit (not automatic) payment method types: the backend creates
-          // the PaymentIntent with explicit payment_method_types for the same
-          // type, and Stripe rejects a confirmation token collected in
-          // automatic mode against it ("cannot be confirmed through the API
-          // configured with payment_method_types"). Matches the official
-          // blocks checkout, which also passes explicit paymentMethodTypes.
-          paymentMethodTypes: upeTypes,
+          // paymentMethodTypes is intentionally OMITTED (automatic mode): the
+          // Stripe Gateway's Dynamic Payment Methods update creates the
+          // PaymentIntent with automatic_payment_methods (not explicit
+          // payment_method_types), and Stripe rejects an explicit-mode
+          // confirmation token against it. stripeUpeTypes() above is still
+          // used for gateway detection (whether to mount the Element).
           appearance: {
             theme: 'night',
             variables: {
@@ -259,7 +255,7 @@ export default function CheckoutView() {
               borderRadius: '3px',
             },
           },
-        } as ElementsOptionsWithTypes);
+        });
         if (cancelled) return;
         elementsRef.current = elements;
         const el = elements.create('payment');
@@ -374,8 +370,8 @@ export default function CheckoutView() {
       const payment_data: { key: string; value: string }[] = [];
 
       // Any Stripe gateway (card, Klarna, Affirm, …) goes through the
-      // confirmation-token flow; the Element was built with the matching
-      // explicit paymentMethodTypes for the selected gateway.
+      // confirmation-token flow; the Element runs in automatic mode to match
+      // the backend's Dynamic Payment Methods.
       const upeTypes = stripeUpeTypes(payMethod);
       if (upeTypes) {
         const stripe = stripeRef.current;
