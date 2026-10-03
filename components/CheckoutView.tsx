@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type InputHTMLAttributes } from 'react';
 import Link from 'next/link';
-import { loadStripe, type Stripe, type StripeElements, type StripeElement } from '@stripe/stripe-js';
+import { loadStripe, type Stripe, type StripeElements, type StripeElement, type StripeElementsOptionsMode } from '@stripe/stripe-js';
 import {
   MDBContainer,
   MDBRow,
@@ -208,10 +208,22 @@ export default function CheckoutView() {
       if (!upeTypes || !stripePromise || !totals || !cardMountRef.current) return;
       try {
         const stripe = await stripePromise;
-        if (!stripe || cancelled) return;
+        if (cancelled) return;
+        if (!stripe) {
+          // loadStripe() resolved null: js.stripe.com was blocked (ad/privacy
+          // blocker) or failed to load. Tell the shopper instead of leaving
+          // an empty box.
+          console.error('Stripe.js failed to load (stripe is null).');
+          showError('Card payments could not be loaded. Please disable any ad blocker for this site or try another payment method.');
+          return;
+        }
         stripeRef.current = stripe;
         paymentElRef.current?.destroy();
         paymentElRef.current = null;
+        // paymentMethodTypes is a runtime-supported Elements option (the
+        // official WooCommerce Stripe blocks checkout passes it too) but is
+        // absent from @stripe/stripe-js's TypeScript definitions.
+        type ElementsOptionsWithTypes = StripeElementsOptionsMode & { paymentMethodTypes: string[] };
         const elements = stripe.elements({
           mode: 'payment',
           amount: parseInt(totals.total_price, 10) || 0,
@@ -234,7 +246,7 @@ export default function CheckoutView() {
               borderRadius: '3px',
             },
           },
-        });
+        } as ElementsOptionsWithTypes);
         if (cancelled) return;
         elementsRef.current = elements;
         const el = elements.create('payment');
