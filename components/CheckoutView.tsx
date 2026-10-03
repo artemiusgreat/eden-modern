@@ -304,6 +304,11 @@ export default function CheckoutView() {
         const stripe = stripeRef.current;
         const elements = elementsRef.current;
         if (!stripe || !elements) throw new Error('Card form is not ready yet.');
+        // Stripe requires elements.submit() to run first — synchronously on
+        // pay-press, before any async work — ahead of createConfirmationToken().
+        // It validates the Payment Element and surfaces card errors inline.
+        const { error: submitErr } = await elements.submit();
+        if (submitErr) throw new Error(submitErr.message || 'Please check your card details.');
         const { error: tokErr, confirmationToken } = await stripe.createConfirmationToken({
           elements,
           params: {

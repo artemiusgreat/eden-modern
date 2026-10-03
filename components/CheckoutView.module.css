@@ -57,6 +57,26 @@
   background: var(--bg);
   color: var(--ink);
 }
+/* Chrome forces a white background on autofilled fields while our text stays
+   near-white. Paint over the UA background with an inset shadow (it covers it
+   in paint order, so no !important is needed) and keep the dark-theme text. */
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--ink);
+  caret-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 100px var(--bg) inset;
+  box-shadow: 0 0 0 100px var(--bg) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+.field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  caret-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 100px var(--bg) inset, 0 0 0 1px var(--gold);
+  box-shadow: 0 0 0 100px var(--bg) inset, 0 0 0 1px var(--gold);
+  border-color: var(--gold);
+  transition: background-color 5000s ease-in-out 0s;
+}
 .field select option {
   background: var(--surface);
   color: var(--ink);
