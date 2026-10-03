@@ -8,11 +8,9 @@ export const metadata = {
 };
 
 export default function AccountPage() {
-  const loginCookie = cookies()
-    .getAll()
-    .find((c) => c.name.startsWith('wordpress_logged_in_'));
+  const jwt = cookies().get('eden_jwt');
 
-  if (loginCookie) {
+  if (jwt?.value) {
     return <AccountDashboard />;
   }
   return <AccountView />;

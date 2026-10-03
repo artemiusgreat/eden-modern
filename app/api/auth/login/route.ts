@@ -1,28 +1,13 @@
 import { NextResponse } from 'next/server';
 
-// Storefront-native sign-in: proxies credentials to wp-login.php on the WP
-// backend and relays the WP auth cookies to the browser.
-// Works in production where the storefront runs on eden.indemos.com (the
-// cookie is host-only for that domain). No WP plugin or REST key needed.
-// WP backend host — moved to edenapi.indemos.com at the headless cutover.
-// Must never be the storefront host: this route would POST credentials to
-// the Next.js app itself and every login would fail as "invalid".
+// JWT-based sign-in via the "JWT Authentication for WP REST API" plugin.
+// POSTs credentials to /wp-json/jwt-auth/v1/token, stores the returned JWT
+// in an httpOnly cookie. No cookie relay, no profile.php scraping.
+
 const WP = (process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com').replace(/\/$/, '');
 
-/**
- * WP scopes its auth cookie (wordpress_sec_*) to Path=/wp-admin and
- * Path=/wp-content/plugins, so the browser would never send it back to the
- * Next.js app — and WP's own auth_redirect() (called unconditionally by every
- * wp-admin page, including our profile.php session oracle) validates THAT
- * cookie via wp_validate_auth_cookie(), not the logged_in one. Widen every
- * relayed cookie to Path=/ so the whole session round-trips.
- */
-function widenPath(setCookie: string): string {
-  if (/;\s*path=/i.test(setCookie)) {
-    return setCookie.replace(/;\s*path=[^;]*/i, '; path=/');
-  }
-  return `${setCookie}; path=/`;
-}
+const JWT_COOKIE = 'eden_jwt';
+const JWT_COOKIE_MAX_AGE = 7 * 24 * 60 * 60; // 7 days (matches plugin default expiry)
 
 export async function POST(req: Request) {
   try {
@@ -37,49 +22,35 @@ export async function POST(req: Request) {
       );
     }
 
-    // 1. Fetch the login page first so WP sets its test cookie; the login
-    //    POST is rejected with a "cookies are blocked" error without it.
-    const pre = await fetch(`${WP}/wp-login.php`, { redirect: 'manual' });
-    const preCookies = pre.headers.getSetCookie?.() ?? [];
-    const cookieHeader = preCookies.map((c) => c.split(';')[0]).join('; ');
-
-    // 2. POST credentials. redirect:'manual' so we can capture the
-    //    Set-Cookie headers from the 302 instead of following it.
-    const body = new URLSearchParams({
-      log: username.trim(),
-      pwd: password,
-      'wp-submit': 'Log In',
-      redirect_to: `${WP}/my-account/`,
-      testcookie: '1',
-    });
-    const res = await fetch(`${WP}/wp-login.php`, {
+    const res = await fetch(`${WP}/wp-json/jwt-auth/v1/token`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        ...(cookieHeader ? { Cookie: cookieHeader } : {}),
-      },
-      body,
-      redirect: 'manual',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username.trim(), password }),
     });
 
-    const setCookies = res.headers.getSetCookie?.() ?? [];
-    const loggedIn = setCookies.some((c) => c.startsWith('wordpress_logged_in_'));
-    if (!loggedIn) {
-      return NextResponse.json({ ok: false, error: 'Invalid username or password.' });
+    const data = (await res.json().catch(() => ({}))) as {
+      token?: string;
+      code?: string;
+      message?: string;
+    };
+
+    if (!res.ok || !data.token) {
+      // Plugin returns 403 with code jwt_auth_invalid_username/password on bad creds.
+      return NextResponse.json(
+        { ok: false, error: 'Invalid username or password.' },
+        { status: 401 }
+      );
     }
 
-    // Relay the auth cookies to the browser, widened to Path=/ (see
-    // widenPath). Headers are passed as an array of tuples so every
-    // Set-Cookie survives as its own header.
-    const relayed = setCookies.map(widenPath);
-    return new NextResponse(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: [
-        ['content-type', 'application/json'],
-        ['x-relayed-cookies', String(relayed.length)],
-        ...relayed.map((c): [string, string] => ['set-cookie', c]),
-      ],
+    const out = NextResponse.json({ ok: true });
+    out.cookies.set(JWT_COOKIE, data.token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: JWT_COOKIE_MAX_AGE,
     });
+    return out;
   } catch {
     return NextResponse.json(
       { ok: false, error: 'Could not reach the store backend. Please try again.' },
