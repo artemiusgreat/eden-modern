@@ -92,6 +92,8 @@ async function validateSession(
       redirect: 'manual',
       cache: 'no-store',
     });
+    // TEMP DEBUG: log what WP actually returns
+    console.log(`[validateSession] WP profile.php status: ${res.status}, location: ${res.headers.get('location')}`);
     // Logged in -> 200 (profile page is allowed for every role).
     // Logged out -> 302 to wp-login.php.
     if (res.status !== 200) return { valid: false, userId: null };
