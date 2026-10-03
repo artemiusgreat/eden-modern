@@ -14,7 +14,9 @@ const WP_APP_PASSWORD = process.env.WP_APP_PASSWORD ?? '';
 
 function signToken(userId: number, email: string): string {
   const expiry = Date.now() + 60 * 60 * 1000; // 1 hour
-  const payload = `${userId}.${expiry}.${email}`;
+  // JSON payload (not dot-separated): emails contain dots, which would break
+  // naive split('.') parsing on verify.
+  const payload = JSON.stringify({ userId, expiry, email });
   const sig = createHmac('sha256', TOKEN_SECRET).update(payload).digest('hex');
   return Buffer.from(`${payload}.${sig}`).toString('base64url');
 }

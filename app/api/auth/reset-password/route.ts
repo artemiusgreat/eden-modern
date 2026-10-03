@@ -13,14 +13,19 @@ const WP_APP_PASSWORD = process.env.WP_APP_PASSWORD ?? '';
 function verifyToken(token: string): { userId: number; email: string } | null {
   try {
     const decoded = Buffer.from(token, 'base64url').toString('utf8');
-    const parts = decoded.split('.');
-    if (parts.length !== 4) return null;
-    const [userIdStr, expiryStr, email, sig] = parts;
-    const userId = parseInt(userIdStr, 10);
-    const expiry = parseInt(expiryStr, 10);
-    if (!userId || !expiry || Date.now() > expiry) return null;
+    // Split on the LAST dot: payload is JSON (may contain dots in email),
+    // signature is hex (no dots).
+    const lastDot = decoded.lastIndexOf('.');
+    if (lastDot < 0) return null;
+    const payload = decoded.slice(0, lastDot);
+    const sig = decoded.slice(lastDot + 1);
+    const { userId, expiry, email } = JSON.parse(payload) as {
+      userId: number;
+      expiry: number;
+      email: string;
+    };
+    if (!userId || !expiry || !email || Date.now() > expiry) return null;
 
-    const payload = `${userId}.${expiry}.${email}`;
     const expected = createHmac('sha256', TOKEN_SECRET).update(payload).digest('hex');
     const a = Buffer.from(sig, 'hex');
     const b = Buffer.from(expected, 'hex');
