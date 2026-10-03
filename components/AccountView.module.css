@@ -130,8 +130,8 @@
 .input.input:-webkit-autofill,
 .input.input:-webkit-autofill:hover,
 .input.input:-webkit-autofill:focus {
-  box-shadow: none;
-  -webkit-box-shadow: none;
+  box-shadow: none!important;
+  -webkit-box-shadow: none!important;
   -webkit-text-fill-color: var(--ink);
   caret-color: var(--ink);
 }
