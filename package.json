@@ -3,6 +3,7 @@
     "@stripe/stripe-js": "7.10.0",
     "mdb-react-ui-kit": "^9.0.0",
     "next": "^14.2.0",
+    "nodemailer": "^10.0.14",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

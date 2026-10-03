@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody } from 'mdb-react-ui-kit';
 import styles from './AccountView.module.css';
 
-export default function ResetPasswordView({ resetKey, login }: { resetKey: string; login: string }) {
+export default function ResetPasswordView({ token }: { token: string }) {
   const router = useRouter();
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -14,7 +14,7 @@ export default function ResetPasswordView({ resetKey, login }: { resetKey: strin
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const validLink = resetKey.length > 0 && login.length > 0;
+  const validLink = token.length > 0;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ export default function ResetPasswordView({ resetKey, login }: { resetKey: strin
       const res = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: resetKey, login, password }),
+        body: JSON.stringify({ token, password }),
       });
       const data = await res.json();
       if (data.ok) {

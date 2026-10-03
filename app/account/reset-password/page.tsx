@@ -8,7 +8,7 @@ export const metadata = {
 export default function ResetPasswordPage({
   searchParams,
 }: {
-  searchParams: { key?: string; login?: string };
+  searchParams: { token?: string };
 }) {
-  return <ResetPasswordView resetKey={searchParams.key ?? ''} login={searchParams.login ?? ''} />;
+  return <ResetPasswordView token={searchParams.token ?? ''} />;
 }
