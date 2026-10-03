@@ -146,12 +146,11 @@ export default function CheckoutView() {
   const loadCheckout = useCallback(async () => {
     // Only payment methods + saved addresses come from the checkout draft;
     // rates/totals are read from the cart endpoint (see liveCart).
+    // NOTE: after a failed payment the Store API keeps a draft order in the
+    // session and GET /checkout answers with __experimentalCart: null
+    // (order-based response path), so every access below must tolerate null.
     const data = (await api('/api/checkout')) as CheckoutResponse;
     setCheckout(data);
-    const methods = data.__experimentalCart.payment_methods;
-    if (!payMethodRef.current && methods.length) {
-      setPayMethod(methods.includes('stripe') ? 'stripe' : methods[0]);
-    }
     return data;
   }, []);
 
@@ -165,8 +164,23 @@ export default function CheckoutView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const needsShipping = checkout?.__experimentalCart.needs_shipping ?? true;
-  const paymentMethods = checkout?.__experimentalCart.payment_methods ?? [];
+  // __experimentalCart is null when the session holds a draft order from a
+  // previous (failed) payment attempt — the Store API answers GET /checkout
+  // with the order-based response then. The cart endpoint always lists
+  // payment_methods, so it is the fallback; without it the payment section
+  // would render empty and the shopper could not retry.
+  const cartPaymentMethods =
+    (cartData as unknown as { payment_methods?: string[] } | null)?.payment_methods;
+  const needsShipping = checkout?.__experimentalCart?.needs_shipping ?? true;
+  const paymentMethods =
+    checkout?.__experimentalCart?.payment_methods ?? cartPaymentMethods ?? [];
+
+  // Default the payment choice once methods are known (stripe preferred).
+  useEffect(() => {
+    if (!payMethodRef.current && paymentMethods.length) {
+      setPayMethod(paymentMethods.includes('stripe') ? 'stripe' : paymentMethods[0]);
+    }
+  }, [paymentMethods]);
   const packages = cartData?.shipping_rates ?? [];
 
   // (Re)build the Stripe Payment Element when card payment is selected.
