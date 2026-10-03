@@ -101,15 +101,12 @@ export default function AccountView() {
           <MDBCol lg="10">
             <MDBCard className={styles.card}>
               <MDBCardBody className={`${styles.cardBody} p-5`}>
-                <MDBRow>
+                <MDBRow className="gap-5">
                   <MDBCol md="6" className="mb-4 mb-md-0">
-                    <h2 className={`${styles.formTitle} text-start`}>Sign in</h2>
+                    <h2 className={`text-start`}>Sign in</h2>
                     <SignInForm />
                   </MDBCol>
-                  <MDBCol md="6">
-                    <h2 className="font-serif mb-4 text-start" style={{ fontSize: '1.8rem' }}>
-                      With an account you can
-                    </h2>
+                  <MDBCol md="5" className="mt-3">
                     {[
                       ['box-open', 'Track orders', 'Follow every order from packing to delivery.'],
                       ['location-dot', 'Faster checkout', 'Saved addresses fill in automatically.'],
