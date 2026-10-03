@@ -58,10 +58,22 @@ function Field({
 }
 
 function SessionExpired() {
+  const handleSignInAgain = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Clear the stale wordpress_logged_in_* cookie first — otherwise
+    // /account sees the dead cookie and renders this dashboard again (loop).
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // Ignore — proceed to sign-in anyway.
+    }
+    window.location.href = '/account';
+  };
+
   return (
     <Notice kind="info">
       Your session expired.{' '}
-      <a href="/account" style={{ color: 'var(--gold)' }}>
+      <a href="/account" onClick={handleSignInAgain} style={{ color: 'var(--gold)' }}>
         Sign in again
       </a>{' '}
       to continue.
