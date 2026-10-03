@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import CheckoutView from '@/components/CheckoutView';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export const metadata: Metadata = { title: 'Checkout' };
 
@@ -13,7 +14,9 @@ export const metadata: Metadata = { title: 'Checkout' };
 export default function CheckoutPage() {
   return (
     <Suspense fallback={null}>
-      <CheckoutView />
+      <ErrorBoundary label="Checkout">
+        <CheckoutView />
+      </ErrorBoundary>
     </Suspense>
   );
 }

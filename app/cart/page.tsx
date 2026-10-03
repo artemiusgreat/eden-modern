@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import CartPageView from '@/components/CartPageView';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export const metadata: Metadata = { title: 'Shopping Bag' };
 
@@ -12,7 +13,9 @@ export const metadata: Metadata = { title: 'Shopping Bag' };
 export default function CartPage() {
   return (
     <Suspense fallback={null}>
-      <CartPageView />
+      <ErrorBoundary label="Shopping bag">
+        <CartPageView />
+      </ErrorBoundary>
     </Suspense>
   );
 }
