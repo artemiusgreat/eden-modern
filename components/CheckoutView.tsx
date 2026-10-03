@@ -44,7 +44,25 @@ const PAYMENT_LABELS: Record<string, string> = {
   'stripe_affirm': 'Affirm',
   'stripe_afterpay_clearpay': 'Afterpay',
   'ppcp-gateway': 'PayPal',
+  'ppcp_axo_gateway': 'PayPal Fastlane',
+  'ppcp_credit_card_gateway': 'Debit & Credit Cards (PayPal)',
+  'ppcp_googlepay': 'Google Pay',
+  'ppcp_applepay': 'Apple Pay',
 };
+
+/**
+ * Payment methods to hide from the checkout. The PayPal Payments plugin
+ * exposes each sub-gateway (Fastlane, Google Pay, Apple Pay, card fields)
+ * as a separate Store API payment method; the merchant uses Stripe as
+ * primary and plain PayPal as backup, so the sub-variants are suppressed.
+ * 'ppcp-gateway' (PayPal) itself is kept.
+ */
+const HIDDEN_PAYMENT_METHODS: ReadonlySet<string> = new Set([
+  'ppcp_axo_gateway',
+  'ppcp_credit_card_gateway',
+  'ppcp_googlepay',
+  'ppcp_applepay',
+]);
 
 /**
  * Detect whether the selected gateway is a Stripe UPE gateway. Returns the
@@ -187,8 +205,9 @@ export default function CheckoutView() {
   const cartPaymentMethods =
     (cartData as unknown as { payment_methods?: string[] } | null)?.payment_methods;
   const needsShipping = checkout?.__experimentalCart?.needs_shipping ?? true;
-  const paymentMethods =
-    checkout?.__experimentalCart?.payment_methods ?? cartPaymentMethods ?? [];
+  const paymentMethods = (
+    checkout?.__experimentalCart?.payment_methods ?? cartPaymentMethods ?? []
+  ).filter((m) => !HIDDEN_PAYMENT_METHODS.has(m));
 
   // No payment method is preselected: the shopper picks one explicitly, and
   // the Stripe Payment Element only mounts on that explicit choice — after
