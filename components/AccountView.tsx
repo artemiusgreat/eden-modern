@@ -6,8 +6,6 @@ import { useRouter } from 'next/navigation';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBIcon } from 'mdb-react-ui-kit';
 import styles from './AccountView.module.css';
 
-const WP_LOST_PASSWORD = 'https://edenapi.indemos.com/my-account/lost-password/'; // WP backend moved to edenapi at the headless cutover
-
 function Field({
   label,
   ...props
@@ -73,14 +71,14 @@ function SignInForm() {
           {error}
         </p>
       )}
-      <button type="submit" className="btn-gold" disabled={busy}>
-        {busy ? 'Signing in…' : 'Sign in'}
-      </button>
-      <p className="small mt-3 mb-0 text-center">
-        <a href={WP_LOST_PASSWORD} className="text-decoration-none" style={{ color: 'var(--muted)' }}>
+      <div className="d-flex justify-content-between align-items-center mt-4">
+        <Link href="/account/lost-password" className="text-decoration-none small" style={{ color: 'var(--muted)' }}>
           Lost your password?
-        </a>
-      </p>
+        </Link>
+        <button type="submit" className="btn-gold" disabled={busy}>
+          {busy ? 'Signing in…' : 'Sign in'}
+        </button>
+      </div>
     </form>
   );
 }
@@ -89,10 +87,10 @@ export default function AccountView() {
   return (
     <>
       <div className="info-hero">
-        <MDBContainer className="py-5 text-center">
+        <MDBContainer className="py-5 text-start">
           <p className="kicker mb-2">Welcome back</p>
           <h1 className="font-serif" style={{ fontSize: '3rem' }}>My Account</h1>
-          <div className="divider-gold" />
+          <div className="divider-gold" style={{ marginLeft: 0 }} />
           <p className="section-sub">
             Sign in to track your orders, manage your addresses and check out faster.
           </p>
@@ -100,39 +98,41 @@ export default function AccountView() {
       </div>
       <MDBContainer className="py-5">
         <MDBRow className="justify-content-center">
-          <MDBCol md="6" lg="5" className="mb-4">
+          <MDBCol lg="10">
             <MDBCard className={styles.card}>
               <MDBCardBody className={`${styles.cardBody} p-5`}>
-                <h2 className={styles.formTitle}>Sign in</h2>
-                <SignInForm />
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-          <MDBCol md="6" lg="5" className="mb-4">
-            <MDBCard className={styles.card}>
-              <MDBCardBody className={`${styles.cardBody} p-5`}>
-                <h2 className="font-serif mb-4" style={{ fontSize: '1.8rem' }}>
-                  With an account you can
-                </h2>
-                {[
-                  ['box-open', 'Track orders', 'Follow every order from packing to delivery.'],
-                  ['location-dot', 'Faster checkout', 'Saved addresses fill in automatically.'],
-                  ['tag', 'Private offers', 'Early access to sales and new arrivals.'],
-                ].map(([icon, title, text]) => (
-                  <div key={title} className="d-flex gap-3 mb-4">
-                    <MDBIcon fas fixed icon={icon} className={styles.perkIcon} />
-                    <div>
-                      <h6 className="mb-1" style={{ textTransform: 'uppercase', fontSize: '0.8rem' }}>
-                        {title}
-                      </h6>
-                      <p className="small mb-0" style={{ color: 'var(--muted)' }}>{text}</p>
-                    </div>
-                  </div>
-                ))}
-                <span className="small">Need help?</span>&nbsp; 
-                <Link href="/contacts" className="text-decoration-none text-gold small">
-                  Contact us
-                </Link>
+                <MDBRow>
+                  <MDBCol md="6" className="mb-4 mb-md-0">
+                    <h2 className={`${styles.formTitle} text-start`}>Sign in</h2>
+                    <SignInForm />
+                  </MDBCol>
+                  <MDBCol md="6">
+                    <h2 className="font-serif mb-4 text-start" style={{ fontSize: '1.8rem' }}>
+                      With an account you can
+                    </h2>
+                    {[
+                      ['box-open', 'Track orders', 'Follow every order from packing to delivery.'],
+                      ['location-dot', 'Faster checkout', 'Saved addresses fill in automatically.'],
+                      ['tag', 'Private offers', 'Early access to sales and new arrivals.'],
+                    ].map(([icon, title, text]) => (
+                      <div key={title} className="d-flex gap-3 mb-4">
+                        <MDBIcon fas fixed icon={icon} className={styles.perkIcon} />
+                        <div className="text-start">
+                          <h6 className="mb-1" style={{ textTransform: 'uppercase', fontSize: '0.8rem' }}>
+                            {title}
+                          </h6>
+                          <p className="small mb-0" style={{ color: 'var(--muted)' }}>{text}</p>
+                        </div>
+                      </div>
+                    ))}
+                    <p className="small mb-0 text-start">
+                      <span>Need help?</span>&nbsp;
+                      <Link href="/contacts" className="text-decoration-none text-gold">
+                        Contact us
+                      </Link>
+                    </p>
+                  </MDBCol>
+                </MDBRow>
               </MDBCardBody>
             </MDBCard>
           </MDBCol>
