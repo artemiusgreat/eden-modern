@@ -80,7 +80,11 @@ export async function POST(req: NextRequest) {
 
     // Look up the WP user by email (admin auth required).
     const auth = Buffer.from(`${WP_ADMIN_USER}:${WP_APP_PASSWORD}`).toString('base64');
-    const userRes = await fetch(`${WP}/wp-json/wp/v2/users?search=${encodeURIComponent(email)}`, {
+    // context=edit is REQUIRED: WP exposes user email only in edit context
+    // (view context omits the field entirely, so the find() below would
+    // silently match nothing and return {ok:true} with no email sent).
+    // Admin app passwords carry edit_users, so this works.
+    const userRes = await fetch(`${WP}/wp-json/wp/v2/users?search=${encodeURIComponent(email)}&context=edit`, {
       headers: { Authorization: `Basic ${auth}` },
     });
     if (!userRes.ok) {
