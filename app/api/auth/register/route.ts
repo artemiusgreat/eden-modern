@@ -54,6 +54,12 @@ export async function POST(req: Request) {
     if (res.status >= 300 && res.status < 400 && location.includes('checkemail=registered')) {
       return NextResponse.json({ ok: true });
     }
+    if (location.includes('registration=disabled')) {
+      return NextResponse.json({
+        ok: false,
+        error: 'Account registration is currently disabled on the store.',
+      });
+    }
     const html = await res.text();
     return NextResponse.json({ ok: false, error: parseError(html) });
   } catch {
