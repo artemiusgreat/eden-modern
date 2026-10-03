@@ -185,6 +185,11 @@
 
 .placeBtn.placeBtn {
   background: linear-gradient(135deg, var(--gold-soft), var(--gold-deep));
+  /* Override MDB's button text color at the variable level too, so MDB's own
+     color: var(--mdb-btn-color) rule resolves dark in every state. */
+  --mdb-btn-color: #14100a;
+  --mdb-btn-hover-color: #14100a;
+  --mdb-btn-disabled-color: #14100a;
   color: #14100a;
   border: none;
   text-transform: uppercase;
