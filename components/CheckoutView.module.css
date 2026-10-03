@@ -180,22 +180,24 @@
   font-size: 0.92rem;
 }
 
-.placeBtn {
+.placeBtn.placeBtn {
   background: linear-gradient(135deg, var(--gold-soft), var(--gold-deep));
   color: #14100a;
   border: none;
   text-transform: uppercase;
-  font-weight: 600;
-  font-size: 0.85rem;
-  padding: 1rem 2.2rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 1.15rem 2.2rem;
   width: 100%;
-  box-shadow: none;
+  box-shadow: 0 0 28px rgba(201, 163, 95, 0.35), 0 6px 18px rgba(0, 0, 0, 0.45);
+  transition: transform 0.25s ease, filter 0.25s ease, box-shadow 0.25s ease;
 }
-.placeBtn:hover:not(:disabled),
-.placeBtn:focus:not(:disabled) {
-  filter: brightness(1.08);
+.placeBtn.placeBtn:hover:not(:disabled),
+.placeBtn.placeBtn:focus:not(:disabled) {
+  filter: brightness(1.1);
   color: #14100a;
-  box-shadow: none;
+  transform: scale(1.015);
+  box-shadow: 0 0 38px rgba(201, 163, 95, 0.55), 0 8px 22px rgba(0, 0, 0, 0.5);
 }
 .placeBtn:disabled {
   opacity: 0.55;
