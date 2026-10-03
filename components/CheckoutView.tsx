@@ -147,8 +147,6 @@ export default function CheckoutView() {
   const paymentElRef = useRef<StripeElement | null>(null);
   const cardMountRef = useRef<HTMLDivElement | null>(null);
   const errorRef = useRef<HTMLDivElement | null>(null);
-  const payMethodRef = useRef(payMethod);
-  payMethodRef.current = payMethod;
 
   /** Show an error at the top of the form and scroll it into view. */
   function showError(msg: string) {
@@ -190,12 +188,11 @@ export default function CheckoutView() {
   const paymentMethods =
     checkout?.__experimentalCart?.payment_methods ?? cartPaymentMethods ?? [];
 
-  // Default the payment choice once methods are known (stripe preferred).
-  useEffect(() => {
-    if (!payMethodRef.current && paymentMethods.length) {
-      setPayMethod(paymentMethods.includes('stripe') ? 'stripe' : paymentMethods[0]);
-    }
-  }, [paymentMethods]);
+  // No payment method is preselected: the shopper picks one explicitly, and
+  // the Stripe Payment Element only mounts on that explicit choice — after
+  // page load, when cart totals and Stripe.js have settled. (Preselecting
+  // 'stripe' on page load caused intermittent mount failures: the Element
+  // could get stuck at its skeleton or never mount depending on load timing.)
   const packages = cartData?.shipping_rates ?? [];
 
   // (Re)build the Stripe Payment Element when a Stripe payment method is selected.
