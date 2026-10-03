@@ -144,6 +144,7 @@ export interface PlaceOrderBody {
   payment_method: string;
   payment_data?: { key: string; value: string }[];
   customer_note?: string;
+  create_account?: boolean;
 }
 
 async function checkoutRequest(

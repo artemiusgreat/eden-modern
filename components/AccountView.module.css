@@ -65,6 +65,15 @@
   border-bottom-color: var(--gold);
 }
 
+.formTitle {
+  font-family: var(--font-card-title, var(--font-serif));
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
 /* ---------- Account sidebar nav (signed-in dashboard) ----------
    Vertical menu on desktop; horizontal scrollable row on mobile. */
 .sideNav {

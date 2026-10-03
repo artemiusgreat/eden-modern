@@ -1,0 +1,97 @@
+/* Isolated per component: ContactForm only. */
+
+.form {
+  max-width: 640px;
+  margin: 2.5rem auto 0;
+}
+
+.field {
+  margin-bottom: 1.1rem;
+}
+
+.field label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  background: #0b1120;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--ink);
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.field input[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
+  border-color: #e0655f;
+}
+
+.error {
+  color: #e8a0a0;
+  font-size: 0.82rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0;
+}
+
+.submit {
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold-deep));
+  color: #14100a;
+  border: none;
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 1rem 2.2rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.submit:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}
+
+.submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sent {
+  max-width: 640px;
+  margin: 2.5rem auto 0;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface);
+  padding: 3rem 2rem;
+}
+
+.sentTitle {
+  font-family: var(--font-card-title, var(--font-serif));
+  font-size: 1.6rem;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+
+.sent p {
+  color: var(--muted);
+  margin-bottom: 0;
+}

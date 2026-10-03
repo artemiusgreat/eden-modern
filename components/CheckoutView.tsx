@@ -44,15 +44,34 @@ const PAYMENT_LABELS: Record<string, string> = {
   'stripe_affirm': 'Affirm',
   'stripe_afterpay_clearpay': 'Afterpay',
   'ppcp-gateway': 'PayPal',
+  'ppcp_axo_gateway': 'PayPal Fastlane',
+  'ppcp_credit_card_gateway': 'Debit & Credit Cards (PayPal)',
+  'ppcp_googlepay': 'Google Pay',
+  'ppcp_applepay': 'Apple Pay',
 };
 
 /**
- * Map the selected gateway ID to the Stripe UPE payment method type(s) for
- * the Payment Element. The backend resolves the same type from payment_data's
- * `payment_method` entry ('stripe' -> 'card', 'stripe_klarna' -> 'klarna', …)
- * and creates the PaymentIntent with explicit payment_method_types, so the
- * Element must collect the confirmation token in the same explicit mode —
- * Stripe rejects automatic-mode tokens against explicit types.
+ * Payment methods to hide from the checkout. The PayPal Payments plugin
+ * exposes each sub-gateway (Fastlane, Google Pay, Apple Pay, card fields)
+ * as a separate Store API payment method; the merchant uses Stripe as
+ * primary and plain PayPal as backup, so the sub-variants are suppressed.
+ * 'ppcp-gateway' (PayPal) itself is kept.
+ */
+const HIDDEN_PAYMENT_METHODS: ReadonlySet<string> = new Set([
+  'ppcp_axo_gateway',
+  'ppcp_credit_card_gateway',
+  'ppcp_googlepay',
+  'ppcp_applepay',
+]);
+
+/**
+ * Detect whether the selected gateway is a Stripe UPE gateway. Returns the
+ * payment method type(s) for Stripe gateways ('stripe' -> ['card'],
+ * 'stripe_klarna' -> ['klarna'], …), null for non-Stripe gateways.
+ * NOTE: The return value is used ONLY for gateway detection (whether to mount
+ * the Payment Element and use the confirmation-token flow). The Element itself
+ * runs in automatic mode (no paymentMethodTypes) to match the backend's
+ * Dynamic Payment Methods behavior.
  * Returns null for non-Stripe gateways (no Element for those).
  */
 function stripeUpeTypes(gatewayId: string): string[] | null {
@@ -129,6 +148,7 @@ export default function CheckoutView() {
   const totals = cartData ? (cartData.totals as unknown as CartTotalsFull) : null;
 
   const [email, setEmail] = useState('');
+  const [createAccount, setCreateAccount] = useState(false);
   const [ship, setShip] = useState<CheckoutAddress>(() => emptyAddress());
   const [billSame, setBillSame] = useState(true);
   const [bill, setBill] = useState<CheckoutAddress>(() => emptyAddress());
@@ -185,8 +205,9 @@ export default function CheckoutView() {
   const cartPaymentMethods =
     (cartData as unknown as { payment_methods?: string[] } | null)?.payment_methods;
   const needsShipping = checkout?.__experimentalCart?.needs_shipping ?? true;
-  const paymentMethods =
-    checkout?.__experimentalCart?.payment_methods ?? cartPaymentMethods ?? [];
+  const paymentMethods = (
+    checkout?.__experimentalCart?.payment_methods ?? cartPaymentMethods ?? []
+  ).filter((m) => !HIDDEN_PAYMENT_METHODS.has(m));
 
   // No payment method is preselected: the shopper picks one explicitly, and
   // the Stripe Payment Element only mounts on that explicit choice — after
@@ -232,21 +253,16 @@ export default function CheckoutView() {
         stripeRef.current = stripe;
         paymentElRef.current?.destroy();
         paymentElRef.current = null;
-        // paymentMethodTypes is a runtime-supported Elements option (the
-        // official WooCommerce Stripe blocks checkout passes it too) but is
-        // absent from @stripe/stripe-js's TypeScript definitions.
-        type ElementsOptionsWithTypes = StripeElementsOptionsMode & { paymentMethodTypes: string[] };
         const elements = stripe.elements({
           mode: 'payment',
           amount: parseInt(totals.total_price, 10) || 0,
           currency: totals.currency_code.toLowerCase(),
-          // Explicit (not automatic) payment method types: the backend creates
-          // the PaymentIntent with explicit payment_method_types for the same
-          // type, and Stripe rejects a confirmation token collected in
-          // automatic mode against it ("cannot be confirmed through the API
-          // configured with payment_method_types"). Matches the official
-          // blocks checkout, which also passes explicit paymentMethodTypes.
-          paymentMethodTypes: upeTypes,
+          // paymentMethodTypes is intentionally OMITTED (automatic mode): the
+          // Stripe Gateway's Dynamic Payment Methods update creates the
+          // PaymentIntent with automatic_payment_methods (not explicit
+          // payment_method_types), and Stripe rejects an explicit-mode
+          // confirmation token against it. stripeUpeTypes() above is still
+          // used for gateway detection (whether to mount the Element).
           appearance: {
             theme: 'night',
             variables: {
@@ -258,7 +274,7 @@ export default function CheckoutView() {
               borderRadius: '3px',
             },
           },
-        } as ElementsOptionsWithTypes);
+        });
         if (cancelled) return;
         elementsRef.current = elements;
         const el = elements.create('payment');
@@ -373,8 +389,8 @@ export default function CheckoutView() {
       const payment_data: { key: string; value: string }[] = [];
 
       // Any Stripe gateway (card, Klarna, Affirm, …) goes through the
-      // confirmation-token flow; the Element was built with the matching
-      // explicit paymentMethodTypes for the selected gateway.
+      // confirmation-token flow; the Element runs in automatic mode to match
+      // the backend's Dynamic Payment Methods.
       const upeTypes = stripeUpeTypes(payMethod);
       if (upeTypes) {
         const stripe = stripeRef.current;
@@ -424,6 +440,7 @@ export default function CheckoutView() {
           payment_method: payMethod,
           payment_data,
           customer_note: note || undefined,
+          create_account: createAccount || undefined,
         }),
       })) as CheckoutResponse;
 
@@ -591,6 +608,11 @@ export default function CheckoutView() {
             <h2 className={styles.h2}>Contact</h2>
             <Field id="co-email" label="Email address *" type="email" value={email}
               onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+            <label className={styles.checkRow}>
+              <input type="checkbox" checked={createAccount}
+                onChange={(e) => setCreateAccount(e.target.checked)} />
+              Create an account for faster checkout next time
+            </label>
           </section>
 
           {/* Shipping address */}
