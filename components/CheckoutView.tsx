@@ -197,6 +197,12 @@ export default function CheckoutView() {
         mode: 'payment',
         amount: parseInt(totals.total_price, 10) || 0,
         currency: totals.currency_code.toLowerCase(),
+        // Explicit (not automatic) payment method types: the backend creates
+        // the PaymentIntent with explicit payment_method_types ['card'], and
+        // Stripe rejects a confirmation token collected in automatic mode
+        // against it ("cannot be confirmed through the API configured with
+        // payment_method_types"). Matches the official blocks checkout.
+        paymentMethodTypes: ['card'],
         appearance: {
           theme: 'night',
           variables: {
