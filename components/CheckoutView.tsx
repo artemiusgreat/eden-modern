@@ -46,6 +46,21 @@ const PAYMENT_LABELS: Record<string, string> = {
   'ppcp-gateway': 'PayPal',
 };
 
+/**
+ * Map the selected gateway ID to the Stripe UPE payment method type(s) for
+ * the Payment Element. The backend resolves the same type from payment_data's
+ * `payment_method` entry ('stripe' -> 'card', 'stripe_klarna' -> 'klarna', …)
+ * and creates the PaymentIntent with explicit payment_method_types, so the
+ * Element must collect the confirmation token in the same explicit mode —
+ * Stripe rejects automatic-mode tokens against explicit types.
+ * Returns null for non-Stripe gateways (no Element for those).
+ */
+function stripeUpeTypes(gatewayId: string): string[] | null {
+  if (gatewayId === 'stripe') return ['card'];
+  if (gatewayId.startsWith('stripe_')) return [gatewayId.slice('stripe_'.length)];
+  return null;
+}
+
 const emptyAddress = (country = 'US'): CheckoutAddress => ({
   first_name: '', last_name: '', company: '', address_1: '', address_2: '',
   city: '', state: '', postcode: '', country, email: '', phone: '',
@@ -183,11 +198,14 @@ export default function CheckoutView() {
   }, [paymentMethods]);
   const packages = cartData?.shipping_rates ?? [];
 
-  // (Re)build the Stripe Payment Element when card payment is selected.
+  // (Re)build the Stripe Payment Element when a Stripe payment method is selected.
   useEffect(() => {
     let cancelled = false;
     async function build() {
-      if (payMethod !== 'stripe' || !stripePromise || !totals || !cardMountRef.current) return;
+      // The Element mounts for any Stripe gateway; the collected types follow
+      // the shopper's selection via stripeUpeTypes(), never a hardcoded list.
+      const upeTypes = stripeUpeTypes(payMethod);
+      if (!upeTypes || !stripePromise || !totals || !cardMountRef.current) return;
       const stripe = await stripePromise;
       if (!stripe || cancelled) return;
       stripeRef.current = stripe;
@@ -198,11 +216,12 @@ export default function CheckoutView() {
         amount: parseInt(totals.total_price, 10) || 0,
         currency: totals.currency_code.toLowerCase(),
         // Explicit (not automatic) payment method types: the backend creates
-        // the PaymentIntent with explicit payment_method_types ['card'], and
-        // Stripe rejects a confirmation token collected in automatic mode
-        // against it ("cannot be confirmed through the API configured with
-        // payment_method_types"). Matches the official blocks checkout.
-        paymentMethodTypes: ['card'],
+        // the PaymentIntent with explicit payment_method_types for the same
+        // type, and Stripe rejects a confirmation token collected in
+        // automatic mode against it ("cannot be confirmed through the API
+        // configured with payment_method_types"). Matches the official
+        // blocks checkout, which also passes explicit paymentMethodTypes.
+        paymentMethodTypes: upeTypes,
         appearance: {
           theme: 'night',
           variables: {
@@ -320,15 +339,19 @@ export default function CheckoutView() {
       const billing = { ...(billSame ? ship : bill), email };
       const payment_data: { key: string; value: string }[] = [];
 
-      if (payMethod === 'stripe') {
+      // Any Stripe gateway (card, Klarna, Affirm, …) goes through the
+      // confirmation-token flow; the Element was built with the matching
+      // explicit paymentMethodTypes for the selected gateway.
+      const upeTypes = stripeUpeTypes(payMethod);
+      if (upeTypes) {
         const stripe = stripeRef.current;
         const elements = elementsRef.current;
-        if (!stripe || !elements) throw new Error('Card form is not ready yet.');
+        if (!stripe || !elements) throw new Error('Payment form is not ready yet.');
         // Stripe requires elements.submit() to run first — synchronously on
         // pay-press, before any async work — ahead of createConfirmationToken().
-        // It validates the Payment Element and surfaces card errors inline.
+        // It validates the Payment Element and surfaces errors inline.
         const { error: submitErr } = await elements.submit();
-        if (submitErr) throw new Error(submitErr.message || 'Please check your card details.');
+        if (submitErr) throw new Error(submitErr.message || 'Please check your payment details.');
         const { error: tokErr, confirmationToken } = await stripe.createConfirmationToken({
           elements,
           params: {
@@ -349,13 +372,14 @@ export default function CheckoutView() {
             },
           },
         });
-        if (tokErr) throw new Error(tokErr.message || 'Card details could not be verified.');
+        if (tokErr) throw new Error(tokErr.message || 'Payment details could not be verified.');
         // Mirror the plugin's own Blocks integration: WC core's legacy bridge
         // (Legacy::process_legacy_payment) swaps $_POST with payment_data before
         // calling the gateway, and the gateway resolves the payment method TYPE
-        // from $_POST['payment_method'] ('stripe' -> 'card'). Without this entry
-        // it throws "The selected payment method type is invalid."
-        payment_data.push({ key: 'payment_method', value: 'stripe' });
+        // from $_POST['payment_method'] ('stripe' -> 'card',
+        // 'stripe_klarna' -> 'klarna', …). Without this entry it throws
+        // "The selected payment method type is invalid."
+        payment_data.push({ key: 'payment_method', value: payMethod });
         payment_data.push({ key: 'wc-stripe-confirmation-token', value: confirmationToken.id });
       }
 
@@ -602,7 +626,7 @@ export default function CheckoutView() {
                 </label>
               );
             })}
-            {payMethod === 'stripe' && stripePromise && (
+            {stripeUpeTypes(payMethod) && stripePromise && (
               <div className={styles.stripeBox}>
                 <div ref={cardMountRef} />
               </div>
