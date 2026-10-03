@@ -287,7 +287,10 @@
   justify-content: center;
   margin-bottom: 1.5rem;
 }
-.card {
+/* Doubled class beats MDB's .card on specificity (equal specificity loses
+   on production stylesheet order, which is how the confirmation rendered
+   white-on-white). */
+.card.card {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 3px;
