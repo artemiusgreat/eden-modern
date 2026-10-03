@@ -65,15 +65,15 @@
 .field input:-webkit-autofill:active {
   -webkit-text-fill-color: var(--ink);
   caret-color: var(--ink);
-  -webkit-box-shadow: 0 0 0 100px var(--bg) inset;
-  box-shadow: 0 0 0 100px var(--bg) inset;
+  -webkit-box-shadow: 0 0 0 1000px var(--bg) inset;
+  box-shadow: 0 0 0 1000px var(--bg) inset;
   transition: background-color 5000s ease-in-out 0s;
 }
 .field input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--ink);
   caret-color: var(--ink);
-  -webkit-box-shadow: 0 0 0 100px var(--bg) inset, 0 0 0 1px var(--gold);
-  box-shadow: 0 0 0 100px var(--bg) inset, 0 0 0 1px var(--gold);
+  -webkit-box-shadow: 0 0 0 1000px var(--bg) inset, 0 0 0 1px var(--gold);
+  box-shadow: 0 0 0 1000px var(--bg) inset, 0 0 0 1px var(--gold);
   border-color: var(--gold);
   transition: background-color 5000s ease-in-out 0s;
 }
