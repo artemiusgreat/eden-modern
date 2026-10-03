@@ -330,6 +330,12 @@ export default function CheckoutView() {
           },
         });
         if (tokErr) throw new Error(tokErr.message || 'Card details could not be verified.');
+        // Mirror the plugin's own Blocks integration: WC core's legacy bridge
+        // (Legacy::process_legacy_payment) swaps $_POST with payment_data before
+        // calling the gateway, and the gateway resolves the payment method TYPE
+        // from $_POST['payment_method'] ('stripe' -> 'card'). Without this entry
+        // it throws "The selected payment method type is invalid."
+        payment_data.push({ key: 'payment_method', value: 'stripe' });
         payment_data.push({ key: 'wc-stripe-confirmation-token', value: confirmationToken.id });
       }
 
