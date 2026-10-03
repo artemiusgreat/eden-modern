@@ -211,8 +211,27 @@ export async function getProductsPaged(q: ProductQuery = {}) {
 }
 
 export async function getProductBySlug(slug: string): Promise<StoreProduct | null> {
+  // Fast path: Store API slug query (works for catalog-visible products).
   const products = await getProducts({ slug, per_page: 1 });
-  return products[0] ?? null;
+  if (products[0]) return products[0];
+
+  // Fallback: the product may be catalog-hidden — invisible to Store API
+  // queries (like `?slug=`), the same way hidden products don't appear in
+  // WP shop loops. But WP still serves them on direct URL access, so for URL
+  // parity we resolve the ID via wp/v2 and fetch by ID: a direct ID lookup
+  // bypasses the Store API's visibility filter.
+  try {
+    const wpProducts = await wpGet<{ id: number; slug: string }[]>('/product', {
+      slug,
+      per_page: 1,
+    } as Record<string, string | number | undefined>);
+    const match = wpProducts.find((p) => p.slug === slug);
+    if (!match) return null;
+    const byId = await wooGet<StoreProduct>(`/products/${match.id}`);
+    return decodeProduct(byId);
+  } catch {
+    return null;
+  }
 }
 
 export async function getCategories() {

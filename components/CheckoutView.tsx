@@ -147,8 +147,6 @@ export default function CheckoutView() {
   const paymentElRef = useRef<StripeElement | null>(null);
   const cardMountRef = useRef<HTMLDivElement | null>(null);
   const errorRef = useRef<HTMLDivElement | null>(null);
-  const payMethodRef = useRef(payMethod);
-  payMethodRef.current = payMethod;
 
   /** Show an error at the top of the form and scroll it into view. */
   function showError(msg: string) {
@@ -190,22 +188,36 @@ export default function CheckoutView() {
   const paymentMethods =
     checkout?.__experimentalCart?.payment_methods ?? cartPaymentMethods ?? [];
 
-  // Default the payment choice once methods are known (stripe preferred).
-  useEffect(() => {
-    if (!payMethodRef.current && paymentMethods.length) {
-      setPayMethod(paymentMethods.includes('stripe') ? 'stripe' : paymentMethods[0]);
-    }
-  }, [paymentMethods]);
+  // No payment method is preselected: the shopper picks one explicitly, and
+  // the Stripe Payment Element only mounts on that explicit choice — after
+  // page load, when cart totals and Stripe.js have settled. (Preselecting
+  // 'stripe' on page load caused intermittent mount failures: the Element
+  // could get stuck at its skeleton or never mount depending on load timing.)
   const packages = cartData?.shipping_rates ?? [];
 
   // (Re)build the Stripe Payment Element when a Stripe payment method is selected.
+  // The Element is NOT rebuilt when totals or rates change — recalculating
+  // shipping must not wipe entered card details; the amount syncs via
+  // elements.update() in the effect below. Only a method change rebuilds.
+  const builtForRef = useRef<string>('');
   useEffect(() => {
     let cancelled = false;
     async function build() {
       // The Element mounts for any Stripe gateway; the collected types follow
       // the shopper's selection via stripeUpeTypes(), never a hardcoded list.
       const upeTypes = stripeUpeTypes(payMethod);
-      if (!upeTypes || !stripePromise || !totals || !cardMountRef.current) return;
+      if (!upeTypes || !stripePromise || !totals || !cardMountRef.current) {
+        // Leaving Stripe for another method: tear down the Element.
+        if (!upeTypes && paymentElRef.current) {
+          paymentElRef.current.destroy();
+          paymentElRef.current = null;
+          elementsRef.current = null;
+          builtForRef.current = '';
+        }
+        return;
+      }
+      // Already have a healthy Element for this method — don't tear it down.
+      if (builtForRef.current === payMethod && paymentElRef.current) return;
       try {
         const stripe = await stripePromise;
         if (cancelled) return;
@@ -252,7 +264,9 @@ export default function CheckoutView() {
         const el = elements.create('payment');
         paymentElRef.current = el;
         el.mount(cardMountRef.current);
+        builtForRef.current = payMethod;
       } catch (e) {
+        builtForRef.current = '';
         if (!cancelled) {
           console.error('Stripe Payment Element failed to load', e);
           showError('Card payments could not be loaded. Please try another payment method.');
@@ -626,42 +640,48 @@ export default function CheckoutView() {
             {!billSame && addressFields(bill, setBillField, 'bill')}
           </section>
 
-          {/* Payment */}
-          <section className={styles.section}>
-            <h2 className={styles.h2}>Payment</h2>
-            {paymentMethods.length === 0 && (
-              <p style={{ color: 'var(--muted)' }}>No payment methods are available right now.</p>
-            )}
-            {paymentMethods.map((m) => {
-              const disabled = m === 'stripe' && !stripePromise;
-              return (
-                <label key={m} className={`${styles.radioRow}${disabled ? ` ${styles.disabled}` : ''}`}>
-                  <input type="radio" name="pay" checked={payMethod === m}
-                    disabled={disabled} onChange={() => setPayMethod(m)} />
-                  <span className={styles.radioText}>
-                    <strong>{PAYMENT_LABELS[m] ?? m.replace(/[-_]/g, ' ')}</strong>
-                    {disabled && <small> — card payments are not configured yet</small>}
-                  </span>
-                </label>
-              );
-            })}
-            {stripeUpeTypes(payMethod) && stripePromise && (
-              <div className={styles.stripeBox}>
-                <div ref={cardMountRef} />
-              </div>
-            )}
-            {payMethod === 'ppcp-gateway' && (
-              <p className={styles.hint}>You will be redirected to PayPal to complete your purchase.</p>
-            )}
-            <Field id="co-note" label="Order notes (optional)" value={note}
-              onChange={(e) => setNote(e.target.value)} />
-          </section>
+          {/* Payment — revealed only after shipping is calculated (or when the
+              order needs no shipping): the card form must not mount while the
+              shopper is still editing the address, and recalculating shipping
+              must not wipe entered card details. */}
+          {(!needsShipping || ratesReady) ? (
+            <>
+              <section className={styles.section}>
+                <h2 className={styles.h2}>Payment</h2>
+                {paymentMethods.length === 0 && (
+                  <p style={{ color: 'var(--muted)' }}>No payment methods are available right now.</p>
+                )}
+                {paymentMethods.map((m) => {
+                  const disabled = m === 'stripe' && !stripePromise;
+                  return (
+                    <label key={m} className={`${styles.radioRow}${disabled ? ` ${styles.disabled}` : ''}`}>
+                      <input type="radio" name="pay" checked={payMethod === m}
+                        disabled={disabled} onChange={() => setPayMethod(m)} />
+                      <span className={styles.radioText}>
+                        <strong>{PAYMENT_LABELS[m] ?? m.replace(/[-_]/g, ' ')}</strong>
+                        {disabled && <small> — card payments are not configured yet</small>}
+                      </span>
+                    </label>
+                  );
+                })}
+                {stripeUpeTypes(payMethod) && stripePromise && (
+                  <div className={styles.stripeBox}>
+                    <div ref={cardMountRef} />
+                  </div>
+                )}
+                {payMethod === 'ppcp-gateway' && (
+                  <p className={styles.hint}>You will be redirected to PayPal to complete your purchase.</p>
+                )}
+                <Field id="co-note" label="Order notes (optional)" value={note}
+                  onChange={(e) => setNote(e.target.value)} />
+              </section>
 
-          <MDBBtn className={styles.placeBtn} onClick={placeOrder} disabled={placing || !ratesReady && needsShipping}>
-            {placing ? 'Placing order…' : totals ? `Pay ${money(totals.total_price, totals)}` : 'Place order'}
-          </MDBBtn>
-          {!ratesReady && needsShipping && (
-            <p className={styles.hint}>Enter your address and calculate shipping first.</p>
+              <MDBBtn className={styles.placeBtn} onClick={placeOrder} disabled={placing}>
+                {placing ? 'Placing order…' : totals ? `Pay ${money(totals.total_price, totals)}` : 'Place order'}
+              </MDBBtn>
+            </>
+          ) : (
+            <p className={styles.hint}>Enter your address and calculate shipping to reveal payment options.</p>
           )}
         </MDBCol>
 
