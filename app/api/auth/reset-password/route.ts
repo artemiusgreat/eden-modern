@@ -86,7 +86,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({ ok: true });
+    // WordPress invalidates ALL sessions when a password changes. Clear any
+    // stale wordpress_logged_in_* cookie so the account page renders the
+    // sign-in form instead of a broken dashboard ("session expired").
+    const res = NextResponse.json({ ok: true });
+    req.cookies.getAll().forEach((c) => {
+      if (c.name.startsWith('wordpress_logged_in_')) {
+        res.cookies.delete(c.name);
+      }
+    });
+    return res;
   } catch {
     return NextResponse.json(
       { error: 'Could not reach the store. Please try again.' },
