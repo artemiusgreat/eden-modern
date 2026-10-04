@@ -32,6 +32,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             url: `${SITE}/products/${p.slug}`,
             changeFrequency: 'weekly',
             priority: 0.8,
+            // Product photos for Google Images — already on the fetched
+            // product, zero extra API calls.
+            images: p.images.map((i) => i.src).filter(Boolean),
           });
         }
       }
@@ -51,6 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: p.date ? new Date(p.date) : undefined,
         changeFrequency: 'monthly',
         priority: 0.6,
+        ...(p.image ? { images: [p.image] } : {}),
       });
     }
   } catch {
