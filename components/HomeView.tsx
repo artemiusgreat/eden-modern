@@ -209,7 +209,7 @@ export default function HomeView({
           </div>
           <MDBRow>
             {COLLECTIONS.map((c) => {
-              const image = collectionImages[c.slug] ?? c.image ?? null;
+              const image = collectionImages[c.slug ?? ''] ?? c.image ?? null;
               return (
               <MDBCol md="4" sm="6" className="mb-4" key={c.name}>
                 <Link href={c.href} className={styles.collectionCard}>
