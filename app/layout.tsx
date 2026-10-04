@@ -47,6 +47,9 @@ const prata = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://eden.indemos.com').replace(/\/$/, '')
+  ),
   title: {
     default: 'Indemos - Luxury Fragrances & Beauty',
     template: '%s - Indemos',

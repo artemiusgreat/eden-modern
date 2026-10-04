@@ -9,11 +9,51 @@ import {
   type StoreCategory,
 } from '@/lib/woo';
 import CatalogView, { type ActiveChip } from '@/components/CatalogView';
+import { stripHtml } from '@/lib/format';
 
-export const metadata: Metadata = {
-  title: 'Catalog',
-  description: 'Browse the full catalog — filter by category, price, rating and more.',
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<SP>;
+}): Promise<Metadata> {
+  // getCategories() is React-cached: this shares the page's own fetch,
+  // so resolving the category name/description costs zero extra API calls.
+  const sp = await searchParams;
+  const categories = await getCategories().catch(() => []);
+  const catParam = (first(sp.category) ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+
+  let title = 'Catalog';
+  let description = 'Browse the full catalog — filter by category, price, rating and more.';
+  if (catParam.length === 1) {
+    const raw = catParam[0];
+    const asNum = parseInt(raw, 10);
+    const cat =
+      (asNum > 0 && categories.find((c) => c.id === asNum)) ||
+      categories.find((c) => c.slug.toLowerCase() === raw.toLowerCase());
+    if (cat) {
+      title = `${cat.name} | Catalog`;
+      const catDesc = stripHtml(cat.description || '').slice(0, 160);
+      if (catDesc) description = catDesc;
+    }
+  } else if (first(sp.search)) {
+    title = `Search: ${first(sp.search)} | Catalog`;
+  } else if (first(sp.on_sale) === '1') {
+    title = 'Sale | Catalog';
+  }
+
+  // Canonical: keep filters, drop page=1 (page 2+ self-canonicalizes).
+  const params = new URLSearchParams();
+  for (const [k, v] of Object.entries(flatParams(sp))) {
+    if (k === 'page' && v === '1') continue;
+    params.set(k, v);
+  }
+  const qs = params.toString();
+  return {
+    title,
+    description,
+    alternates: { canonical: qs ? `/catalog?${qs}` : '/catalog' },
+  };
+}
 
 const ORDERBYS = ['featured', 'popularity', 'rating', 'date', 'price', 'price-desc'] as const;
 type OrderbyKey = (typeof ORDERBYS)[number];

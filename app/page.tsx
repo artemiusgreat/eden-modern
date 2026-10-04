@@ -1,4 +1,5 @@
 import { getProducts, getCategories, getPosts } from '@/lib/woo';
+import { organizationJsonLd } from '@/lib/seo';
 import HomeView from '@/components/HomeView';
 
 export const revalidate = 3600;
@@ -19,12 +20,18 @@ export default async function HomePage() {
     if (c.image?.src) collectionImages[c.slug] = c.image.src;
   }
   return (
-    <HomeView
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd()) }}
+      />
+      <HomeView
       onSale={onSale}
       newest={newest}
       topCats={topCats}
       posts={posts}
       collectionImages={collectionImages}
     />
+    </>
   );
 }

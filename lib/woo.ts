@@ -3,6 +3,7 @@
  * WordPress REST API (wp/v2) for blog posts and info pages.
  * Server-side only: uses WC_STORE_URL (never NEXT_PUBLIC_*).
  */
+import { cache } from 'react';
 
 const WC_STORE_URL = process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com';
 
@@ -210,7 +211,7 @@ export async function getProductsPaged(q: ProductQuery = {}) {
   return { products: data.map(decodeProduct), totalPages };
 }
 
-export async function getProductBySlug(slug: string): Promise<StoreProduct | null> {
+export const getProductBySlug = cache(async (slug: string): Promise<StoreProduct | null> => {
   // Fast path: Store API slug query (works for catalog-visible products).
   const products = await getProducts({ slug, per_page: 1 });
   if (products[0]) return products[0];
@@ -232,15 +233,15 @@ export async function getProductBySlug(slug: string): Promise<StoreProduct | nul
   } catch {
     return null;
   }
-}
+});
 
-export async function getCategories() {
+export const getCategories = cache(async () => {
   const cats = await wooGet<StoreCategory[]>('/products/categories', {
     per_page: 100,
     hide_empty: 'true',
   } as Record<string, string | number | undefined>);
   return cats.map((c) => ({ ...c, name: decodeEntities(c.name) }));
-}
+});
 
 export async function getCategoryBySlug(slug: string): Promise<StoreCategory | null> {
   // NOTE: the Store API ignores the `slug` query param (returns the full list),
