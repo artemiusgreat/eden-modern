@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@stripe/stripe-js": "7.10.0",
+    "@stripe/stripe-js": "^10.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "jsonwebtoken": "^9.0.3",
     "mdb-react-ui-kit": "^10.0.0",
