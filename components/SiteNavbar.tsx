@@ -45,13 +45,13 @@ interface MenuEntry {
 const MENU: MenuEntry[] = [
   {
     name: 'Fragrances',
-    href: '/product-category/perfumes-colognes',
+    href: '/catalog?category=perfumes-colognes',
     groups: [
       {
         label: null,
         links: [
-          { name: 'Perfumes & Colognes', href: '/product-category/perfumes-colognes' },
-          { name: 'Home Fragrances', href: '/product-category/home-fragrances' },
+          { name: 'Perfumes & Colognes', href: '/catalog?category=perfumes-colognes' },
+          { name: 'Home Fragrances', href: '/catalog?category=home-fragrances' },
           { name: 'Shop all fragrances', href: '/catalog?category=89,92', highlight: true },
         ],
       },
@@ -59,23 +59,23 @@ const MENU: MenuEntry[] = [
   },
   {
     name: 'Skincare',
-    href: '/product-category/skin-care-cosmetics',
+    href: '/catalog?category=skin-care-cosmetics',
     groups: [
       {
         label: 'Face',
         links: [
-          { name: 'All Skincare', href: '/product-category/skin-care-cosmetics' },
-          { name: 'Facial Cleansers', href: '/product-category/facial-cleansers' },
-          { name: 'Eye Creams', href: '/product-category/eye-creams' },
-          { name: 'Masks & Peels', href: '/product-category/skin-care-masks-peels' },
-          { name: 'Lip Treatments', href: '/product-category/lip-balms-treatments' },
+          { name: 'All Skincare', href: '/catalog?category=skin-care-cosmetics' },
+          { name: 'Facial Cleansers', href: '/catalog?category=facial-cleansers' },
+          { name: 'Eye Creams', href: '/catalog?category=eye-creams' },
+          { name: 'Masks & Peels', href: '/catalog?category=skin-care-masks-peels' },
+          { name: 'Lip Treatments', href: '/catalog?category=lip-balms-treatments' },
         ],
       },
       {
         label: 'Body',
         links: [
-          { name: 'Bath & Body', href: '/product-category/bath-body' },
-          { name: 'Lotions & Moisturizers', href: '/product-category/lotions-moisturizers' },
+          { name: 'Bath & Body', href: '/catalog?category=bath-body' },
+          { name: 'Lotions & Moisturizers', href: '/catalog?category=lotions-moisturizers' },
         ],
       },
     ],

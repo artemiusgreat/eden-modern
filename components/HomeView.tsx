@@ -30,8 +30,8 @@ const STEPS = [
    via the `slug` — passed in as collectionImages. Tiles without a category
    (or without an image set) render the tag-icon placeholder. */
 const COLLECTIONS = [
-  { name: 'Fragrances', image: '/images/categories/fragrances-category.jpg', href: '/product-category/perfumes-colognes', slug: 'perfumes-colognes', sub: 'Perfumes · Colognes · Home fragrance' },
-  { name: 'Skincare', image: '/images/categories/beauty-category.jpg', href: '/product-category/skin-care-cosmetics', slug: 'skin-care-cosmetics', sub: 'Face · Body · Bath' },
+  { name: 'Fragrances', image: '/images/categories/fragrances-category.jpg', href: '/catalog?category=perfumes-colognes', slug: 'perfumes-colognes', sub: 'Perfumes · Colognes · Home fragrance' },
+  { name: 'Skincare', image: '/images/categories/beauty-category.jpg', href: '/catalog?category=skin-care-cosmetics', slug: 'skin-care-cosmetics', sub: 'Face · Body · Bath' },
   { name: 'Sale', image: '/images/categories/sale-category.jpg', href: '/catalog?on_sale=1', slug: null as string | null, sub: 'Limited-time offers' },
 ];
 

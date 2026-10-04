@@ -43,12 +43,6 @@ type SP = Record<string, string | string[] | undefined>;
 const first = (v: string | string[] | undefined): string | undefined =>
   Array.isArray(v) ? v[0] : v;
 
-const numList = (v: string | undefined): number[] =>
-  (v ?? '')
-    .split(',')
-    .map((s) => parseInt(s, 10))
-    .filter((n) => n > 0);
-
 /** Flatten Next's searchParams for URL building + client components. */
 function flatParams(sp: SP): Record<string, string> {
   const out: Record<string, string> = {};
@@ -83,9 +77,22 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
   const flat = flatParams(sp);
   const [categories, attributes] = await Promise.all([getCategories(), getProductAttributes()]);
   const catById = new Map<number, StoreCategory>(categories.map((c) => [c.id, c]));
+  const catBySlug = new Map<string, StoreCategory>(
+    categories.map((c) => [c.slug.toLowerCase(), c])
+  );
 
   // ---- Parse URL filters ----
-  const categoryIds = numList(first(sp.category));
+  // ?category= accepts numeric IDs and slugs (e.g. ?category=perfumes-colognes).
+  const categoryIds: number[] = [];
+  for (const raw of (first(sp.category) ?? '').split(',').map((s) => s.trim()).filter(Boolean)) {
+    const asNum = parseInt(raw, 10);
+    if (asNum > 0 && catById.has(asNum)) {
+      categoryIds.push(asNum);
+    } else {
+      const cat = catBySlug.get(raw.toLowerCase());
+      if (cat) categoryIds.push(cat.id);
+    }
+  }
   const minDollars = parseFloat(first(sp.min_price) ?? '');
   const maxDollars = parseFloat(first(sp.max_price) ?? '');
   const ratingRaw = parseInt(first(sp.rating) ?? '', 10);

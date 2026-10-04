@@ -66,7 +66,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
           <MDBCol md="2" sm="6" className="mb-4">
             <h6>Shop</h6>
             {shopCats.map((c) => (
-              <Link key={c.id} href={`/product-category/${c.slug}`} className={styles.flink}>
+              <Link key={c.id} href={`/catalog?category=${c.slug}`} className={styles.flink}>
                 {c.name}
               </Link>
             ))}

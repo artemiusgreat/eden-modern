@@ -21,6 +21,8 @@ const nextConfig = {
       // Legacy WooCommerce endpoints -> headless equivalents (301).
       { source: '/my-account/:path*', destination: '/account', permanent: true },
       { source: '/shop/:path*', destination: '/catalog', permanent: true },
+      // Category archives now live on /catalog?category= (301).
+      { source: '/product-category/:slug', destination: '/catalog?category=:slug', permanent: true },
     ];
   },
 };
