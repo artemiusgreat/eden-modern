@@ -272,7 +272,11 @@ export default function CheckoutView() {
         });
         if (cancelled) return;
         elementsRef.current = elements;
-        const el = elements.create('payment');
+        const el = elements.create('payment', {
+          // No Link: the storefront collects name/email/phone itself, so
+          // Link's sign-in banner and "save my info" block are redundant.
+          wallets: { link: 'never' },
+        });
         paymentElRef.current = el;
         el.mount(cardMountRef.current);
         builtForRef.current = payMethod;
@@ -304,17 +308,20 @@ export default function CheckoutView() {
 
   function validate(): string | null {
     if (!/^\S+@\S+\.\S+$/.test(email)) return 'Please enter a valid email address.';
-    const req: (keyof CheckoutAddress)[] = ['first_name', 'last_name', 'address_1', 'city', 'postcode', 'country'];
-    // Auto-expand the collapsed sections so the shopper can see and fix
-    // what's missing.
-    const shipBad = req.some((k) => !(ship[k] ?? '').trim());
-    if (shipBad) setShipExpanded(true);
+    // Names live in the Contact section (always visible); the address
+    // sections auto-expand only for missing address fields.
+    const nameReq: (keyof CheckoutAddress)[] = ['first_name', 'last_name'];
+    const addrReq: (keyof CheckoutAddress)[] = ['address_1', 'city', 'postcode', 'country'];
+    const shipNameBad = nameReq.some((k) => !(ship[k] ?? '').trim());
+    const shipAddrBad = addrReq.some((k) => !(ship[k] ?? '').trim());
+    if (shipAddrBad) setShipExpanded(true);
     let billBad = false;
     if (!billSame) {
-      billBad = req.some((k) => !(bill[k] ?? '').trim());
+      billBad = addrReq.some((k) => !(bill[k] ?? '').trim());
       if (billBad) setBillExpanded(true);
     }
-    if (shipBad) return 'Please complete the shipping address.';
+    if (shipNameBad) return 'Please enter your first and last name.';
+    if (shipAddrBad) return 'Please complete the shipping address.';
     if (billBad) return 'Please complete the billing address.';
     if (!payMethod) return 'Please choose a payment method.';
     return null;
@@ -413,7 +420,12 @@ export default function CheckoutView() {
     setError('');
     setPlacing(true);
     try {
-      const billing = { ...(billSame ? ship : bill), email };
+      // Names now live only in the Contact section (bound to ship); a
+      // separate billing address inherits them.
+      const billing = {
+        ...(billSame ? ship : { ...bill, first_name: ship.first_name, last_name: ship.last_name }),
+        email,
+      };
       const payment_data: { key: string; value: string }[] = [];
 
       // Any Stripe gateway (card, Klarna, Affirm, …) goes through the
@@ -535,16 +547,6 @@ export default function CheckoutView() {
         />
         <div className={`${styles.manualWrap}${expanded ? ` ${styles.open}` : ''}`}>
           <div className={styles.manualInner}>
-        <MDBRow>
-          <MDBCol md="6">
-            <Field id={`${idPrefix}-fn`} label="First name *" value={addr.first_name}
-              onChange={(e) => set('first_name', e.target.value)} autoComplete="given-name" />
-          </MDBCol>
-          <MDBCol md="6">
-            <Field id={`${idPrefix}-ln`} label="Last name *" value={addr.last_name}
-              onChange={(e) => set('last_name', e.target.value)} autoComplete="family-name" />
-          </MDBCol>
-        </MDBRow>
         <Field id={`${idPrefix}-a1`} label="Street address *" value={addr.address_1}
           onChange={(e) => set('address_1', e.target.value)} autoComplete="street-address" />
         <Field id={`${idPrefix}-a2`} label="Apt, suite, etc. (optional)" value={addr.address_2}
@@ -658,6 +660,16 @@ export default function CheckoutView() {
           {/* Contact */}
           <section className={styles.section}>
             <h2 className={styles.h2}>Contact</h2>
+            <MDBRow>
+              <MDBCol md="6">
+                <Field id="co-fn" label="First name *" value={ship.first_name}
+                  onChange={(e) => setShipField('first_name', e.target.value)} autoComplete="given-name" />
+              </MDBCol>
+              <MDBCol md="6">
+                <Field id="co-ln" label="Last name *" value={ship.last_name}
+                  onChange={(e) => setShipField('last_name', e.target.value)} autoComplete="family-name" />
+              </MDBCol>
+            </MDBRow>
             <Field id="co-email" label="Email address *" type="email" value={email}
               onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
             <label className={styles.checkRow}>
