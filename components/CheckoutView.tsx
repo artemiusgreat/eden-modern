@@ -13,6 +13,7 @@ import {
   MDBSpinner,
 } from 'mdb-react-ui-kit';
 import { useCart } from '@/components/cart/CartProvider';
+import AddressAutocomplete, { type ParsedAddress } from '@/components/AddressAutocomplete';
 import { cartLineToGaItem, minorToDecimal, trackBeginCheckout, trackPurchase } from '@/lib/analytics';
 import type { StoreCart } from '@/lib/woo';
 import type {
@@ -148,6 +149,8 @@ export default function CheckoutView() {
 
   const [ratesReady, setRatesReady] = useState(false);
   const [calcBusy, setCalcBusy] = useState(false);
+  const [shipExpanded, setShipExpanded] = useState(false);
+  const [billExpanded, setBillExpanded] = useState(false);
   const [selectedRates, setSelectedRates] = useState<Record<number, string>>({});
   const [payMethod, setPayMethod] = useState('');
   const [placing, setPlacing] = useState(false);
@@ -302,17 +305,30 @@ export default function CheckoutView() {
   function validate(): string | null {
     if (!/^\S+@\S+\.\S+$/.test(email)) return 'Please enter a valid email address.';
     const req: (keyof CheckoutAddress)[] = ['first_name', 'last_name', 'address_1', 'city', 'postcode', 'country'];
-    for (const k of req) if (!(ship[k] ?? '').trim()) return 'Please complete the shipping address.';
-    if (!billSame) for (const k of req) if (!(bill[k] ?? '').trim()) return 'Please complete the billing address.';
+    // Auto-expand the collapsed sections so the shopper can see and fix
+    // what's missing.
+    const shipBad = req.some((k) => !(ship[k] ?? '').trim());
+    if (shipBad) setShipExpanded(true);
+    let billBad = false;
+    if (!billSame) {
+      billBad = req.some((k) => !(bill[k] ?? '').trim());
+      if (billBad) setBillExpanded(true);
+    }
+    if (shipBad) return 'Please complete the shipping address.';
+    if (billBad) return 'Please complete the billing address.';
     if (!payMethod) return 'Please choose a payment method.';
     return null;
   }
 
-  async function calculateShipping() {
-    const bad = validate();
-    if (bad && !bad.startsWith('Please choose')) {
-      showError(bad);
-      return;
+  async function calculateShipping(silent = false) {
+    // Auto-calc only needs the address itself (name/email/payment are
+    // validated at place-order time).
+    const addrReq: (keyof CheckoutAddress)[] = ['address_1', 'city', 'postcode', 'country'];
+    for (const k of addrReq) {
+      if (!(ship[k] ?? '').trim()) {
+        if (!silent) showError('Please complete the shipping address.');
+        return;
+      }
     }
     setError('');
     setCalcBusy(true);
@@ -352,6 +368,26 @@ export default function CheckoutView() {
       setError(e instanceof Error ? e.message : 'Could not select shipping method.');
     }
   }
+
+  // Auto-calculate shipping once the address is complete — no button.
+  // Debounced for manual typing; keyed on the address fields so autocomplete
+  // selections (which fill several fields at once) trigger a single call.
+  // Skipped when shipping isn't needed or a calc is already in flight.
+  const lastCalcKey = useRef('');
+  const shipKey = [ship.address_1, ship.city, ship.postcode, ship.country].join('|');
+  useEffect(() => {
+    if (!needsShipping || calcBusy || placing || orderNumber) return;
+    const complete = [ship.address_1, ship.city, ship.postcode, ship.country].every((v) =>
+      (v ?? '').trim()
+    );
+    if (!complete || shipKey === lastCalcKey.current) return;
+    const t = setTimeout(() => {
+      lastCalcKey.current = shipKey;
+      calculateShipping(true);
+    }, 800);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shipKey, needsShipping]);
 
   // GA4 begin_checkout — once per checkout visit that has items in the bag.
   const beganCheckout = useRef(false);
@@ -483,8 +519,22 @@ export default function CheckoutView() {
       addr: CheckoutAddress,
       set: (k: keyof CheckoutAddress, v: string) => void,
       idPrefix: string,
+      expanded: boolean,
+      setExpanded: (v: boolean) => void,
     ) => (
       <>
+        <AddressAutocomplete
+          id={`${idPrefix}-lookup`}
+          onSelect={(p: ParsedAddress) => {
+            if (p.street) set('address_1', p.street);
+            if (p.city) set('city', p.city);
+            if (p.state) set('state', p.state);
+            if (p.postcode) set('postcode', p.postcode);
+            if (p.country) set('country', p.country);
+          }}
+        />
+        <div className={`${styles.manualWrap}${expanded ? ` ${styles.open}` : ''}`}>
+          <div className={styles.manualInner}>
         <MDBRow>
           <MDBCol md="6">
             <Field id={`${idPrefix}-fn`} label="First name *" value={addr.first_name}
@@ -530,6 +580,15 @@ export default function CheckoutView() {
               onChange={(e) => set('phone', e.target.value)} autoComplete="tel" />
           </MDBCol>
         </MDBRow>
+          </div>
+        </div>
+        <button
+          type="button"
+          className={styles.manualToggle}
+          onClick={() => setExpanded(!expanded)}
+          aria-expanded={expanded}>
+          {expanded ? 'Hide manual address entry' : 'Enter address manually'}
+        </button>
       </>
     ),
     [],
@@ -611,10 +670,10 @@ export default function CheckoutView() {
           {/* Shipping address */}
           <section className={styles.section}>
             <h2 className={styles.h2}>Shipping address</h2>
-            {addressFields(ship, setShipField, 'ship')}
-            <MDBBtn className={styles.ghostBtn} onClick={calculateShipping} disabled={calcBusy}>
-              {calcBusy ? 'Calculating…' : ratesReady ? 'Recalculate shipping' : 'Calculate shipping'}
-            </MDBBtn>
+            {addressFields(ship, setShipField, 'ship', shipExpanded, setShipExpanded)}
+            {calcBusy && (
+              <p className={styles.hint} role="status">Calculating shipping…</p>
+            )}
           </section>
 
           {/* Shipping method */}
@@ -652,7 +711,7 @@ export default function CheckoutView() {
               <input type="checkbox" checked={billSame} onChange={(e) => setBillSame(e.target.checked)} />
               <span>Same as shipping address</span>
             </label>
-            {!billSame && addressFields(bill, setBillField, 'bill')}
+            {!billSame && addressFields(bill, setBillField, 'bill', billExpanded, setBillExpanded)}
           </section>
 
           {/* Payment — revealed only after shipping is calculated (or when the
@@ -693,7 +752,7 @@ export default function CheckoutView() {
               </MDBBtn>
             </>
           ) : (
-            <p className={styles.hint}>Enter your address and calculate shipping to reveal payment options.</p>
+            <p className={styles.hint}>Enter your shipping address to see delivery options and payment.</p>
           )}
         </MDBCol>
 
