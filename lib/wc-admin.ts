@@ -103,9 +103,13 @@ export async function getSessionCustomer(): Promise<SessionResolution> {
   let username: string | null = null;
   try {
     const payload = jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] }) as {
-      data?: { user?: { id?: number; user_nicename?: string } };
+      data?: { user?: { id?: number | string; user_nicename?: string } };
     };
-    userId = typeof payload.data?.user?.id === 'number' ? payload.data.user.id : null;
+    // The WP JWT plugin json_encodes the MySQL row, so the user id arrives
+    // as a string ("3"), not a number. Accept both.
+    const rawId = payload.data?.user?.id;
+    const parsedId = rawId != null ? Number(rawId) : NaN;
+    userId = Number.isInteger(parsedId) && parsedId > 0 ? parsedId : null;
     username = payload.data?.user?.user_nicename ?? null;
   } catch (err) {
     // TEMP DEBUG — remove after diagnosing the live verify failure.
