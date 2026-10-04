@@ -7,8 +7,8 @@ export const metadata = {
   description: 'Sign in to your Indemos account to track orders and manage your details.',
 };
 
-export default function AccountPage() {
-  const jwt = cookies().get('eden_jwt');
+export default async function AccountPage() {
+  const jwt = (await cookies()).get('eden_jwt');
 
   if (jwt?.value) {
     return <AccountDashboard />;

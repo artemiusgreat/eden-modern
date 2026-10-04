@@ -11,7 +11,7 @@ const WC = process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com';
 const TOKEN_COOKIE = 'woo_cart_token';
 
 async function cartRequest(method: 'GET' | 'POST', path: string, body?: unknown): Promise<StoreCart> {
-  const jar = cookies();
+  const jar = await cookies();
   const storedToken = jar.get(TOKEN_COOKIE)?.value;
 
   // Every mutation needs a fresh Nonce; fetch it from the cart endpoint.
@@ -152,7 +152,7 @@ async function checkoutRequest(
   path: string,
   body?: unknown,
 ): Promise<CheckoutResponse> {
-  const jar = cookies();
+  const jar = await cookies();
   const storedToken = jar.get(TOKEN_COOKIE)?.value;
 
   // The checkout endpoint requires a fresh Nonce, same as cart mutations.

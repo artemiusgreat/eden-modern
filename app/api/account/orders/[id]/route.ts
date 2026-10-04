@@ -18,7 +18,7 @@ const addr = (a: any) =>
       }
     : null;
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getSessionCustomer();
     if (!session.id)
@@ -27,7 +27,8 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
         { status: 401 }
       );
     const userId = session.id;
-    const orderId = Number(params.id);
+    const { id } = await params;
+    const orderId = Number(id);
     if (!Number.isFinite(orderId))
       return NextResponse.json({ ok: false, error: 'Invalid order.' }, { status: 400 });
     const o = await wcFetch<any>(`/orders/${orderId}`);
