@@ -309,11 +309,15 @@ export default function CheckoutView() {
     return null;
   }
 
-  async function calculateShipping() {
-    const bad = validate();
-    if (bad && !bad.startsWith('Please choose')) {
-      showError(bad);
-      return;
+  async function calculateShipping(silent = false) {
+    // Auto-calc only needs the address itself (name/email/payment are
+    // validated at place-order time).
+    const addrReq: (keyof CheckoutAddress)[] = ['address_1', 'city', 'postcode', 'country'];
+    for (const k of addrReq) {
+      if (!(ship[k] ?? '').trim()) {
+        if (!silent) showError('Please complete the shipping address.');
+        return;
+      }
     }
     setError('');
     setCalcBusy(true);
@@ -353,6 +357,26 @@ export default function CheckoutView() {
       setError(e instanceof Error ? e.message : 'Could not select shipping method.');
     }
   }
+
+  // Auto-calculate shipping once the address is complete — no button.
+  // Debounced for manual typing; keyed on the address fields so autocomplete
+  // selections (which fill several fields at once) trigger a single call.
+  // Skipped when shipping isn't needed or a calc is already in flight.
+  const lastCalcKey = useRef('');
+  const shipKey = [ship.address_1, ship.city, ship.postcode, ship.country].join('|');
+  useEffect(() => {
+    if (!needsShipping || calcBusy || placing || orderNumber) return;
+    const complete = [ship.address_1, ship.city, ship.postcode, ship.country].every((v) =>
+      (v ?? '').trim()
+    );
+    if (!complete || shipKey === lastCalcKey.current) return;
+    const t = setTimeout(() => {
+      lastCalcKey.current = shipKey;
+      calculateShipping(true);
+    }, 800);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shipKey, needsShipping]);
 
   // GA4 begin_checkout — once per checkout visit that has items in the bag.
   const beganCheckout = useRef(false);
@@ -623,9 +647,9 @@ export default function CheckoutView() {
           <section className={styles.section}>
             <h2 className={styles.h2}>Shipping address</h2>
             {addressFields(ship, setShipField, 'ship')}
-            <MDBBtn className={styles.ghostBtn} onClick={calculateShipping} disabled={calcBusy}>
-              {calcBusy ? 'Calculating…' : ratesReady ? 'Recalculate shipping' : 'Calculate shipping'}
-            </MDBBtn>
+            {calcBusy && (
+              <p className={styles.hint} role="status">Calculating shipping…</p>
+            )}
           </section>
 
           {/* Shipping method */}
@@ -704,7 +728,7 @@ export default function CheckoutView() {
               </MDBBtn>
             </>
           ) : (
-            <p className={styles.hint}>Enter your address and calculate shipping to reveal payment options.</p>
+            <p className={styles.hint}>Enter your shipping address to see delivery options and payment.</p>
           )}
         </MDBCol>
 
