@@ -13,6 +13,7 @@ import {
   MDBSpinner,
 } from 'mdb-react-ui-kit';
 import { useCart } from '@/components/cart/CartProvider';
+import AddressAutocomplete, { type ParsedAddress } from '@/components/AddressAutocomplete';
 import { cartLineToGaItem, minorToDecimal, trackBeginCheckout, trackPurchase } from '@/lib/analytics';
 import type { StoreCart } from '@/lib/woo';
 import type {
@@ -485,6 +486,16 @@ export default function CheckoutView() {
       idPrefix: string,
     ) => (
       <>
+        <AddressAutocomplete
+          id={`${idPrefix}-lookup`}
+          onSelect={(p: ParsedAddress) => {
+            if (p.street) set('address_1', p.street);
+            if (p.city) set('city', p.city);
+            if (p.state) set('state', p.state);
+            if (p.postcode) set('postcode', p.postcode);
+            if (p.country) set('country', p.country);
+          }}
+        />
         <MDBRow>
           <MDBCol md="6">
             <Field id={`${idPrefix}-fn`} label="First name *" value={addr.first_name}

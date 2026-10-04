@@ -1,0 +1,101 @@
+/* Isolated per component: AddressAutocomplete only. */
+
+.wrap {
+  position: relative;
+  margin-bottom: 1.1rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+.input {
+  width: 100%;
+  background: #0b1120;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--ink);
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.input::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.loading {
+  position: absolute;
+  right: 0.9rem;
+  top: 2.35rem;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--line);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: addr-spin 0.7s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes addr-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dropdown {
+  position: absolute;
+  z-index: 50;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: #0d1424;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.option {
+  padding: 0.6rem 0.75rem;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.option:hover,
+.option.active {
+  background: rgba(201, 162, 75, 0.12);
+}
+
+.main {
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.secondary {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0;
+}
