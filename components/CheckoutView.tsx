@@ -680,7 +680,7 @@ export default function CheckoutView() {
                   );
                 })}
                 {stripeUpeTypes(payMethod) && stripePromise && (
-                  <div className={styles.stripeBox}>
+                  <div className={`${styles.stripeBox} mb-3`}>
                     <div ref={cardMountRef} />
                   </div>
                 )}
