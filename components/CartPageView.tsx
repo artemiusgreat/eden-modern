@@ -37,8 +37,8 @@ export default function CartPageView() {
             <MDBIcon fas icon="bag-shopping" />
           </div>
           <p className="mb-4">Your bag is empty.</p>
-          <Link href="/" passHref legacyBehavior>
-            <MDBBtn tag="a" className="btn-gold">
+          <Link href="/">
+            <MDBBtn tag="span" className="btn-gold">
               Continue shopping
             </MDBBtn>
           </Link>
@@ -134,8 +134,8 @@ export default function CartPageView() {
                 </dd>
               </div>
               <p className={styles.hint}>Shipping &amp; taxes calculated at checkout.</p>
-              <Link href="/checkout" passHref legacyBehavior>
-                <MDBBtn tag="a" className="btn-gold d-block text-center">
+              <Link href="/checkout">
+                <MDBBtn tag="span" className="btn-gold d-block text-center">
                   Proceed to checkout
                 </MDBBtn>
               </Link>
