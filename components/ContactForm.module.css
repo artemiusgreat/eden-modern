@@ -1,8 +1,8 @@
 /* Isolated per component: ContactForm only. */
 
 .form {
-  max-width: 640px;
-  margin: 2.5rem auto 0;
+  width: 100%;
+  margin: 2.5rem 0 0;
 }
 
 .field {
@@ -39,6 +39,19 @@
   border-color: var(--gold);
 }
 
+/* Chrome autofill paints fields white — force the dark theme back so
+   light text stays readable. */
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus,
+.field textarea:-webkit-autofill,
+.field textarea:-webkit-autofill:hover,
+.field textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 1000px #0b1120 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .field input[aria-invalid="true"],
 .field textarea[aria-invalid="true"] {
   border-color: #e0655f;
@@ -52,6 +65,8 @@
 }
 
 .submit {
+  display: block;
+  margin-left: auto;
   background: linear-gradient(135deg, var(--gold-soft), var(--gold-deep));
   color: #14100a;
   border: none;
@@ -75,8 +90,8 @@
 }
 
 .sent {
-  max-width: 640px;
-  margin: 2.5rem auto 0;
+  width: 100%;
+  margin: 2.5rem 0 0;
   text-align: center;
   border: 1px solid var(--line);
   border-radius: 3px;
