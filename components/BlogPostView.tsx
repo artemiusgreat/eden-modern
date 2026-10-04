@@ -19,7 +19,7 @@ export default function BlogPostView({ post, related }: { post: WpPost; related:
           <Link href="/">Home</Link>
         </MDBBreadcrumbItem>
         <MDBBreadcrumbItem>
-          <Link href="/magazine">Journal</Link>
+          <Link href="/magazine">Magazine</Link>
         </MDBBreadcrumbItem>
         <MDBBreadcrumbItem active>{post.title}</MDBBreadcrumbItem>
       </MDBBreadcrumb>

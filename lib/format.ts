@@ -8,3 +8,18 @@ export function formatPrice(minorUnits: string, minorUnit = 2, symbol = '$'): st
 export function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
+
+/** Decode HTML entities in API strings, e.g. "A &#8211; B" -> "A – B".
+ *  WooCommerce escapes product names; rendering them raw shows the entity
+ *  literally. Handles numeric (decimal/hex) and common named entities. */
+export function decodeEntities(text: string): string {
+  return text
+    .replace(/&#(\d+);/g, (_, dec: string) => String.fromCodePoint(Number(dec)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex: string) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&nbsp;/g, ' ');
+}

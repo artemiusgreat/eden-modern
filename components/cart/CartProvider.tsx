@@ -4,9 +4,10 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MDBBtn, MDBBadge, MDBSpinner, MDBIcon } from 'mdb-react-ui-kit';
+import { MDBBtn, MDBBadge, MDBIcon } from 'mdb-react-ui-kit';
 import type { StoreCart } from '@/lib/woo';
-import { formatPrice } from '@/lib/format';
+import { formatPrice, decodeEntities } from '@/lib/format';
+import { progressBegin, progressEnd } from '@/lib/progress';
 import { cartLineToGaItem, trackAddToCart } from '@/lib/analytics';
 import styles from './CartDrawer.module.css';
 
@@ -60,10 +61,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const mutate = useCallback(async (fn: () => Promise<StoreCart>) => {
     setBusy(true);
+    progressBegin();
     try {
       setCart(await fn());
     } finally {
       setBusy(false);
+      progressEnd();
     }
   }, []);
 
@@ -71,6 +74,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Own mutate path (instead of the shared `mutate`) so the fresh cart is
     // available for the GA4 add_to_cart event.
     setBusy(true);
+    progressBegin();
     return cartApi('add', { id, quantity })
       .then((next) => {
         setCart(next);
@@ -78,7 +82,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
         if (added) trackAddToCart(cartLineToGaItem(added, quantity), added.prices.currency_code);
         setDrawerOpen(true);
       })
-      .finally(() => setBusy(false));
+      .finally(() => {
+        setBusy(false);
+        progressEnd();
+      });
   }, []);
   const updateQuantity = useCallback(
     (key: string, quantity: number) =>
@@ -138,7 +145,7 @@ function CartDrawer() {
                 {item.images[0] && (
                   <Image
                     src={item.images[0].thumbnail}
-                    alt={item.images[0].alt || item.name}
+                    alt={item.images[0].alt || decodeEntities(item.name)}
                     width={84}
                     height={96}
                     className={styles.thumb} />
@@ -158,11 +165,11 @@ function CartDrawer() {
                           href={`/products/${slug}`}
                           onClick={() => setDrawerOpen(false)}
                           className={styles.itemName}>
-                          {item.name}
+                          {decodeEntities(item.name)}
                         </Link>
                       ) : (
                         <strong className="font-serif" style={{ fontSize: '1.05rem', fontWeight: 600 }}>
-                          {item.name}
+                          {decodeEntities(item.name)}
                         </strong>
                       );
                     })()}
@@ -195,11 +202,6 @@ function CartDrawer() {
                 </div>
               </div>
             ))
-          )}
-          {busy && (
-            <div className="text-center my-2">
-              <MDBSpinner size="sm" role="status" />
-            </div>
           )}
         </div>
 

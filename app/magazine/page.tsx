@@ -4,7 +4,7 @@ import BlogIndexView from '@/components/BlogIndexView';
 export const revalidate = 3600;
 
 export const metadata = {
-  title: 'Journal',
+  title: 'Magazine',
   description: 'Fragrance stories, skincare rituals and beauty notes from Indemos.',
 };
 
