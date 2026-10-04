@@ -48,7 +48,8 @@
 .field textarea:-webkit-autofill:hover,
 .field textarea:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--ink);
-  -webkit-box-shadow: 0 0 0 1000px #0b1120 inset;
+  box-shadow: none!important;
+  -webkit-box-shadow: none!important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
