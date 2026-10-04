@@ -149,6 +149,8 @@ export default function CheckoutView() {
 
   const [ratesReady, setRatesReady] = useState(false);
   const [calcBusy, setCalcBusy] = useState(false);
+  const [shipExpanded, setShipExpanded] = useState(false);
+  const [billExpanded, setBillExpanded] = useState(false);
   const [selectedRates, setSelectedRates] = useState<Record<number, string>>({});
   const [payMethod, setPayMethod] = useState('');
   const [placing, setPlacing] = useState(false);
@@ -303,8 +305,17 @@ export default function CheckoutView() {
   function validate(): string | null {
     if (!/^\S+@\S+\.\S+$/.test(email)) return 'Please enter a valid email address.';
     const req: (keyof CheckoutAddress)[] = ['first_name', 'last_name', 'address_1', 'city', 'postcode', 'country'];
-    for (const k of req) if (!(ship[k] ?? '').trim()) return 'Please complete the shipping address.';
-    if (!billSame) for (const k of req) if (!(bill[k] ?? '').trim()) return 'Please complete the billing address.';
+    // Auto-expand the collapsed sections so the shopper can see and fix
+    // what's missing.
+    const shipBad = req.some((k) => !(ship[k] ?? '').trim());
+    if (shipBad) setShipExpanded(true);
+    let billBad = false;
+    if (!billSame) {
+      billBad = req.some((k) => !(bill[k] ?? '').trim());
+      if (billBad) setBillExpanded(true);
+    }
+    if (shipBad) return 'Please complete the shipping address.';
+    if (billBad) return 'Please complete the billing address.';
     if (!payMethod) return 'Please choose a payment method.';
     return null;
   }
@@ -508,6 +519,8 @@ export default function CheckoutView() {
       addr: CheckoutAddress,
       set: (k: keyof CheckoutAddress, v: string) => void,
       idPrefix: string,
+      expanded: boolean,
+      setExpanded: (v: boolean) => void,
     ) => (
       <>
         <AddressAutocomplete
@@ -520,6 +533,8 @@ export default function CheckoutView() {
             if (p.country) set('country', p.country);
           }}
         />
+        <div className={`${styles.manualWrap}${expanded ? ` ${styles.open}` : ''}`}>
+          <div className={styles.manualInner}>
         <MDBRow>
           <MDBCol md="6">
             <Field id={`${idPrefix}-fn`} label="First name *" value={addr.first_name}
@@ -565,6 +580,15 @@ export default function CheckoutView() {
               onChange={(e) => set('phone', e.target.value)} autoComplete="tel" />
           </MDBCol>
         </MDBRow>
+          </div>
+        </div>
+        <button
+          type="button"
+          className={styles.manualToggle}
+          onClick={() => setExpanded(!expanded)}
+          aria-expanded={expanded}>
+          {expanded ? 'Hide manual address entry' : 'Enter address manually'}
+        </button>
       </>
     ),
     [],
@@ -646,7 +670,7 @@ export default function CheckoutView() {
           {/* Shipping address */}
           <section className={styles.section}>
             <h2 className={styles.h2}>Shipping address</h2>
-            {addressFields(ship, setShipField, 'ship')}
+            {addressFields(ship, setShipField, 'ship', shipExpanded, setShipExpanded)}
             {calcBusy && (
               <p className={styles.hint} role="status">Calculating shipping…</p>
             )}
@@ -687,7 +711,7 @@ export default function CheckoutView() {
               <input type="checkbox" checked={billSame} onChange={(e) => setBillSame(e.target.checked)} />
               <span>Same as shipping address</span>
             </label>
-            {!billSame && addressFields(bill, setBillField, 'bill')}
+            {!billSame && addressFields(bill, setBillField, 'bill', billExpanded, setBillExpanded)}
           </section>
 
           {/* Payment — revealed only after shipping is calculated (or when the
