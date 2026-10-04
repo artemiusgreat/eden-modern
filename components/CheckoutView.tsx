@@ -272,7 +272,11 @@ export default function CheckoutView() {
         });
         if (cancelled) return;
         elementsRef.current = elements;
-        const el = elements.create('payment');
+        const el = elements.create('payment', {
+          // No Link: the storefront collects name/email/phone itself, so
+          // Link's sign-in banner and "save my info" block are redundant.
+          wallets: { link: 'never' },
+        });
         paymentElRef.current = el;
         el.mount(cardMountRef.current);
         builtForRef.current = payMethod;
