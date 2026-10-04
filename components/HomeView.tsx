@@ -30,9 +30,9 @@ const STEPS = [
    via the `slug` — passed in as collectionImages. Tiles without a category
    (or without an image set) render the tag-icon placeholder. */
 const COLLECTIONS = [
-  { name: 'Fragrances', href: '/product-category/perfumes-colognes', slug: 'perfumes-colognes', sub: 'Perfumes · Colognes · Home fragrance' },
-  { name: 'Skincare', href: '/product-category/skin-care-cosmetics', slug: 'skin-care-cosmetics', sub: 'Face · Body · Bath' },
-  { name: 'Sale', href: '/catalog?on_sale=1', slug: null as string | null, sub: 'Limited-time offers' },
+  { name: 'Fragrances', image: '/images/categories/fragrances-category.jpg', href: '/product-category/perfumes-colognes', slug: 'perfumes-colognes', sub: 'Perfumes · Colognes · Home fragrance' },
+  { name: 'Skincare', image: '/images/categories/beauty-category.jpg', href: '/product-category/skin-care-cosmetics', slug: 'skin-care-cosmetics', sub: 'Face · Body · Bath' },
+  { name: 'Sale', image: '/images/categories/sale-category.jpg', href: '/catalog?on_sale=1', slug: null as string | null, sub: 'Limited-time offers' },
 ];
 
 function NewsletterCta() {
@@ -209,11 +209,12 @@ export default function HomeView({
           </div>
           <MDBRow>
             {COLLECTIONS.map((c) => {
-              const image = c.slug ? (collectionImages[c.slug] ?? null) : null;
+              const image = collectionImages[c.slug] ?? c.image ?? null;
               return (
               <MDBCol md="4" sm="6" className="mb-4" key={c.name}>
                 <Link href={c.href} className={styles.collectionCard}>
-                  <div className={styles.collectionMedia}>
+                  <div
+                  className={styles.collectionMedia}>
                     {image ? (
                       <img src={image} alt={c.name} loading="lazy" />
                     ) : (
