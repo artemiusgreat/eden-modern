@@ -102,7 +102,7 @@ export async function getSessionCustomer(): Promise<SessionResolution> {
   let userId: number | null = null;
   let username: string | null = null;
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as {
+    const payload = jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] }) as {
       data?: { user?: { id?: number; user_nicename?: string } };
     };
     userId = typeof payload.data?.user?.id === 'number' ? payload.data.user.id : null;
