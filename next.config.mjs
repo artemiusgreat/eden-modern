@@ -23,6 +23,11 @@ const nextConfig = {
       { source: '/shop/:path*', destination: '/catalog', permanent: true },
       // Category archives now live on /catalog?category= (301).
       { source: '/product-category/:slug', destination: '/catalog?category=:slug', permanent: true },
+      // Legacy WP blog taxonomy archives -> magazine (301).
+      { source: '/category/:slug', destination: '/magazine/:slug', permanent: true },
+      { source: '/tag/:slug', destination: '/magazine/:slug', permanent: true },
+      // Product tags have no filtered view -> catalog root (301).
+      { source: '/product-tag/:slug', destination: '/catalog', permanent: true },
     ];
   },
 };

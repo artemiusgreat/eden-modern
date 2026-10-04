@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { getProductsPaged, getCategories, getPosts } from '@/lib/woo';
+import { getProductsPaged, getPosts } from '@/lib/woo';
 
 // Canonical public URL of the storefront (what Google/FB/Pinterest should index).
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://eden.indemos.com').replace(/\/$/, '');
@@ -14,7 +14,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const entries: MetadataRoute.Sitemap = [
     { url: `${SITE}/`, lastModified: now, changeFrequency: 'daily', priority: 1 },
-    { url: `${SITE}/catalog`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${SITE}/magazine`, lastModified: now, changeFrequency: 'weekly', priority: 0.6 },
     { url: `${SITE}/privacy`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${SITE}/contacts`, changeFrequency: 'yearly', priority: 0.3 },
@@ -41,22 +40,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch {
     /* leave product entries out rather than 500ing the sitemap */
-  }
-
-  // Categories.
-  try {
-    const cats = await getCategories();
-    for (const c of cats) {
-      if (c.slug) {
-        entries.push({
-          url: `${SITE}/product-category/${c.slug}`,
-          changeFrequency: 'weekly',
-          priority: 0.7,
-        });
-      }
-    }
-  } catch {
-    /* ignore */
   }
 
   // Magazine posts.
