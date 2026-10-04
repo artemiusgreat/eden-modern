@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 import type { StoreProduct, StoreCategory, WpPost } from '@/lib/woo';
@@ -38,6 +38,29 @@ const COLLECTIONS = [
 function NewsletterCta() {
   const [email, setEmail] = useState('');
   const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
+
+  async function subscribe(e: FormEvent) {
+    e.preventDefault();
+    setError('');
+    const clean = email.trim();
+    if (!clean) return;
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: clean }),
+      });
+      const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (res.ok && data?.ok) {
+        setDone(true);
+      } else {
+        setError(data?.error ?? 'Could not subscribe. Please try again.');
+      }
+    } catch {
+      setError('Could not subscribe. Please try again.');
+    }
+  }
   return (
     <section className={styles.ctaBand}>
       <MDBContainer>
@@ -51,10 +74,7 @@ function NewsletterCta() {
         ) : (
           <form
             className="newsletter-shell"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (email.trim()) setDone(true);
-            }}
+            onSubmit={subscribe}
           >
             <input
               type="email"
@@ -66,6 +86,11 @@ function NewsletterCta() {
             />
             <button type="submit">Subscribe</button>
           </form>
+        )}
+        {error && !done && (
+          <p className="mb-0 mt-2" style={{ color: '#e0655f', fontSize: '0.85rem' }}>
+            {error}
+          </p>
         )}
       </MDBContainer>
     </section>
