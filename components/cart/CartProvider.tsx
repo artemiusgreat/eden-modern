@@ -216,8 +216,8 @@ function CartDrawer() {
             <p className="small mb-3" style={{ color: 'var(--muted)' }}>
               Shipping & taxes calculated at checkout.
             </p>
-            <Link href="/checkout" passHref legacyBehavior>
-              <MDBBtn className="btn-gold d-block" onClick={() => setDrawerOpen(false)}>
+            <Link href="/checkout">
+              <MDBBtn tag="span" className="btn-gold d-block" onClick={() => setDrawerOpen(false)}>
                 Proceed to checkout
               </MDBBtn>
             </Link>

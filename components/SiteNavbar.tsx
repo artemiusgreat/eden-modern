@@ -99,8 +99,8 @@ export default function SiteNavbar() {
   return (
     <MDBNavbar expand="xl" className={styles.navbar} sticky>
       <div className={`${styles.navbarInner} container`}>
-        <Link href="/" passHref legacyBehavior className="mr-5">
-          <MDBNavbarBrand className={styles.brand}>
+        <Link href="/" className="mr-5">
+          <MDBNavbarBrand tag="span" className={styles.brand}>
             Indemos<small>Beauty & Fragrance</small>
           </MDBNavbarBrand>
         </Link>
@@ -117,8 +117,8 @@ export default function SiteNavbar() {
             <MDBNavbarNav className={`${styles.links} mx-auto w-auto me-5`}>
               {MENU.map((entry) => (
                 <MDBNavbarItem key={entry.name} className={styles.dropWrap}>
-                  <Link href={entry.href} passHref legacyBehavior>
-                    <MDBNavbarLink className={styles.navLink} onClick={() => setOpen(false)}>
+                  <Link href={entry.href}>
+                    <MDBNavbarLink tag="span" className={styles.navLink} onClick={() => setOpen(false)}>
                       {entry.name}
                       <MDBIcon fas icon="chevron-down" className="ms-2" style={{ fontSize: '0.6rem' }} />
                     </MDBNavbarLink>
@@ -143,8 +143,8 @@ export default function SiteNavbar() {
                 </MDBNavbarItem>
               ))}
               <MDBNavbarItem>
-                <Link href="/magazine" passHref legacyBehavior>
-                  <MDBNavbarLink className={styles.navLink} onClick={() => setOpen(false)}>
+                <Link href="/magazine">
+                  <MDBNavbarLink tag="span" className={styles.navLink} onClick={() => setOpen(false)}>
                     Magazine
                   </MDBNavbarLink>
                 </Link>
@@ -170,8 +170,8 @@ export default function SiteNavbar() {
               <Link href="/catalog?on_sale=1" className={`btn-outline-noir ${styles.cta}`}>
                 Shop Sale
               </Link>
-              <Link href="/account" passHref legacyBehavior>
-                <MDBBtn tag="a" color="link" className={styles.iconBtn} aria-label="My account">
+              <Link href="/account">
+                <MDBBtn tag="span" color="link" className={styles.iconBtn} aria-label="My account">
                   <MDBIcon far icon="user" />
                 </MDBBtn>
               </Link>
