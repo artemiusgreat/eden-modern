@@ -633,7 +633,7 @@ export default function AccountDashboard() {
           </MDBCard>
           <p className="small my-3" style={{ color: 'var(--muted)' }}>
             Need help?{' '}
-            <Link href="/contact" style={{ color: 'var(--gold)' }}>
+            <Link href="/contacts" style={{ color: 'var(--gold)' }}>
               Contact us
             </Link>
           </p>
