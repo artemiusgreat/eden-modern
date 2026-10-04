@@ -107,7 +107,21 @@ export async function getSessionCustomer(): Promise<SessionResolution> {
     };
     userId = typeof payload.data?.user?.id === 'number' ? payload.data.user.id : null;
     username = payload.data?.user?.user_nicename ?? null;
-  } catch {
+  } catch (err) {
+    // TEMP DEBUG — remove after diagnosing the live verify failure.
+    console.error('[jwt-debug] verify failed:', err instanceof Error ? `${err.name}: ${err.message}` : String(err));
+    console.error('[jwt-debug] secret length:', JWT_SECRET.length);
+    const parts = token.split('.');
+    if (parts.length === 3) {
+      try {
+        console.error('[jwt-debug] header:', Buffer.from(parts[0], 'base64url').toString());
+        console.error('[jwt-debug] payload:', Buffer.from(parts[1], 'base64url').toString());
+      } catch {
+        console.error('[jwt-debug] token is not 3-part base64url');
+      }
+    } else {
+      console.error('[jwt-debug] token parts:', parts.length);
+    }
     return cacheResolution(token, { id: null, reason: 'session_invalid' });
   }
 
