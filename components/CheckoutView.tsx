@@ -43,26 +43,18 @@ const PAYMENT_LABELS: Record<string, string> = {
   'stripe_klarna': 'Klarna',
   'stripe_affirm': 'Affirm',
   'stripe_afterpay_clearpay': 'Afterpay',
-  'ppcp-gateway': 'PayPal',
-  'ppcp_axo_gateway': 'PayPal Fastlane',
-  'ppcp_credit_card_gateway': 'Debit & Credit Cards (PayPal)',
-  'ppcp_googlepay': 'Google Pay',
-  'ppcp_applepay': 'Apple Pay',
 };
 
 /**
- * Payment methods to hide from the checkout. The PayPal Payments plugin
- * exposes each sub-gateway (Fastlane, Google Pay, Apple Pay, card fields)
- * as a separate Store API payment method; the merchant uses Stripe as
- * primary and plain PayPal as backup, so the sub-variants are suppressed.
- * 'ppcp-gateway' (PayPal) itself is kept.
+ * Stripe-only checkout: the merchant uses Stripe exclusively. Instead of a
+ * blocklist of PayPal sub-gateway IDs (which broke when the PayPal Payments
+ * plugin changed its ID format — raw IDs like "ppcp axo gateway" leaked
+ * through), only Stripe gateway IDs are shown. Any current or future
+ * non-Stripe method is excluded automatically.
  */
-const HIDDEN_PAYMENT_METHODS: ReadonlySet<string> = new Set([
-  'ppcp_axo_gateway',
-  'ppcp_credit_card_gateway',
-  'ppcp_googlepay',
-  'ppcp_applepay',
-]);
+function isStripeMethod(id: string): boolean {
+  return id === 'stripe' || id.startsWith('stripe_');
+}
 
 /**
  * Detect whether the selected gateway is a Stripe UPE gateway. Returns the
@@ -207,7 +199,7 @@ export default function CheckoutView() {
   const needsShipping = checkout?.__experimentalCart?.needs_shipping ?? true;
   const paymentMethods = (
     checkout?.__experimentalCart?.payment_methods ?? cartPaymentMethods ?? []
-  ).filter((m) => !HIDDEN_PAYMENT_METHODS.has(m));
+  ).filter(isStripeMethod);
 
   // No payment method is preselected: the shopper picks one explicitly, and
   // the Stripe Payment Element only mounts on that explicit choice — after
@@ -691,9 +683,6 @@ export default function CheckoutView() {
                   <div className={styles.stripeBox}>
                     <div ref={cardMountRef} />
                   </div>
-                )}
-                {payMethod === 'ppcp-gateway' && (
-                  <p className={styles.hint}>You will be redirected to PayPal to complete your purchase.</p>
                 )}
                 <Field id="co-note" label="Order notes (optional)" value={note}
                   onChange={(e) => setNote(e.target.value)} />
