@@ -16,6 +16,14 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      // WordPress.com connection checks (Site Health, Google/Meta plugin
+      // auth) expect xmlrpc.php on the Site Address. Proxy it to the WP
+      // backend — the split-URL setup would otherwise 404 it.
+      { source: '/xmlrpc.php', destination: 'https://edenapi.indemos.com/xmlrpc.php' },
+    ];
+  },
   async redirects() {
     return [
       // Legacy WooCommerce endpoints -> headless equivalents (301).
