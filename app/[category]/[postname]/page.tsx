@@ -20,14 +20,15 @@ export const dynamic = 'force-dynamic';
 export default async function LegacyPostRedirect({
   params,
 }: {
-  params: { category: string; postname: string };
+  params: Promise<{ category: string; postname: string }>;
 }) {
+  const { postname } = await params;
   // NOTE: permanentRedirect() works by throwing, so it must live OUTSIDE the
   // try/catch — otherwise our own catch swallows the redirect as an error.
   let slug: string | null = null;
   try {
     const res = await fetch(
-      `${WP}/wp-json/wp/v2/posts?slug=${encodeURIComponent(params.postname)}&_fields=slug`,
+      `${WP}/wp-json/wp/v2/posts?slug=${encodeURIComponent(postname)}&_fields=slug`,
       { cache: 'no-store' }
     );
     const list = (await res.json().catch(() => null)) as Array<{

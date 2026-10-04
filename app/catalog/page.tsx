@@ -78,28 +78,29 @@ function withoutFilter(flat: Record<string, string>, key: string, value?: string
   return catalogUrl(Object.fromEntries(p.entries()));
 }
 
-export default async function CatalogPage({ searchParams }: { searchParams: SP }) {
-  const flat = flatParams(searchParams);
+export default async function CatalogPage({ searchParams }: { searchParams: Promise<SP> }) {
+  const sp = await searchParams;
+  const flat = flatParams(sp);
   const [categories, attributes] = await Promise.all([getCategories(), getProductAttributes()]);
   const catById = new Map<number, StoreCategory>(categories.map((c) => [c.id, c]));
 
   // ---- Parse URL filters ----
-  const categoryIds = numList(first(searchParams.category));
-  const minDollars = parseFloat(first(searchParams.min_price) ?? '');
-  const maxDollars = parseFloat(first(searchParams.max_price) ?? '');
-  const ratingRaw = parseInt(first(searchParams.rating) ?? '', 10);
-  const orderbyKey: OrderbyKey = (ORDERBYS as readonly string[]).includes(first(searchParams.orderby) ?? '')
-    ? (first(searchParams.orderby) as OrderbyKey)
+  const categoryIds = numList(first(sp.category));
+  const minDollars = parseFloat(first(sp.min_price) ?? '');
+  const maxDollars = parseFloat(first(sp.max_price) ?? '');
+  const ratingRaw = parseInt(first(sp.rating) ?? '', 10);
+  const orderbyKey: OrderbyKey = (ORDERBYS as readonly string[]).includes(first(sp.orderby) ?? '')
+    ? (first(sp.orderby) as OrderbyKey)
     : 'featured';
-  const perPageRaw = parseInt(first(searchParams.per_page) ?? '', 10);
+  const perPageRaw = parseInt(first(sp.per_page) ?? '', 10);
   const perPage = PER_PAGE_OPTIONS.includes(perPageRaw) ? perPageRaw : 12;
-  const page = Math.max(1, parseInt(first(searchParams.page) ?? '', 10) || 1);
-  const search = (first(searchParams.search) ?? '').trim();
+  const page = Math.max(1, parseInt(first(sp.page) ?? '', 10) || 1);
+  const search = (first(sp.search) ?? '').trim();
 
   // Attribute filters: ?pa_brand=slug1,slug2 — resolved slug -> term id.
   const attrFilters: { taxonomy: string; name: string; termIds: number[]; terms: { slug: string; name: string }[] }[] = [];
   for (const attr of attributes) {
-    const slugs = (first(searchParams[attr.taxonomy]) ?? '')
+    const slugs = (first(sp[attr.taxonomy]) ?? '')
       .split(',')
       .map((s) => s.trim().toLowerCase())
       .filter(Boolean);
@@ -126,8 +127,8 @@ export default async function CatalogPage({ searchParams }: { searchParams: SP }
     maxPrice: maxPrice !== null ? Math.round(maxPrice * 100) : undefined,
     rating: rating ?? undefined,
     attributes: attrFilters,
-    onSale: first(searchParams.on_sale) === '1',
-    inStock: first(searchParams.in_stock) === '1',
+    onSale: first(sp.on_sale) === '1',
+    inStock: first(sp.in_stock) === '1',
     orderby: ORDERBY_API[orderbyKey],
     page,
     perPage,

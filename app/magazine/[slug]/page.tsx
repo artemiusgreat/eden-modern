@@ -10,15 +10,17 @@ export async function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const post = await getPostBySlug(params.slug).catch(() => null);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug).catch(() => null);
   if (!post) return { title: 'Story not found' };
   return { title: post.title, description: post.excerpt.replace(/<[^>]+>/g, ' ').slice(0, 160) };
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const [post, more] = await Promise.all([
-    getPostBySlug(params.slug).catch(() => null),
+    getPostBySlug(slug).catch(() => null),
     getPosts(4).catch(() => []),
   ]);
   if (!post) notFound();

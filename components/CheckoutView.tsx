@@ -464,12 +464,8 @@ export default function CheckoutView() {
         cartData?.totals?.currency_minor_unit
       );
 
-      // Success — empty the purchased cart, then show confirmation.
-      if (cart?.items?.length) {
-        for (const item of cart.items) {
-          await removeItem(item.key).catch(() => null);
-        }
-      }
+      // Success — show confirmation immediately; empty the purchased cart in
+      // the background so it never blocks the Thank You page.
       const txnId = result.order_number || String(result.order_id);
       setOrderNumber(txnId);
       trackPurchase(
@@ -478,6 +474,11 @@ export default function CheckoutView() {
         purchasedItems,
         cartData?.items?.[0]?.prices.currency_code ?? 'USD'
       );
+      if (cart?.items?.length) {
+        for (const item of cart.items) {
+          removeItem(item.key).catch(() => null);
+        }
+      }
     } catch (e) {
       showError(e instanceof Error ? e.message : 'Order could not be placed.');
     } finally {

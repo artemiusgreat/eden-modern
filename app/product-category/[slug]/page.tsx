@@ -8,8 +8,9 @@ export const revalidate = 3600;
 
 const PER_PAGE = 12;
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const category = await getCategoryBySlug(params.slug).catch(() => null);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const category = await getCategoryBySlug(slug).catch(() => null);
   if (!category) return { title: 'Category not found' };
   return {
     title: category.name,
@@ -21,13 +22,15 @@ export default async function CategoryPage({
   params,
   searchParams,
 }: {
-  params: { slug: string };
-  searchParams: { page?: string };
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
-  const category = await getCategoryBySlug(params.slug).catch(() => null);
+  const { slug } = await params;
+  const { page: pageParam } = await searchParams;
+  const category = await getCategoryBySlug(slug).catch(() => null);
   if (!category) notFound();
 
-  const page = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1);
+  const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1);
   const { products, totalPages } = await getProductsPaged({ category: category.id, per_page: PER_PAGE, page }).catch(
     () => ({ products: [], totalPages: 0 })
   );

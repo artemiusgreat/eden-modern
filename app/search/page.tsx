@@ -7,12 +7,13 @@ type SP = Record<string, string | string[] | undefined>;
 const first = (v: string | string[] | undefined): string | undefined =>
   Array.isArray(v) ? v[0] : v;
 
-export default function SearchRedirect({ searchParams }: { searchParams: SP }) {
+export default async function SearchRedirect({ searchParams }: { searchParams: Promise<SP> }) {
+  const sp = await searchParams;
   const p = new URLSearchParams();
-  const q = (first(searchParams.q) ?? '').trim();
+  const q = (first(sp.q) ?? '').trim();
   if (q) p.set('search', q);
-  if (first(searchParams.on_sale) === '1') p.set('on_sale', '1');
-  const page = first(searchParams.page);
+  if (first(sp.on_sale) === '1') p.set('on_sale', '1');
+  const page = first(sp.page);
   if (page) p.set('page', page);
   const s = p.toString();
   redirect(s ? `/catalog?${s}` : '/catalog');
