@@ -323,6 +323,13 @@ export default function CheckoutView() {
     if (shipNameBad) return 'Please enter your first and last name.';
     if (shipAddrBad) return 'Please complete the shipping address.';
     if (billBad) return 'Please complete the billing address.';
+    // The payment section is still hidden behind the shipping calculation —
+    // "choose a payment method" would be wrong since the shopper can't.
+    // Nudge the calc in case the debounced auto-calc hasn't fired yet.
+    if (needsShipping && !ratesReady) {
+      if (!calcBusy) calculateShipping(true);
+      return 'Calculating delivery options — please wait a moment, then choose a payment method.';
+    }
     if (!payMethod) return 'Please choose a payment method.';
     return null;
   }
@@ -731,41 +738,42 @@ export default function CheckoutView() {
               shopper is still editing the address, and recalculating shipping
               must not wipe entered card details. */}
           {(!needsShipping || ratesReady) ? (
-            <>
-              <section className={styles.section}>
-                <h2 className={styles.h2}>Payment</h2>
-                {paymentMethods.length === 0 && (
-                  <p style={{ color: 'var(--muted)' }}>No payment methods are available right now.</p>
-                )}
-                {paymentMethods.map((m) => {
-                  const disabled = m === 'stripe' && !stripePromise;
-                  return (
-                    <label key={m} className={`${styles.radioRow}${disabled ? ` ${styles.disabled}` : ''}`}>
-                      <input type="radio" name="pay" checked={payMethod === m}
-                        disabled={disabled} onChange={() => setPayMethod(m)} />
-                      <span className={styles.radioText}>
-                        <strong>{PAYMENT_LABELS[m] ?? m.replace(/[-_]/g, ' ')}</strong>
-                        {disabled && <small> — card payments are not configured yet</small>}
-                      </span>
-                    </label>
-                  );
-                })}
-                {stripeUpeTypes(payMethod) && stripePromise && (
-                  <div className={`${styles.stripeBox} mb-3`}>
-                    <div ref={cardMountRef} />
-                  </div>
-                )}
-                <Field id="co-note" label="Order notes (optional)" value={note}
-                  onChange={(e) => setNote(e.target.value)} />
-              </section>
-
-              <MDBBtn className={styles.placeBtn} onClick={placeOrder} disabled={placing}>
-                {placing ? 'Placing order…' : totals ? `Pay ${money(totals.total_price, totals)}` : 'Place order'}
-              </MDBBtn>
-            </>
+            <section className={styles.section}>
+              <h2 className={styles.h2}>Payment</h2>
+              {paymentMethods.length === 0 && (
+                <p style={{ color: 'var(--muted)' }}>No payment methods are available right now.</p>
+              )}
+              {paymentMethods.map((m) => {
+                const disabled = m === 'stripe' && !stripePromise;
+                return (
+                  <label key={m} className={`${styles.radioRow}${disabled ? ` ${styles.disabled}` : ''}`}>
+                    <input type="radio" name="pay" checked={payMethod === m}
+                      disabled={disabled} onChange={() => setPayMethod(m)} />
+                    <span className={styles.radioText}>
+                      <strong>{PAYMENT_LABELS[m] ?? m.replace(/[-_]/g, ' ')}</strong>
+                      {disabled && <small> — card payments are not configured yet</small>}
+                    </span>
+                  </label>
+                );
+              })}
+              {stripeUpeTypes(payMethod) && stripePromise && (
+                <div className={`${styles.stripeBox} mb-3`}>
+                  <div ref={cardMountRef} />
+                </div>
+              )}
+              <Field id="co-note" label="Order notes (optional)" value={note}
+                onChange={(e) => setNote(e.target.value)} />
+            </section>
           ) : (
             <p className={styles.hint}>Enter your shipping address to see delivery options and payment.</p>
           )}
+
+          {/* Pay button is always visible and clickable: with incomplete
+              fields it triggers validation (errors shown at the top);
+              with everything filled it submits the order. */}
+          <MDBBtn className={styles.placeBtn} onClick={placeOrder} disabled={placing}>
+            {placing ? 'Placing order…' : totals ? `Pay ${money(totals.total_price, totals)}` : 'Place order'}
+          </MDBBtn>
         </MDBCol>
 
         {/* Summary */}
