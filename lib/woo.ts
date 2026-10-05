@@ -185,6 +185,7 @@ export interface ProductQuery {
   search?: string;
   slug?: string;
   on_sale?: boolean;
+  min_price?: number; // minor units; listings pass 1 to exclude $0 products
   orderby?: 'menu_order' | 'popularity' | 'rating' | 'date' | 'price' | 'price-desc';
 }
 
@@ -200,6 +201,7 @@ function productParams(q: ProductQuery): Record<string, string | number | undefi
     search: q.search,
     slug: q.slug,
     on_sale: q.on_sale ? 'true' : undefined,
+    min_price: q.min_price,
     orderby,
     order,
   };
@@ -385,7 +387,9 @@ export async function getCatalogProducts(f: CatalogFilters): Promise<CatalogResu
   }
   if (f.categoryIds.length) params.category = f.categoryIds.join(',');
   if (f.search) params.search = f.search;
-  if (f.minPrice !== undefined) params.min_price = f.minPrice;
+  // Listings never show unpriced ($0) products: floor min_price at 1 minor
+  // unit, merged with any user-selected minimum.
+  params.min_price = f.minPrice !== undefined ? Math.max(f.minPrice, 1) : 1;
   if (f.maxPrice !== undefined) params.max_price = f.maxPrice;
   if (f.rating) params.rating = f.rating;
   if (f.onSale) params.on_sale = 'true';

@@ -6,8 +6,8 @@ export const revalidate = 3600;
 
 export default async function HomePage() {
   const [onSale, newest, categories, posts] = await Promise.all([
-    getProducts({ on_sale: true, per_page: 4 }).catch(() => []),
-    getProducts({ orderby: 'date', per_page: 8 }).catch(() => []),
+    getProducts({ on_sale: true, per_page: 4, min_price: 1 }).catch(() => []),
+    getProducts({ orderby: 'date', per_page: 8, min_price: 1 }).catch(() => []),
     getCategories().catch(() => []),
     getPosts(3).catch(() => []),
   ]);
