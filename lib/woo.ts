@@ -189,6 +189,10 @@ export interface ProductQuery {
 }
 
 function productParams(q: ProductQuery): Record<string, string | number | undefined> {
+  // 'price-desc' is a UI-level value, not a valid Store API orderby (400s).
+  const orderby = q.orderby === 'price-desc' ? 'price' : q.orderby;
+  const order =
+    q.orderby === 'price-desc' ? 'desc' : q.orderby === 'price' ? 'asc' : undefined;
   return {
     per_page: q.per_page ?? 12,
     page: q.page,
@@ -196,7 +200,8 @@ function productParams(q: ProductQuery): Record<string, string | number | undefi
     search: q.search,
     slug: q.slug,
     on_sale: q.on_sale ? 'true' : undefined,
-    orderby: q.orderby,
+    orderby,
+    order,
   };
 }
 
@@ -368,8 +373,16 @@ export async function getCatalogProducts(f: CatalogFilters): Promise<CatalogResu
   const params: Record<string, string | number | undefined> = {
     per_page: f.perPage,
     page: f.page,
-    orderby: f.orderby,
   };
+  // The Store API has no 'price-desc' orderby (it 400s) and defaults price
+  // to descending — translate our UI values to orderby+order explicitly.
+  if (f.orderby === 'price-desc') {
+    params.orderby = 'price';
+    params.order = 'desc';
+  } else {
+    params.orderby = f.orderby;
+    if (f.orderby === 'price') params.order = 'asc';
+  }
   if (f.categoryIds.length) params.category = f.categoryIds.join(',');
   if (f.search) params.search = f.search;
   if (f.minPrice !== undefined) params.min_price = f.minPrice;
