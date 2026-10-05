@@ -197,8 +197,11 @@
   border: 1px solid var(--line-strong);
 
 }
-.actions .iconBtn:hover {
+.actions .iconBtn:hover,
+.actions .iconBtn:focus-visible {
   border-color: var(--gold-soft);
+  color: var(--gold);
+  background-color: transparent;
 }
 
 /* Mobile-first: the open menu stacks vertically with breathing room. */
