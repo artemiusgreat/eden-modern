@@ -432,41 +432,39 @@ em {
 .prose-wp tbody tr:nth-child(even) td {
   background: var(--surface);
 }
-/* Elementor social-icons widget (static HTML survives the plugin removal,
-   but its sizing CSS is gone — restyle to the theme here). */
-.prose-wp .elementor-social-icons-wrapper {
+/* Social links block (hand-maintained HTML on the Contacts page). */
+.prose-wp .social-links {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
+  flex-direction: column;
+  gap: 0.9rem;
   margin: 1.5rem 0;
 }
-.prose-wp .elementor-social-icon {
+.prose-wp .social-links a {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.9rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.prose-wp .social-links a svg {
   width: 2.75rem;
   height: 2.75rem;
+  padding: 0.62rem;
+  box-sizing: border-box;
+  flex: none;
   border-radius: 50%;
   border: 1px solid var(--line-strong);
   color: var(--gold-soft);
+  fill: currentColor;
   transition: border-color 0.35s ease, color 0.35s ease, transform 0.35s ease;
 }
-.prose-wp .elementor-social-icon:hover {
+.prose-wp .social-links a:hover svg {
   border-color: var(--gold);
   color: var(--gold);
   transform: scale(1.06);
 }
-.prose-wp .elementor-social-icon svg.e-font-icon-svg {
-  width: 1.15rem;
-  height: 1.15rem;
-  fill: currentColor;
-}
-.prose-wp .elementor-screen-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+.prose-wp .social-links a:hover span {
+  color: var(--ink);
 }
 /* Buttons inside article content, including WooCommerce add-to-cart
    buttons that can appear in embedded product blocks. */
