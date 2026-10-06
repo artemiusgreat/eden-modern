@@ -20,7 +20,7 @@ export default async function ContactsPage() {
   );
   return (
     <>
-      <InfoPageView title={page.title} content={content} />
+      <InfoPageView title={page.title} content={content} caption="Questions about a product or your order? We're here to help." />
       <div className="container pb-5">
         <ContactForm />
       </div>

@@ -4,7 +4,15 @@ import { MDBContainer } from 'mdb-react-ui-kit';
 import PageHero from './PageHero';
 
 /** Renders a WordPress info page (privacy, refunds, contacts) in the luxury theme. */
-export default function InfoPageView({ title, content }: { title: string; content: string }) {
+export default function InfoPageView({
+  title,
+  content,
+  caption,
+}: {
+  title: string;
+  content: string;
+  caption?: string;
+}) {
   return (
     <>
       <PageHero
@@ -13,6 +21,7 @@ export default function InfoPageView({ title, content }: { title: string; conten
           { label: title },
         ]}
         title={title}
+        caption={caption}
       />
       <MDBContainer className="py-5">
         <div className="prose-wp" dangerouslySetInnerHTML={{ __html: content }} />

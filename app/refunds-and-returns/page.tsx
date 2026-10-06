@@ -12,5 +12,5 @@ export async function generateMetadata() {
 export default async function RefundsPage() {
   const page = await getWpPage('refunds-and-returns').catch(() => null);
   if (!page) notFound();
-  return <InfoPageView title={page.title} content={page.content} />;
+  return <InfoPageView title={page.title} content={page.content} caption="Our policy on returns, refunds, and exchanges." />;
 }
