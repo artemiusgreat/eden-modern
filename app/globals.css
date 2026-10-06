@@ -438,7 +438,7 @@ em {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 0.8rem;
-  margin: 1.5rem 0;
+  margin: 1.5rem 0 0 0;
 }
 .prose-wp .social-links a {
   display: inline-flex;
