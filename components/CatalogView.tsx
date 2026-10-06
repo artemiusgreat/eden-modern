@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 import type { CatalogAttribute, StoreCategory, StoreProduct } from '@/lib/woo';
+import type { SortOption } from '@/app/catalog/page';
 import ProductCard from '@/components/ProductCard';
 import CatalogFilters from '@/components/CatalogFilters';
 import CatalogToolbar from '@/components/CatalogToolbar';
@@ -22,8 +23,8 @@ interface Props {
   page: number;
   perPage: number;
   perPageOptions: number[];
-  orderby: string;
-  orderbyLabels: Record<string, string>;
+  sortKey: string;
+  sortOptions: SortOption[];
   from: number;
   to: number;
   params: Record<string, string>;
@@ -48,8 +49,8 @@ export default function CatalogView(props: Props) {
     page,
     perPage,
     perPageOptions,
-    orderby,
-    orderbyLabels,
+    sortKey,
+    sortOptions,
     from,
     to,
     params,
@@ -99,8 +100,8 @@ export default function CatalogView(props: Props) {
               to={to}
               perPage={perPage}
               perPageOptions={perPageOptions}
-              orderby={orderby}
-              orderbyLabels={orderbyLabels}
+              sortKey={sortKey}
+              sortOptions={sortOptions}
               search={search}
             />
 

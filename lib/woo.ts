@@ -342,7 +342,8 @@ export interface CatalogFilters {
   attributes: { taxonomy: string; termIds: number[] }[];
   onSale?: boolean;
   inStock?: boolean;
-  orderby: 'menu_order' | 'popularity' | 'rating' | 'date' | 'price' | 'price-desc';
+  orderby: 'menu_order' | 'popularity' | 'rating' | 'date' | 'price';
+  order?: 'asc' | 'desc'; // sort direction; only price exposes both directions in the UI
   page: number;
   perPage: number;
 }
@@ -376,15 +377,8 @@ export async function getCatalogProducts(f: CatalogFilters): Promise<CatalogResu
     per_page: f.perPage,
     page: f.page,
   };
-  // The Store API has no 'price-desc' orderby (it 400s) and defaults price
-  // to descending — translate our UI values to orderby+order explicitly.
-  if (f.orderby === 'price-desc') {
-    params.orderby = 'price';
-    params.order = 'desc';
-  } else {
-    params.orderby = f.orderby;
-    if (f.orderby === 'price') params.order = 'asc';
-  }
+  params.orderby = f.orderby;
+  if (f.order) params.order = f.order;
   if (f.categoryIds.length) params.category = f.categoryIds.join(',');
   if (f.search) params.search = f.search;
   // Listings never show unpriced ($0) products: floor min_price at 1 minor

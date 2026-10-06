@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { progressBegin } from '@/lib/progress';
+import type { SortOption } from '@/app/catalog/page';
 import styles from './Catalog.module.css';
 
 interface Props {
@@ -11,8 +12,8 @@ interface Props {
   to: number;
   perPage: number;
   perPageOptions: number[];
-  orderby: string;
-  orderbyLabels: Record<string, string>;
+  sortKey: string;
+  sortOptions: SortOption[];
   search: string | null;
 }
 
@@ -23,8 +24,8 @@ export default function CatalogToolbar({
   to,
   perPage,
   perPageOptions,
-  orderby,
-  orderbyLabels,
+  sortKey,
+  sortOptions,
   search,
 }: Props) {
   const router = useRouter();
@@ -39,6 +40,14 @@ export default function CatalogToolbar({
     const s = p.toString();
     progressBegin(); // selects navigate via router.push — no anchor click for RouteProgress to see
     router.push(s ? `/catalog?${s}` : '/catalog', { scroll: false });
+  };
+
+  const onSortChange = (key: string) => {
+    const opt = sortOptions.find((o) => o.key === key);
+    if (!opt) return;
+    // orderby + order are separate query params; order is dropped when the
+    // chosen sort has no direction (push deletes undefined values).
+    push({ orderby: opt.orderby, order: opt.order });
   };
 
   return (
@@ -67,13 +76,10 @@ export default function CatalogToolbar({
         </label>
         <label className={styles.selectWrap}>
           <span className={styles.selectLabel}>Sort</span>
-          <select
-            aria-label="Sort order"
-            value={orderby}
-            onChange={(e) => push({ orderby: e.target.value })}>
-            {Object.entries(orderbyLabels).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
+          <select aria-label="Sort order" value={sortKey} onChange={(e) => onSortChange(e.target.value)}>
+            {sortOptions.map((opt) => (
+              <option key={opt.key} value={opt.key}>
+                {opt.label}
               </option>
             ))}
           </select>
