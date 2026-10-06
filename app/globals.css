@@ -446,19 +446,20 @@ em {
   color: var(--muted);
   text-decoration: none;
 }
-.prose-wp .social-links a svg {
+.prose-wp .social-links a .fab {
   width: 2.75rem;
   height: 2.75rem;
-  padding: 0.62rem;
-  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex: none;
   border-radius: 50%;
   border: 1px solid var(--line-strong);
   color: var(--gold-soft);
-  fill: currentColor;
+  font-size: 1.15rem;
   transition: border-color 0.35s ease, color 0.35s ease, transform 0.35s ease;
 }
-.prose-wp .social-links a:hover svg {
+.prose-wp .social-links a:hover .fab {
   border-color: var(--gold);
   color: var(--gold);
   transform: scale(1.06);
