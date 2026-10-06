@@ -368,6 +368,7 @@ em {
 .prose-wp {
   line-height: 1.85;
   color: var(--muted);
+  font-size: 0.875rem;
 }
 .prose-wp h2, .prose-wp h3, .prose-wp h4 {
   font-family: var(--font-serif);
@@ -409,7 +410,7 @@ em {
   overflow-x: auto;
   border-collapse: collapse;
   margin: 2rem 0;
-  font-size: 0.88rem;
+  font-size: inherit;
 }
 .prose-wp thead th {
   font-family: var(--font-sans);
@@ -430,6 +431,42 @@ em {
 }
 .prose-wp tbody tr:nth-child(even) td {
   background: var(--surface);
+}
+/* Elementor social-icons widget (static HTML survives the plugin removal,
+   but its sizing CSS is gone — restyle to the theme here). */
+.prose-wp .elementor-social-icons-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 1.5rem 0;
+}
+.prose-wp .elementor-social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  color: var(--gold-soft);
+  transition: border-color 0.35s ease, color 0.35s ease, transform 0.35s ease;
+}
+.prose-wp .elementor-social-icon:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: scale(1.06);
+}
+.prose-wp .elementor-social-icon svg.e-font-icon-svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: currentColor;
+}
+.prose-wp .elementor-screen-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
 }
 /* Buttons inside article content, including WooCommerce add-to-cart
    buttons that can appear in embedded product blocks. */
