@@ -43,7 +43,7 @@
   font-size: 0.85rem;
   transition: all 0.25s ease;
 }
-.socialBtn:hover {
+.footer .socialBtn:hover {
   background: var(--ink);
   border-color: var(--ink);
   color: var(--bg);
