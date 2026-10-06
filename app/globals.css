@@ -372,6 +372,7 @@ em {
 }
 .page-hero-caption {
   color: var(--muted);
+  font-size: 0.875rem;
   font-weight: 300;
   margin-bottom: 0;
   max-width: 40rem;
