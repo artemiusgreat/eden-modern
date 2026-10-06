@@ -30,7 +30,8 @@ const nextConfig = {
       { source: '/my-account/:path*', destination: '/account', permanent: true },
       { source: '/shop/:path*', destination: '/catalog', permanent: true },
       // Category archives now live on /catalog?category= (301).
-      { source: '/product-category/:slug', destination: '/catalog?category=:slug', permanent: true },
+      // Handled by app/product-category/[[...path]]/page.tsx, which resolves
+      // the deepest valid slug from hierarchical legacy URLs.
       // Legacy WP blog taxonomy archives -> magazine (301).
       { source: '/category/:slug', destination: '/magazine/:slug', permanent: true },
       { source: '/tag/:slug', destination: '/magazine/:slug', permanent: true },
