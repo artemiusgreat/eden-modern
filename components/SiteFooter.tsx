@@ -77,7 +77,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
             <h6>Contact</h6>
             <div className={styles.contactLine}>
               <MDBIcon far icon="envelope" />
-              <a href="mailto:support@indemos.com">support@indemos.com</a>
+              <a href="mailto:service@indemos.com">service@indemos.com</a>
             </div>
             <div className={styles.contactLine}>
               <MDBIcon fas icon="location-dot" />

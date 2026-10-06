@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody } from 'mdb-react-ui-kit';
+import PageHero from './PageHero';
 import styles from './AccountView.module.css';
 
 export default function LostPasswordView() {
@@ -36,16 +37,15 @@ export default function LostPasswordView() {
 
   return (
     <>
-      <div className="info-hero">
-        <MDBContainer className="py-5 text-start">
-          <p className="kicker mb-2">Account</p>
-          <h1 className="font-serif" style={{ fontSize: '3rem' }}>Lost Password</h1>
-          <div className="divider-gold" style={{ marginLeft: 0 }} />
-          <p className="section-sub">
-            Enter your email address and we&apos;ll send you a link to reset your password.
-          </p>
-        </MDBContainer>
-      </div>
+      <PageHero
+        crumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Account', href: '/account' },
+          { label: 'Lost Password' },
+        ]}
+        title="Lost Password"
+        caption="Enter your email address and we'll send you a link to reset your password."
+      />
       <MDBContainer className="py-5">
         <MDBRow className="justify-content-center">
           <MDBCol lg="6">

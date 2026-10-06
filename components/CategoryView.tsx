@@ -6,6 +6,7 @@ import type { StoreProduct, StoreCategory } from '@/lib/woo';
 import { stripHtml } from '@/lib/format';
 import ProductCard from './ProductCard';
 import CatalogPagination from './CatalogPagination';
+import PageHero from './PageHero';
 
 export default function CategoryView({
   category,
@@ -22,24 +23,21 @@ export default function CategoryView({
 
   return (
     <>
-      <div className="info-hero">
-        <MDBContainer className="py-5">
-          <MDBBreadcrumb className="mb-3">
-            <MDBBreadcrumbItem>
-              <Link href="/">Home</Link>
-            </MDBBreadcrumbItem>
-            <MDBBreadcrumbItem active>{category.name}</MDBBreadcrumbItem>
-          </MDBBreadcrumb>
-          <p className="kicker mb-2">The collection</p>
-          <h1 className="font-serif mb-2" style={{ fontSize: '3rem' }}>{category.name}</h1>
-          {description && (
-            <p className="mb-1" style={{ color: 'var(--muted)', maxWidth: 640 }}>{description}</p>
-          )}
-          <p className="small mb-0" style={{ color: 'var(--muted)' }}>
-            {category.count} product{category.count === 1 ? '' : 's'}
-          </p>
-        </MDBContainer>
-      </div>
+      <PageHero
+        crumbs={[
+          { label: 'Home', href: '/' },
+          { label: category.name },
+        ]}
+        title={category.name}
+        caption={
+          <>
+            {description ? <span className="d-block mb-2">{description}</span> : null}
+            <span>
+              {category.count} product{category.count === 1 ? '' : 's'}
+            </span>
+          </>
+        }
+      />
 
       <MDBContainer className="py-5">
         {products.length === 0 ? (

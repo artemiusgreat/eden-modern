@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody } from 'mdb-react-ui-kit';
+import PageHero from './PageHero';
 import styles from './AccountView.module.css';
 
 export default function ResetPasswordView({ token }: { token: string }) {
@@ -49,14 +50,15 @@ export default function ResetPasswordView({ token }: { token: string }) {
 
   return (
     <>
-      <div className="info-hero">
-        <MDBContainer className="py-5 text-start">
-          <p className="kicker mb-2">Account</p>
-          <h1 className="font-serif" style={{ fontSize: '3rem' }}>Reset Password</h1>
-          <div className="divider-gold" style={{ marginLeft: 0 }} />
-          <p className="section-sub">Choose a new password for your account.</p>
-        </MDBContainer>
-      </div>
+      <PageHero
+        crumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Account', href: '/account' },
+          { label: 'Reset Password' },
+        ]}
+        title="Reset Password"
+        caption="Choose a new password for your account."
+      />
       <MDBContainer className="py-5">
         <MDBRow className="justify-content-center">
           <MDBCol lg="6">

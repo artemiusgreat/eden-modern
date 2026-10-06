@@ -1,24 +1,19 @@
 'use client';
 
-import Link from 'next/link';
-import { MDBContainer, MDBRow, MDBCol, MDBBreadcrumb, MDBBreadcrumbItem } from 'mdb-react-ui-kit';
+import { MDBContainer } from 'mdb-react-ui-kit';
+import PageHero from './PageHero';
 
 /** Renders a WordPress info page (privacy, refunds, contacts) in the luxury theme. */
 export default function InfoPageView({ title, content }: { title: string; content: string }) {
   return (
     <>
-      <div className="info-hero">
-        <MDBContainer className="py-5">
-          <MDBBreadcrumb className="mb-3">
-            <MDBBreadcrumbItem>
-              <Link href="/">Home</Link>
-            </MDBBreadcrumbItem>
-            <MDBBreadcrumbItem active>{title}</MDBBreadcrumbItem>
-          </MDBBreadcrumb>
-          <h1 className="font-serif" style={{ fontSize: '3rem' }}>{title}</h1>
-          <div className="divider-gold" style={{ margin: '1rem 0' }} />
-        </MDBContainer>
-      </div>
+      <PageHero
+        crumbs={[
+          { label: 'Home', href: '/' },
+          { label: title },
+        ]}
+        title={title}
+      />
       <MDBContainer className="py-5">
         <div className="prose-wp" dangerouslySetInnerHTML={{ __html: content }} />
       </MDBContainer>

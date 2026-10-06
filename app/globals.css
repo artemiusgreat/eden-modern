@@ -357,6 +357,31 @@ em {
   color: var(--ink);
 }
 
+/* ---------- unified page hero (breadcrumbs / heading / caption) ---------- */
+.page-hero-title {
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+.divider-gold.page-hero-divider {
+  width: 3rem;
+  height: 1px;
+  background: var(--gold);
+  margin: 0 0 1rem;
+}
+.page-hero-caption {
+  color: var(--muted);
+  font-weight: 300;
+  margin-bottom: 0;
+  max-width: 40rem;
+}
+/* Breadcrumbs: uniform 14px site-wide.
+   `nav .breadcrumb` outranks MDB's `.breadcrumb` regardless of stylesheet order. */
+nav .breadcrumb {
+  font-size: 0.875rem;
+}
+
 /* ---------- info pages / blog ---------- */
 .info-hero {
   background: linear-gradient(120deg, #0b1220, #131c30);

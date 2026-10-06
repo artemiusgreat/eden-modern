@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
+import PageHero from './PageHero';
 import type { WpPost } from '@/lib/woo';
 
 function PostCard({ post }: { post: WpPost }) {
@@ -40,14 +41,14 @@ function PostCard({ post }: { post: WpPost }) {
 export default function BlogIndexView({ posts }: { posts: WpPost[] }) {
   return (
     <>
-      <div className="info-hero">
-        <MDBContainer className="py-5 text-center">
-          <p className="kicker mb-2">Stories & rituals</p>
-          <h1 className="font-serif" style={{ fontSize: '3rem' }}>The Magazine</h1>
-          <div className="divider-gold" />
-          <p className="section-sub">Fragrance notes, skincare science and beauty rituals - from our editors.</p>
-        </MDBContainer>
-      </div>
+      <PageHero
+        crumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Magazine' },
+        ]}
+        title="The Magazine"
+        caption="Fragrance notes, skincare science and beauty rituals - from our editors."
+      />
       <MDBContainer className="py-5">
         {posts.length === 0 ? (
           <p style={{ color: 'var(--muted)' }}>Stories are on their way — check back soon.</p>

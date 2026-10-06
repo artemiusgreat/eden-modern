@@ -7,6 +7,7 @@ import ProductCard from '@/components/ProductCard';
 import CatalogFilters from '@/components/CatalogFilters';
 import CatalogToolbar from '@/components/CatalogToolbar';
 import CatalogPagination from '@/components/CatalogPagination';
+import PageHero from '@/components/PageHero';
 import styles from './Catalog.module.css';
 
 export interface ActiveChip {
@@ -67,15 +68,14 @@ export default function CatalogView(props: Props) {
 
   return (
     <>
-      {/* Banner */}
-      <section className={styles.banner}>
-        <div className={styles.haze} aria-hidden="true" />
-        <MDBContainer className={styles.bannerInner}>
-          <p className={styles.kicker}>The Collection</p>
-          <h1 className={styles.title}>Our Catalog</h1>
-          <p className={styles.sub}>Every piece, in one place - filter by what matters to you.</p>
-        </MDBContainer>
-      </section>
+      <PageHero
+        crumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Catalog' },
+        ]}
+        title="Our Catalog"
+        caption="Every piece, in one place - filter by what matters to you."
+      />
 
       <MDBContainer className={styles.wrap}>
         <div className={styles.layout}>

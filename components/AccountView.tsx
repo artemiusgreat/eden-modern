@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBIcon } from 'mdb-react-ui-kit';
+import PageHero from './PageHero';
 import styles from './AccountView.module.css';
 
 function Field({
@@ -86,16 +87,14 @@ function SignInForm() {
 export default function AccountView() {
   return (
     <>
-      <div className="info-hero">
-        <MDBContainer className="py-5 text-start">
-          <p className="kicker mb-2">Welcome back</p>
-          <h1 className="font-serif" style={{ fontSize: '3rem' }}>My Account</h1>
-          <div className="divider-gold" style={{ marginLeft: 0 }} />
-          <p className="section-sub">
-            Sign in to track your orders, manage your addresses and check out faster.
-          </p>
-        </MDBContainer>
-      </div>
+      <PageHero
+        crumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'My Account' },
+        ]}
+        title="My Account"
+        caption="Sign in to track your orders, manage your addresses and check out faster."
+      />
       <MDBContainer className="py-5">
         <MDBRow className="justify-content-center">
           <MDBCol lg="10">
