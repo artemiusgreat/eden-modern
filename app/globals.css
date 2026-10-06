@@ -398,7 +398,7 @@ nav .breadcrumb {
 .prose-wp h2, .prose-wp h3, .prose-wp h4 {
   font-family: var(--font-serif);
   color: var(--ink);
-  margin-top: 2rem;
+  margin-top: 1rem 0;
 }
 .prose-wp p {
   margin-bottom: 1.1rem;
