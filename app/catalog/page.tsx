@@ -55,17 +55,27 @@ export async function generateMetadata({
   };
 }
 
-const ORDERBYS = ['featured', 'popularity', 'rating', 'date', 'price', 'price-desc'] as const;
+const ORDERBYS = ['featured', 'popularity', 'rating', 'date', 'price'] as const;
 type OrderbyKey = (typeof ORDERBYS)[number];
+const ORDERS = ['asc', 'desc'] as const;
+type OrderDir = (typeof ORDERS)[number];
 
-const ORDERBY_LABEL: Record<OrderbyKey, string> = {
-  featured: 'Featured',
-  popularity: 'Popularity',
-  rating: 'Average rating',
-  date: 'Newest',
-  price: 'Price: low to high',
-  'price-desc': 'Price: high to low',
-};
+/** Sort dropdown options: each maps to an ?orderby= + optional ?order= pair. */
+export interface SortOption {
+  key: string;
+  label: string;
+  orderby: OrderbyKey;
+  order?: OrderDir;
+}
+
+const SORT_OPTIONS: SortOption[] = [
+  { key: 'featured', label: 'Featured', orderby: 'featured' },
+  { key: 'popularity', label: 'Popularity', orderby: 'popularity' },
+  { key: 'rating', label: 'Average rating', orderby: 'rating' },
+  { key: 'date', label: 'Newest', orderby: 'date' },
+  { key: 'price-asc', label: 'Price: low to high', orderby: 'price', order: 'asc' },
+  { key: 'price-desc', label: 'Price: high to low', orderby: 'price', order: 'desc' },
+];
 
 const ORDERBY_API: Record<OrderbyKey, CatalogQuery['orderby']> = {
   featured: 'menu_order',
@@ -73,7 +83,6 @@ const ORDERBY_API: Record<OrderbyKey, CatalogQuery['orderby']> = {
   rating: 'rating',
   date: 'date',
   price: 'price',
-  'price-desc': 'price-desc',
 };
 
 const PER_PAGE_OPTIONS = [12, 24, 36];
@@ -136,9 +145,28 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
   const minDollars = parseFloat(first(sp.min_price) ?? '');
   const maxDollars = parseFloat(first(sp.max_price) ?? '');
   const ratingRaw = parseInt(first(sp.rating) ?? '', 10);
-  const orderbyKey: OrderbyKey = (ORDERBYS as readonly string[]).includes(first(sp.orderby) ?? '')
-    ? (first(sp.orderby) as OrderbyKey)
-    : 'featured';
+  // ?orderby= + ?order= are separate params. ?order= is only honored for
+  // price (the only sort with two directions); legacy ?orderby=price-desc
+  // URLs (bookmarks, indexed) map to orderby=price&order=desc.
+  const rawOrderby = first(sp.orderby) ?? '';
+  const legacyDesc = rawOrderby === 'price-desc';
+  const orderbyKey: OrderbyKey = legacyDesc
+    ? 'price'
+    : (ORDERBYS as readonly string[]).includes(rawOrderby)
+      ? (rawOrderby as OrderbyKey)
+      : 'featured';
+  const rawOrder = first(sp.order) ?? '';
+  const orderDir: OrderDir | undefined =
+    orderbyKey !== 'price'
+      ? undefined
+      : (ORDERS as readonly string[]).includes(rawOrder)
+        ? (rawOrder as OrderDir)
+        : legacyDesc
+          ? 'desc'
+          : 'asc';
+  const sortKey =
+    SORT_OPTIONS.find((o) => o.orderby === orderbyKey && (o.order ?? undefined) === orderDir)
+      ?.key ?? 'featured';
   const perPageRaw = parseInt(first(sp.per_page) ?? '', 10);
   const perPage = PER_PAGE_OPTIONS.includes(perPageRaw) ? perPageRaw : 12;
   const page = Math.max(1, parseInt(first(sp.page) ?? '', 10) || 1);
@@ -177,6 +205,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
     onSale: first(sp.on_sale) === '1',
     inStock: first(sp.in_stock) === '1',
     orderby: ORDERBY_API[orderbyKey],
+    order: orderDir,
     page,
     perPage,
   };
@@ -233,8 +262,8 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
         page={page}
         perPage={perPage}
         perPageOptions={PER_PAGE_OPTIONS}
-        orderby={orderbyKey}
-        orderbyLabels={ORDERBY_LABEL}
+        sortKey={sortKey}
+        sortOptions={SORT_OPTIONS}
         from={from}
         to={to}
         params={flat}
