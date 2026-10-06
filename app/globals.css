@@ -435,15 +435,15 @@ em {
 /* Social links block (hand-maintained HTML on the Contacts page). */
 .prose-wp .social-links {
   display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.8rem;
   margin: 1.5rem 0;
 }
 .prose-wp .social-links a {
   display: inline-flex;
   align-items: center;
-  gap: 0.9rem;
-  color: var(--muted);
+  justify-content: center;
   text-decoration: none;
 }
 .prose-wp .social-links a .fab {
@@ -463,9 +463,6 @@ em {
   border-color: var(--gold);
   color: var(--gold);
   transform: scale(1.06);
-}
-.prose-wp .social-links a:hover span {
-  color: var(--ink);
 }
 /* Buttons inside article content, including WooCommerce add-to-cart
    buttons that can appear in embedded product blocks. */
