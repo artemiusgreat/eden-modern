@@ -45,7 +45,7 @@ export default function CartPageView() {
         </div>
       ) : (
         <MDBRow>
-          <MDBCol md="8">
+          <MDBCol lg="8">
             {cart.items.map((item) => {
               const slug = slugFromPermalink(item.permalink);
               const img = item.images[0];
@@ -121,8 +121,8 @@ export default function CartPageView() {
               </div>
             )}
           </MDBCol>
-          <MDBCol md="4">
-            <div className={`${styles.summary} mt-4 mt-md-0`}>
+          <MDBCol lg="4">
+            <div className={`${styles.summary} mt-4 mt-lg-0`}>
               <div className={styles.sumRow}>
                 <dt>Subtotal</dt>
                 <dd>
