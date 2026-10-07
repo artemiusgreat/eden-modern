@@ -35,7 +35,7 @@ export default function NotFound() {
         <Link href="/" className="btn-gold">
           Back home
         </Link>
-        <Link href="/catalog" className="btn btn-outline-light">
+        <Link href="/catalog" className="btn-outline-site">
           Browse catalog
         </Link>
       </div>
