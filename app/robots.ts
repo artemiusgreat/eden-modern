@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
+import { env } from '@/lib/env';
 
-const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://eden.indemos.com').replace(/\/$/, '');
+const SITE = env.NEXT_PUBLIC_SITE_URL;
 
 export default function robots(): MetadataRoute.Robots {
   return {

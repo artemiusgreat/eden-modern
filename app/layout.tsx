@@ -1,3 +1,4 @@
+import { env } from '@/lib/env';
 import type { Metadata } from 'next';
 import { Playfair_Display, Inter, Milonga } from 'next/font/google';
 import localFont from 'next/font/local';
@@ -49,7 +50,7 @@ const prata = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://eden.indemos.com').replace(/\/$/, '')
+    env.NEXT_PUBLIC_SITE_URL
   ),
   title: {
     default: 'Indemos - Luxury Fragrances & Beauty',

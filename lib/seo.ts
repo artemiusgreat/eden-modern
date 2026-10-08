@@ -1,7 +1,8 @@
 import type { StoreProduct } from './woo';
 import { stripHtml } from './format';
+import { env } from './env';
 
-const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://eden.indemos.com').replace(/\/$/, '');
+const SITE = env.NEXT_PUBLIC_SITE_URL;
 
 export function siteUrl(path: string): string {
   return `${SITE}${path.startsWith('/') ? path : `/${path}`}`;

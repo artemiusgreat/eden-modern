@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
+import { env } from '@/lib/env';
 
 // JWT-based sign-in via the "JWT Authentication for WP REST API" plugin.
 // POSTs credentials to /wp-json/jwt-auth/v1/token, stores the returned JWT
 // in an httpOnly cookie. No cookie relay, no profile.php scraping.
 
-const WP = (process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com').replace(/\/$/, '');
+const WP = env.WC_STORE_URL;
 
 const JWT_COOKIE = 'eden_jwt';
 const JWT_COOKIE_MAX_AGE = 7 * 24 * 60 * 60; // 7 days (matches plugin default expiry)

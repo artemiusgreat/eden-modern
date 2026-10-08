@@ -1,10 +1,9 @@
 'use client';
 
 import Script from 'next/script';
+import { clientEnv } from '@/lib/env-client';
 
-// GTM container carried over from the legacy WordPress site.
-// Override per-environment with NEXT_PUBLIC_GTM_ID (baked at build time).
-const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? 'GTM-PS65QF25';
+const GTM_ID = clientEnv.NEXT_PUBLIC_GTM_ID;
 
 /**
  * Google Tag Manager loader. GA4 itself stays configured inside the GTM
@@ -13,6 +12,8 @@ const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? 'GTM-PS65QF25';
  * that lib/analytics.ts pushes ecommerce events to.
  */
 export default function Analytics() {
+  // No container configured (NEXT_PUBLIC_GTM_ID empty) — render nothing.
+  if (!GTM_ID) return null;
   return (
     <>
       <noscript>

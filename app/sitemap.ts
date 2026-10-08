@@ -1,8 +1,9 @@
 import type { MetadataRoute } from 'next';
+import { env } from '@/lib/env';
 import { getProductsPaged, getPosts } from '@/lib/woo';
 
 // Canonical public URL of the storefront (what Google/FB/Pinterest should index).
-const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://eden.indemos.com').replace(/\/$/, '');
+const SITE = env.NEXT_PUBLIC_SITE_URL;
 
 /**
  * Sitemap for the headless cutover: every URL matches the legacy

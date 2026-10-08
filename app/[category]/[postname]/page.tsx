@@ -1,7 +1,8 @@
+import { env } from '@/lib/env';
 import { notFound, permanentRedirect } from 'next/navigation';
 
 // WP backend host — moved to edenapi.indemos.com at the headless cutover.
-const WP = (process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com').replace(/\/$/, '');
+const WP = env.WC_STORE_URL;
 
 /**
  * Legacy WordPress permalink catcher. Posts used to live at

@@ -17,6 +17,7 @@ import { useCart } from '@/components/cart/CartProvider';
 import AddressAutocomplete, { type ParsedAddress } from '@/components/AddressAutocomplete';
 import { cartLineToGaItem, minorToDecimal, trackBeginCheckout, trackPurchase } from '@/lib/analytics';
 import { decodeEntities } from '@/lib/format';
+import { clientEnv } from '@/lib/env-client';
 import type { StoreCart } from '@/lib/woo';
 import type {
   CheckoutAddress,
@@ -26,7 +27,7 @@ import type {
 } from '@/lib/woo-cart';
 import styles from './CheckoutView.module.css';
 
-const STRIPE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? '';
+const STRIPE_KEY = clientEnv.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null;
 
 const COUNTRIES: [string, string][] = [

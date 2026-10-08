@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
+import { env } from './env';
 
 /**
  * Bridges the storefront's JWT session to the WooCommerce REST API.
@@ -16,11 +17,9 @@ import jwt from 'jsonwebtoken';
  * The REST API keys then do all data access, scoped to that customer id.
  */
 
-const WC_URL = (
-  process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com'
-).replace(/\/$/, '');
+const WC_URL = env.WC_STORE_URL;
 
-const JWT_SECRET = process.env.JWT_AUTH_SECRET_KEY ?? '';
+const JWT_SECRET = env.JWT_AUTH_SECRET_KEY;
 const JWT_COOKIE = 'eden_jwt';
 
 const UA = { 'User-Agent': 'EdenStorefront/1.0' };
@@ -90,9 +89,6 @@ export async function getSessionCustomer(): Promise<SessionResolution> {
   const jar = await cookies();
   const token = jar.get(JWT_COOKIE)?.value;
   if (!token) return { id: null, reason: 'no_cookie' };
-  if (!JWT_SECRET) {
-    throw new WcError('JWT_AUTH_SECRET_KEY is not configured.', 503);
-  }
 
   // Cache per exact token value: a different token never hits another
   // session's entry, and re-login produces a new value.

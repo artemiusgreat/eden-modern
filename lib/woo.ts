@@ -4,8 +4,9 @@
  * Server-side only: uses WC_STORE_URL (never NEXT_PUBLIC_*).
  */
 import { cache } from 'react';
+import { env } from './env';
 
-const WC_STORE_URL = process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com';
+const WC_STORE_URL = env.WC_STORE_URL;
 
 /** Woo sometimes returns HTML entities (e.g. "Health &amp; Beauty") in plain-text
  *  fields. Decode them before rendering so "&" shows as "&". */

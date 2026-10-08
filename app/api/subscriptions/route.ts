@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sendEmail, escapeHtml } from '@/lib/email';
+import { env } from '@/lib/env';
 
 // Newsletter signup — emails the address to the store inbox with a
 // filter-friendly subject. No list provider involved.
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: 'Enter a valid email address.' }, { status: 400 });
     }
 
-    const to = process.env.EMAIL_FROM ?? 'noreply@eden.indemos.com';
+    const to = env.EMAIL_FROM;
     const sent = await sendEmail({
       to,
       subject: `Newsletter signup: ${clean}`,

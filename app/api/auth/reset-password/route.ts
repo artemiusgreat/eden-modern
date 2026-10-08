@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { env } from '@/lib/env';
 import { createHmac, timingSafeEqual } from 'crypto';
 
 // Self-contained password reset completion — verifies the signed token from
 // /api/auth/lost-password and updates the password via the WP REST API.
 // No WordPress plugins involved.
 
-const WP = (process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com').replace(/\/$/, '');
-const TOKEN_SECRET = process.env.PASSWORD_RESET_SECRET ?? '';
-const WP_ADMIN_USER = process.env.WP_ADMIN_USER ?? '';
-const WP_APP_PASSWORD = process.env.WP_APP_PASSWORD ?? '';
+const WP = env.WC_STORE_URL;
+const TOKEN_SECRET = env.PASSWORD_RESET_SECRET;
+const WP_ADMIN_USER = env.WP_ADMIN_USER;
+const WP_APP_PASSWORD = env.WP_APP_PASSWORD;
 
 function verifyToken(token: string): { userId: number; email: string } | null {
   try {

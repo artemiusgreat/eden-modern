@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { clientEnv } from '@/lib/env-client';
 import styles from './AddressAutocomplete.module.css';
 
 /** Parsed address from a Google Places selection, mapped to checkout fields. */
@@ -23,7 +24,7 @@ interface Suggestion {
   secondaryText: string;
 }
 
-const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_PLACES_KEY ?? '';
+const API_KEY = clientEnv.NEXT_PUBLIC_GOOGLE_PLACES_KEY;
 const DEBOUNCE_MS = 300;
 
 type AddressComponent = {

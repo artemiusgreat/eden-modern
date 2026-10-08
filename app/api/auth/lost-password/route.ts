@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createHmac, randomBytes } from 'crypto';
+import { createHmac } from 'crypto';
+import { sendEmail } from '@/lib/email';
+import { env } from '@/lib/env';
 
 // Self-contained lost password — no WordPress plugins, no WP emails.
-// Generates a signed reset token and sends it via the storefront's own
-// email transport (SMTP or Resend, configured in env).
+// Generates a signed reset token and sends it via the storefront's SMTP
+// transport (configured in env).
 
-const WP = (process.env.WC_STORE_URL ?? 'https://edenapi.indemos.com').replace(/\/$/, '');
-const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://eden.indemos.com').replace(/\/$/, '');
-const TOKEN_SECRET = process.env.PASSWORD_RESET_SECRET ?? '';
+const WP = env.WC_STORE_URL;
+const SITE = env.NEXT_PUBLIC_SITE_URL;
+const TOKEN_SECRET = env.PASSWORD_RESET_SECRET;
 // WP admin Application Password for user lookup (Users → Profile → Application Passwords).
-const WP_ADMIN_USER = process.env.WP_ADMIN_USER ?? '';
-const WP_APP_PASSWORD = process.env.WP_APP_PASSWORD ?? '';
+const WP_ADMIN_USER = env.WP_ADMIN_USER;
+const WP_APP_PASSWORD = env.WP_APP_PASSWORD;
 
 function signToken(userId: number, email: string): string {
   const expiry = Date.now() + 60 * 60 * 1000; // 1 hour
@@ -22,48 +24,11 @@ function signToken(userId: number, email: string): string {
 }
 
 async function sendResetEmail(to: string, resetUrl: string): Promise<boolean> {
-  // Resend API (preferred if configured)
-  const resendKey = process.env.RESEND_API_KEY;
-  if (resendKey) {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${resendKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: process.env.EMAIL_FROM ?? 'noreply@eden.indemos.com',
-        to,
-        subject: 'Reset your password',
-        html: `<p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${resetUrl}">Reset password</a></p>`,
-      }),
-    });
-    return res.ok;
-  }
-
-  // SMTP via nodemailer (if configured)
-  const smtpHost = process.env.SMTP_HOST;
-  if (smtpHost) {
-    const nodemailer = await import('nodemailer');
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: parseInt(process.env.SMTP_PORT ?? '587', 10),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM ?? 'noreply@eden.indemos.com',
-      to,
-      subject: 'Reset your password',
-      html: `<p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${resetUrl}">Reset password</a></p>`,
-    });
-    return true;
-  }
-
-  return false;
+  return sendEmail({
+    to,
+    subject: 'Reset your password',
+    html: `<p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${resetUrl}">Reset password</a></p>`,
+  });
 }
 
 export async function POST(req: NextRequest) {
