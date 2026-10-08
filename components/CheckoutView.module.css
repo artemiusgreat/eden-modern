@@ -243,7 +243,7 @@
 }
 .lineMain {
   display: flex;
-  gap: 0.8rem;
+  gap: 1rem;
   align-items: flex-start;
   flex: 1;
   min-width: 0;
@@ -423,7 +423,7 @@
 /* Explicit shipping recalculation for manual address entry. Lives only
    inside the expandable manual section; lookup selections auto-calc. */
 .calcBtn {
-  margin-top: 1rem;
+  margin: 1rem 0;
   background: transparent;
   border: 1px solid var(--gold-soft);
   color: var(--gold-soft);

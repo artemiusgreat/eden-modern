@@ -211,7 +211,7 @@ export default function AddressAutocomplete({ id, onSelect }: Props) {
         </ul>
       )}
       {failed && !open && (
-        <p className={styles.hint}>Address lookup is unavailable — please fill the fields below.</p>
+        <p className={styles.hint}>Address lookup is unavailable - please fill the fields below.</p>
       )}
     </div>
   );
