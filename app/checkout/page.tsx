@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import CheckoutView from '@/components/CheckoutView';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { env } from '@/lib/env';
 
 export const metadata: Metadata = { title: 'Checkout' };
 
@@ -18,7 +17,7 @@ export default function CheckoutPage() {
   return (
     <Suspense fallback={null}>
       <ErrorBoundary label="Checkout">
-        <CheckoutView stripeKey={env.WC_STRIPE_KEY} placesKey={env.STAT_GOOGLE_PLACE_KEY} />
+        <CheckoutView />
       </ErrorBoundary>
     </Suspense>
   );

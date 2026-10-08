@@ -1,19 +1,39 @@
 /**
  * Central server-side environment access.
  *
- * Values are read LAZILY (getters): importing this module never touches
- * process.env, so transitive imports from client components are safe.
- * (Client bundles only inline static `process.env.NEXT_PUBLIC_*` access;
- * dynamic `process.env[name]` is never inlined, so eager reads would throw
- * in the browser even with a correct .env file.)
- *
- * The first actual read of a REQUIRED variable throws with the variable
- * named when it is missing, so a misconfigured server still fails fast
- * instead of silently running against the wrong backend.
+ * EAGER validation: every REQUIRED variable is checked once at module load
+ * on the server — a misconfigured deploy fails fast at build/startup with
+ * the variable named, instead of dying on the first request that needs it.
+ * The check is skipped in the browser (`typeof window`), where server vars
+ * don't exist: this module lands in client bundles transitively
+ * (CartProvider → analytics → lib/woo → here), and client code only ever
+ * reads NEXT_PUBLIC_* via static `process.env.NEXT_PUBLIC_*` access.
  *
  * Every value comes from the environment — there are no hardcoded defaults
  * anywhere in the source.
  */
+
+const REQUIRED_VARS = [
+  'WC_STORE_URL',
+  'NEXT_PUBLIC_SITE_URL',
+  'SMTP_HOST',
+  'SMTP_PORT',
+  'SMTP_USER',
+  'SMTP_PASS',
+  'SMTP_SENDER',
+  'WP_API_TOKEN',
+] as const;
+
+if (typeof window === 'undefined') {
+  for (const name of REQUIRED_VARS) {
+    if (!process.env[name]) {
+      throw new Error(
+        `Missing required environment variable: ${name}. ` +
+          `Set it in .env.production (server) / .env.local (dev).`,
+      );
+    }
+  }
+}
 
 function required(name: string): string {
   const value = process.env[name];
@@ -90,17 +110,5 @@ export const env = {
   },
   get WC_CONSUMER_SECRET(): string {
     return optional('WC_CONSUMER_SECRET');
-  },
-  /** Optional browser-facing integrations ('' = disabled); passed to client
-      components as props from server components (see app/layout.tsx,
-      app/checkout/page.tsx). */
-  get STAT_GOOGLE_TAG_KEY(): string {
-    return optional('STAT_GOOGLE_TAG_KEY');
-  },
-  get STAT_GOOGLE_PLACE_KEY(): string {
-    return optional('STAT_GOOGLE_PLACE_KEY');
-  },
-  get WC_STRIPE_KEY(): string {
-    return optional('WC_STRIPE_KEY');
   },
 };

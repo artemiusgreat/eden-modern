@@ -14,11 +14,10 @@ export interface ParsedAddress {
 
 interface Props {
   id: string;
-  /** Google Places API key, passed from the server (client components can't
-      read non-NEXT_PUBLIC_ env vars). Empty = lookup unavailable. */
-  apiKey: string;
   onSelect: (addr: ParsedAddress) => void;
 }
+
+const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_PLACE_KEY ?? '';
 
 interface Suggestion {
   placeId: string;
@@ -53,7 +52,7 @@ function parseComponents(components: AddressComponent[]): ParsedAddress {
   return { street, city, state, postcode, country };
 }
 
-export default function AddressAutocomplete({ id, apiKey, onSelect }: Props) {
+export default function AddressAutocomplete({ id, onSelect }: Props) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [open, setOpen] = useState(false);
@@ -75,7 +74,7 @@ export default function AddressAutocomplete({ id, apiKey, onSelect }: Props) {
   }, []);
 
   const fetchSuggestions = useCallback(async (input: string) => {
-    if (!apiKey || input.trim().length < 3) {
+    if (!API_KEY || input.trim().length < 3) {
       setSuggestions([]);
       setOpen(false);
       return;
@@ -86,7 +85,7 @@ export default function AddressAutocomplete({ id, apiKey, onSelect }: Props) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Goog-Api-Key': apiKey,
+          'X-Goog-Api-Key': API_KEY,
         },
         body: JSON.stringify({
           input,
@@ -139,7 +138,7 @@ export default function AddressAutocomplete({ id, apiKey, onSelect }: Props) {
       try {
         const res = await fetch(`https://places.googleapis.com/v1/places/${s.placeId}`, {
           headers: {
-            'X-Goog-Api-Key': apiKey,
+            'X-Goog-Api-Key': API_KEY,
             'X-Goog-FieldMask': 'addressComponents',
           },
         });
@@ -168,7 +167,7 @@ export default function AddressAutocomplete({ id, apiKey, onSelect }: Props) {
     }
   };
 
-  if (!apiKey) return null;
+  if (!API_KEY) return null;
 
   return (
     <div ref={wrapRef} className={styles.wrap}>

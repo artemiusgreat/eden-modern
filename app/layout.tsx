@@ -75,7 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className={`${sans.variable} ${serif.variable} ${milonga.variable} ${prata.variable}`} data-build={BUILD_ID}>
-        <Analytics gtmId={env.STAT_GOOGLE_TAG_KEY} />
+        <Analytics />
         <Suspense fallback={null}>
           <RouteProgress />
         </Suspense>
