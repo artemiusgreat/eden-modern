@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type InputHTMLAttributes } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { loadStripe, type Stripe, type StripeElements, type StripeElement, type StripeElementsOptionsMode } from '@stripe/stripe-js';
 import {
   MDBContainer,
@@ -97,6 +98,12 @@ interface CartTotalsFull {
 interface CartWithRates extends StoreCart {
   shipping_rates: CheckoutShippingPackage[];
   has_calculated_shipping: boolean;
+}
+
+/** Headless product URL for a cart line, via the Store API permalink slug. */
+function lineProductUrl(item: { permalink?: string }): string | null {
+  const slug = item.permalink?.split('?')[0].split('#')[0].split('/').filter(Boolean).pop();
+  return slug ? `/products/${slug}` : null;
 }
 
 function money(minor: string | null | undefined, t: CartTotalsFull) {
@@ -197,9 +204,6 @@ export default function CheckoutView() {
 
   useEffect(() => {
     loadCheckout()
-      .then((d) => {
-        if (d.billing_address?.email) setEmail(d.billing_address.email);
-      })
       .catch((e) => setLoadError(e.message))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -396,11 +400,13 @@ export default function CheckoutView() {
     }
   }
 
-  // Auto-calculate shipping once the address is complete — no button.
-  // Debounced for manual typing; keyed on the address fields so autocomplete
-  // selections (which fill several fields at once) trigger a single call.
+  // Auto-calculate shipping for lookup selections only — manual entry
+  // uses the explicit "Calculate shipping" button in the manual section.
+  // Debounced; keyed on the address fields so an autocomplete selection
+  // (which fills several fields at once) triggers a single call.
   // Skipped when shipping isn't needed or a calc is already in flight.
   const lastCalcKey = useRef('');
+  const lookupSelectedRef = useRef(false);
   const shipKey = [ship.address_1, ship.city, ship.postcode, ship.country].join('|');
   useEffect(() => {
     if (!needsShipping || calcBusy || placing || orderNumber) return;
@@ -408,8 +414,10 @@ export default function CheckoutView() {
       (v ?? '').trim()
     );
     if (!complete || shipKey === lastCalcKey.current) return;
+    if (!lookupSelectedRef.current) return;
     const t = setTimeout(() => {
       lastCalcKey.current = shipKey;
+      lookupSelectedRef.current = false;
       calculateShipping(true);
     }, 800);
     return () => clearTimeout(t);
@@ -553,11 +561,15 @@ export default function CheckoutView() {
       idPrefix: string,
       expanded: boolean,
       setExpanded: (v: boolean) => void,
+      // Shipping only: explicit recalculation for manual entry. Passed at
+      // call time (not closed over) so the handler always sees fresh state.
+      calc: { onCalculate: () => void; calculating: boolean } | null,
     ) => (
       <>
         <AddressAutocomplete
           id={`${idPrefix}-lookup`}
           onSelect={(p: ParsedAddress) => {
+            lookupSelectedRef.current = true;
             if (p.street) set('address_1', p.street);
             if (p.city) set('city', p.city);
             if (p.state) set('state', p.state);
@@ -568,21 +580,21 @@ export default function CheckoutView() {
         <div className={`${styles.manualWrap}${expanded ? ` ${styles.open}` : ''}`}>
           <div className={styles.manualInner}>
         <Field id={`${idPrefix}-a1`} label="Street address *" value={addr.address_1}
-          onChange={(e) => set('address_1', e.target.value)} autoComplete="street-address" />
+          onChange={(e) => set('address_1', e.target.value)} autoComplete="off" />
         <Field id={`${idPrefix}-a2`} label="Apt, suite, etc. (optional)" value={addr.address_2}
-          onChange={(e) => set('address_2', e.target.value)} />
+          onChange={(e) => set('address_2', e.target.value)} autoComplete="off" />
         <MDBRow>
           <MDBCol md="5">
             <Field id={`${idPrefix}-city`} label="City *" value={addr.city}
-              onChange={(e) => set('city', e.target.value)} autoComplete="address-level2" />
+              onChange={(e) => set('city', e.target.value)} autoComplete="off" />
           </MDBCol>
           <MDBCol md="4">
             <Field id={`${idPrefix}-state`} label="State / Province" value={addr.state}
-              onChange={(e) => set('state', e.target.value)} autoComplete="address-level1" />
+              onChange={(e) => set('state', e.target.value)} autoComplete="off" />
           </MDBCol>
           <MDBCol md="3">
             <Field id={`${idPrefix}-zip`} label="ZIP / Postcode *" value={addr.postcode}
-              onChange={(e) => set('postcode', e.target.value)} autoComplete="postal-code" />
+              onChange={(e) => set('postcode', e.target.value)} autoComplete="off" />
           </MDBCol>
         </MDBRow>
         <MDBRow>
@@ -590,7 +602,7 @@ export default function CheckoutView() {
             <div className={styles.field}>
               <label htmlFor={`${idPrefix}-country`}>Country *</label>
               <select id={`${idPrefix}-country`} value={addr.country}
-                onChange={(e) => set('country', e.target.value)} autoComplete="country-name">
+                onChange={(e) => set('country', e.target.value)} autoComplete="off">
                 {COUNTRIES.map(([code, name]) => (
                   <option key={code} value={code}>{name}</option>
                 ))}
@@ -599,9 +611,18 @@ export default function CheckoutView() {
           </MDBCol>
           <MDBCol md="6">
             <Field id={`${idPrefix}-phone`} label="Phone (optional)" type="tel" value={addr.phone}
-              onChange={(e) => set('phone', e.target.value)} autoComplete="tel" />
+              onChange={(e) => set('phone', e.target.value)} autoComplete="off" />
           </MDBCol>
         </MDBRow>
+        {calc && (
+          <button
+            type="button"
+            className={styles.calcBtn}
+            disabled={calc.calculating}
+            onClick={calc.onCalculate}>
+            {calc.calculating ? 'Calculating…' : 'Calculate shipping'}
+          </button>
+        )}
           </div>
         </div>
         <button
@@ -683,15 +704,15 @@ export default function CheckoutView() {
             <MDBRow>
               <MDBCol md="6">
                 <Field id="co-fn" label="First name *" value={ship.first_name}
-                  onChange={(e) => setShipField('first_name', e.target.value)} autoComplete="given-name" />
+                  onChange={(e) => setShipField('first_name', e.target.value)} autoComplete="off" />
               </MDBCol>
               <MDBCol md="6">
                 <Field id="co-ln" label="Last name *" value={ship.last_name}
-                  onChange={(e) => setShipField('last_name', e.target.value)} autoComplete="family-name" />
+                  onChange={(e) => setShipField('last_name', e.target.value)} autoComplete="off" />
               </MDBCol>
             </MDBRow>
             <Field id="co-email" label="Email address *" type="email" value={email}
-              onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+              onChange={(e) => setEmail(e.target.value)} autoComplete="off" />
             <label className={styles.checkRow}>
               <input type="checkbox" checked={createAccount}
                 onChange={(e) => setCreateAccount(e.target.checked)} />
@@ -702,7 +723,10 @@ export default function CheckoutView() {
           {/* Shipping address */}
           <section className={styles.section}>
             <h2 className={styles.h2}>Shipping address</h2>
-            {addressFields(ship, setShipField, 'ship', shipExpanded, setShipExpanded)}
+            {addressFields(ship, setShipField, 'ship', shipExpanded, setShipExpanded, {
+              onCalculate: () => calculateShipping(),
+              calculating: calcBusy,
+            })}
             {calcBusy && (
               <p className={styles.hint} role="status">Calculating shipping…</p>
             )}
@@ -743,7 +767,7 @@ export default function CheckoutView() {
               <input type="checkbox" checked={billSame} onChange={(e) => setBillSame(e.target.checked)} />
               <span>Same as shipping address</span>
             </label>
-            {!billSame && addressFields(bill, setBillField, 'bill', billExpanded, setBillExpanded)}
+            {!billSame && addressFields(bill, setBillField, 'bill', billExpanded, setBillExpanded, null)}
           </section>
 
           {/* Payment — revealed only after shipping is calculated (or when the
@@ -775,7 +799,7 @@ export default function CheckoutView() {
                 </div>
               )}
               <Field id="co-note" label="Order notes (optional)" value={note}
-                onChange={(e) => setNote(e.target.value)} />
+                onChange={(e) => setNote(e.target.value)} autoComplete="off" />
             </section>
           ) : (
             <p className={styles.hint}>Enter your shipping address to see delivery options and payment.</p>
@@ -793,30 +817,49 @@ export default function CheckoutView() {
         <MDBCol lg="5">
           <aside className={styles.summary}>
             <h2 className={styles.h2}>Order summary</h2>
-            {(cartData?.items ?? []).map((item) => (
+            {(cartData?.items ?? []).map((item) => {
+              const url = lineProductUrl(item);
+              const thumb = item.images?.[0]?.thumbnail;
+              return (
               <div key={item.key} className={styles.line}>
-                <span className={styles.lineName}>
-                  {decodeEntities(item.name)}
-                  <span className={styles.lineControls}>
-                    <span className="qty-stepper" style={{ transform: 'scale(0.8)', transformOrigin: 'left center' }}>
-                      <button type="button" aria-label="Decrease quantity" disabled={busy} onClick={() => changeQty(item.key, item.quantity - 1)}>
-                        −
-                      </button>
-                      <span>{item.quantity}</span>
-                      <button type="button" aria-label="Increase quantity" disabled={busy} onClick={() => changeQty(item.key, item.quantity + 1)}>
-                        +
+                <div className={styles.lineMain}>
+                  {thumb && (
+                    url ? (
+                      <Link href={url} className={styles.thumbLink} aria-label={decodeEntities(item.name)}>
+                        <Image src={thumb} alt="" width={64} height={72} className={styles.thumb} />
+                      </Link>
+                    ) : (
+                      <Image src={thumb} alt="" width={64} height={72} className={styles.thumb} />
+                    )
+                  )}
+                  <span className={styles.lineName}>
+                    {url ? (
+                      <Link href={url} className={styles.titleLink}>{decodeEntities(item.name)}</Link>
+                    ) : (
+                      decodeEntities(item.name)
+                    )}
+                    <span className={styles.lineControls}>
+                      <span className="qty-stepper" style={{ transform: 'scale(0.8)', transformOrigin: 'left center' }}>
+                        <button type="button" aria-label="Decrease quantity" disabled={busy} onClick={() => changeQty(item.key, item.quantity - 1)}>
+                          −
+                        </button>
+                        <span>{item.quantity}</span>
+                        <button type="button" aria-label="Increase quantity" disabled={busy} onClick={() => changeQty(item.key, item.quantity + 1)}>
+                          +
+                        </button>
+                      </span>
+                      <button type="button" className={styles.removeBtn} disabled={busy} onClick={() => removeLine(item.key)}>
+                        Remove
                       </button>
                     </span>
-                    <button type="button" className={styles.removeBtn} disabled={busy} onClick={() => removeLine(item.key)}>
-                      Remove
-                    </button>
                   </span>
-                </span>
+                </div>
                 <span className={styles.linePrice}>
                   {totals ? money(item.totals?.line_total, totals) : ''}
                 </span>
               </div>
-            ))}
+              );
+            })}
             {totals && (
               <dl className={styles.totals}>
                 <div><dt>Subtotal</dt><dd>{money(totals.total_items, totals)}</dd></div>
