@@ -60,6 +60,8 @@ export const addItem = (id: number, quantity = 1) =>
 export const updateItem = (key: string, quantity: number) =>
   cartRequest('POST', '/cart/update-item', { key, quantity });
 export const removeItem = (key: string) => cartRequest('POST', '/cart/remove-item', { key });
+export const applyCoupon = (code: string) =>
+  cartRequest('POST', '/cart/apply-coupon', { code });
 export const updateCustomer = (billing_address: unknown, shipping_address: unknown) =>
   cartRequest('POST', '/cart/update-customer', { billing_address, shipping_address });
 export const selectShippingRate = (package_id: number, rate_id: string) =>

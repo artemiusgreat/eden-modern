@@ -6,10 +6,12 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 export const metadata: Metadata = { title: 'Checkout' };
 
 /**
- * Also the landing for WooCommerce-style sharable checkout ("buy now")
- * links: `/checkout?add-to-cart=123` adds the product, then checkout loads
- * with it in the bag. The ?add-to-cart= handling itself now lives globally
- * in the root layout (works on every page); this page just renders checkout.
+ * The order summary on this page lists everything in the bag, so this is
+ * also the landing for WooCommerce-style sharable checkout links:
+ * `/checkout-link?products=14674:1&coupon=SAVE10` (Meta shop links) 308s
+ * here with the query string intact, and `/checkout?add-to-cart=123`
+ * works too. The param handling itself lives globally in the root layout
+ * (AddToCartParam); this page just renders checkout.
  */
 export default function CheckoutPage() {
   return (

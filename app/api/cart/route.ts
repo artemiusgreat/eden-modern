@@ -4,6 +4,7 @@ import {
   addItem,
   updateItem,
   removeItem,
+  applyCoupon,
   updateCustomer,
   selectShippingRate,
 } from '@/lib/woo-cart';
@@ -18,11 +19,13 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { action, id, key, quantity, billing_address, shipping_address, package_id, rate_id } =
+    const { action, id, key, quantity, code, billing_address, shipping_address, package_id, rate_id } =
       await req.json();
     if (action === 'add') return NextResponse.json(await addItem(Number(id), Number(quantity) || 1));
     if (action === 'update') return NextResponse.json(await updateItem(String(key), Number(quantity)));
     if (action === 'remove') return NextResponse.json(await removeItem(String(key)));
+    if (action === 'apply-coupon')
+      return NextResponse.json(await applyCoupon(String(code)));
     if (action === 'update-customer')
       return NextResponse.json(await updateCustomer(billing_address, shipping_address));
     if (action === 'select-shipping-rate')

@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: '/',
         // Functional pages: no indexable content, keep crawlers out.
-        disallow: ['/api/', '/account', '/cart', '/checkout', '/search'],
+        disallow: ['/api/', '/account', '/checkout', '/search'],
       },
     ],
     sitemap: `${SITE}/sitemap.xml`,

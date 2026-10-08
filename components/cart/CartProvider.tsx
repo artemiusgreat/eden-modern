@@ -18,6 +18,12 @@ interface CartContextValue {
   drawerOpen: boolean;
   setDrawerOpen: (open: boolean) => void;
   addItem: (id: number, quantity?: number) => Promise<void>;
+  /**
+   * Sharable-checkout-URL bundle import: adds every entry sequentially,
+   * applies the coupon, then sets the cart once. Never opens the drawer —
+   * the caller lands straight on checkout.
+   */
+  importBundle: (entries: { id: number; quantity: number }[], coupon?: string) => Promise<void>;
   updateQuantity: (key: string, quantity: number) => Promise<void>;
   removeItem: (key: string) => Promise<void>;
 }
@@ -94,9 +100,44 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
   const removeItem = useCallback((key: string) => mutate(() => cartApi('remove', { key })), [mutate]);
 
+  // Bundle import for sharable checkout URLs (?products=ID:QTY,…&coupon=).
+  // Sequential adds (each mutation refreshes the Nonce + cart token), one
+  // setCart at the end, GA4 add_to_cart per added line, no drawer.
+  const importBundle = useCallback(
+    async (entries: { id: number; quantity: number }[], coupon?: string) => {
+      if (entries.length === 0 && !coupon) return;
+      setBusy(true);
+      progressBegin();
+      try {
+        let next: StoreCart | null = null;
+        for (const { id, quantity } of entries) {
+          try {
+            next = await cartApi('add', { id, quantity });
+            const added = next.items.find((i) => i.id === id);
+            if (added) trackAddToCart(cartLineToGaItem(added, quantity), added.prices.currency_code);
+          } catch {
+            // Skip entries that fail (unknown id, out of stock).
+          }
+        }
+        if (coupon) {
+          try {
+            next = await cartApi('apply-coupon', { code: coupon });
+          } catch {
+            // Invalid/expired coupon: ignore.
+          }
+        }
+        if (next) setCart(next);
+      } finally {
+        setBusy(false);
+        progressEnd();
+      }
+    },
+    []
+  );
+
   const value = useMemo(
-    () => ({ cart, loading, busy, drawerOpen, setDrawerOpen, addItem, updateQuantity, removeItem }),
-    [cart, loading, busy, drawerOpen, addItem, updateQuantity, removeItem]
+    () => ({ cart, loading, busy, drawerOpen, setDrawerOpen, addItem, importBundle, updateQuantity, removeItem }),
+    [cart, loading, busy, drawerOpen, addItem, importBundle, updateQuantity, removeItem]
   );
 
   return (

@@ -15,6 +15,7 @@ import {
 import { useCart } from '@/components/cart/CartProvider';
 import AddressAutocomplete, { type ParsedAddress } from '@/components/AddressAutocomplete';
 import { cartLineToGaItem, minorToDecimal, trackBeginCheckout, trackPurchase } from '@/lib/analytics';
+import { decodeEntities } from '@/lib/format';
 import type { StoreCart } from '@/lib/woo';
 import type {
   CheckoutAddress,
@@ -129,7 +130,7 @@ function Field({
 }
 
 export default function CheckoutView() {
-  const { cart, removeItem } = useCart();
+  const { cart, removeItem, updateQuantity, busy } = useCart();
   const [checkout, setCheckout] = useState<CheckoutResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -138,6 +139,18 @@ export default function CheckoutView() {
   // shipping rates and totals.
   const [liveCart, setLiveCart] = useState<CartWithRates | null>(null);
   const cartData = liveCart ?? (cart as CartWithRates | null);
+
+  // Bag edits from the order summary (the standalone bag page is gone).
+  // Drop the live snapshot first so the freshly-mutated provider cart —
+  // with recalculated rates and totals — becomes the source of truth again.
+  const changeQty = (key: string, quantity: number) => {
+    setLiveCart(null);
+    updateQuantity(key, quantity);
+  };
+  const removeLine = (key: string) => {
+    setLiveCart(null);
+    removeItem(key).catch(() => null);
+  };
   const totals = cartData ? (cartData.totals as unknown as CartTotalsFull) : null;
 
   const [email, setEmail] = useState('');
@@ -783,7 +796,21 @@ export default function CheckoutView() {
             {(cartData?.items ?? []).map((item) => (
               <div key={item.key} className={styles.line}>
                 <span className={styles.lineName}>
-                  {item.name} <small>× {item.quantity}</small>
+                  {decodeEntities(item.name)}
+                  <span className={styles.lineControls}>
+                    <span className="qty-stepper" style={{ transform: 'scale(0.8)', transformOrigin: 'left center' }}>
+                      <button type="button" aria-label="Decrease quantity" disabled={busy} onClick={() => changeQty(item.key, item.quantity - 1)}>
+                        −
+                      </button>
+                      <span>{item.quantity}</span>
+                      <button type="button" aria-label="Increase quantity" disabled={busy} onClick={() => changeQty(item.key, item.quantity + 1)}>
+                        +
+                      </button>
+                    </span>
+                    <button type="button" className={styles.removeBtn} disabled={busy} onClick={() => removeLine(item.key)}>
+                      Remove
+                    </button>
+                  </span>
                 </span>
                 <span className={styles.linePrice}>
                   {totals ? money(item.totals?.line_total, totals) : ''}

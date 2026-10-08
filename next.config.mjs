@@ -41,6 +41,13 @@ const nextConfig = {
       { source: '/tag/:slug', destination: '/magazine/:slug', permanent: true },
       // Product tags have no filtered view -> catalog root (301).
       { source: '/product-tag/:slug', destination: '/catalog', permanent: true },
+      // The standalone bag page is retired: the bag lives in the drawer
+      // and the order summary on /checkout (301).
+      { source: '/cart', destination: '/checkout', permanent: true },
+      // WooCommerce-style sharable checkout URLs (Meta shop links):
+      // /checkout-link?products=ID:QTY,…&coupon=CODE lands on /checkout,
+      // which imports the bundle itself. Query string passes through.
+      { source: '/checkout-link', destination: '/checkout', permanent: true },
     ];
   },
 };
