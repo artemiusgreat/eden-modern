@@ -30,7 +30,7 @@ export async function sendEmail(opts: {
     },
   });
   await transporter.sendMail({
-    from: env.EMAIL_FROM,
+    from: env.SMTP_SENDER,
     to: opts.to,
     subject: opts.subject,
     html: opts.html,

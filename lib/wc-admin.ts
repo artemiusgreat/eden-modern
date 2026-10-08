@@ -9,7 +9,7 @@ import { env } from './env';
  *   1. User signs in via /api/auth/login -> POST /wp-json/jwt-auth/v1/token
  *      with username/password -> JWT stored in httpOnly `eden_jwt` cookie.
  *   2. getSessionCustomer() reads the JWT from the cookie, verifies the
- *      HS256 signature with JWT_AUTH_SECRET_KEY (must match wp-config.php),
+ *      HS256 signature with WP_API_TOKEN (must match wp-config.php),
  *      and extracts the WP user id from the token payload (data.user.id).
  *   3. A WC customer id IS the WP user id, so /wc/v3/customers/{id} and
  *      /orders?customer={id} are addressed directly. The ?search= username
@@ -19,7 +19,7 @@ import { env } from './env';
 
 const WC_URL = env.WC_STORE_URL;
 
-const JWT_SECRET = env.JWT_AUTH_SECRET_KEY;
+const JWT_SECRET = env.WP_API_TOKEN;
 const JWT_COOKIE = 'eden_jwt';
 
 const UA = { 'User-Agent': 'EdenStorefront/1.0' };

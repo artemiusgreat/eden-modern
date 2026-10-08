@@ -1,7 +1,8 @@
 /**
  * Central server-side environment access. SERVER ONLY — never import from a
- * client component (use lib/env-client.ts there): required() throws wherever
- * real process.env is unavailable, i.e. the browser.
+ * client component: required() throws wherever real process.env is
+ * unavailable, i.e. the browser. Browser-facing values (analytics, Stripe,
+ * address lookup) are read here and passed to client components as props.
  *
  * Every value comes from the environment. There are no hardcoded defaults
  * anywhere in the source: a missing REQUIRED variable throws at import time
@@ -45,14 +46,20 @@ export const env = {
   SMTP_SECURE: process.env.SMTP_SECURE === 'true',
   SMTP_USER: required('SMTP_USER'),
   SMTP_PASS: required('SMTP_PASS'),
-  EMAIL_FROM: required('EMAIL_FROM'),
+  SMTP_SENDER: required('SMTP_SENDER'),
   /** HS256 secret shared with wp-config.php (JWT session verification). */
-  JWT_AUTH_SECRET_KEY: required('JWT_AUTH_SECRET_KEY'),
+  WP_API_TOKEN: required('WP_API_TOKEN'),
   /** Optional: without these, password reset answers 500 with a clear message. */
-  PASSWORD_RESET_SECRET: optional('PASSWORD_RESET_SECRET'),
+  WP_RESET_SECRET: optional('WP_RESET_SECRET'),
   WP_ADMIN_USER: optional('WP_ADMIN_USER'),
   WP_APP_PASSWORD: optional('WP_APP_PASSWORD'),
   /** Optional: Woo REST API keys for account data. */
   WC_CONSUMER_KEY: optional('WC_CONSUMER_KEY'),
   WC_CONSUMER_SECRET: optional('WC_CONSUMER_SECRET'),
+  /** Optional browser-facing integrations ('' = disabled); passed to client
+      components as props from server components (see app/layout.tsx,
+      app/checkout/page.tsx). */
+  STAT_GOOGLE_TAG_KEY: optional('STAT_GOOGLE_TAG_KEY'),
+  STAT_GOOGLE_PLACE_KEY: optional('STAT_GOOGLE_PLACE_KEY'),
+  WC_STRIPE_KEY: optional('WC_STRIPE_KEY'),
 };

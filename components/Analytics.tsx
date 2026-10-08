@@ -1,19 +1,20 @@
 'use client';
 
 import Script from 'next/script';
-import { clientEnv } from '@/lib/env-client';
-
-const GTM_ID = clientEnv.NEXT_PUBLIC_GTM_ID;
 
 /**
  * Google Tag Manager loader. GA4 itself stays configured inside the GTM
  * container (Configuration + Event tags), exactly as on the old WordPress
  * site — this snippet only loads the container and provides the dataLayer
  * that lib/analytics.ts pushes ecommerce events to.
+ *
+ * The container ID comes from the server (STAT_GOOGLE_TAG_KEY) as a prop —
+ * client components can't read non-NEXT_PUBLIC_ env vars.
  */
-export default function Analytics() {
-  // No container configured (NEXT_PUBLIC_GTM_ID empty) — render nothing.
-  if (!GTM_ID) return null;
+export default function Analytics({ gtmId }: { gtmId: string }) {
+  // No container configured — render nothing.
+  if (!gtmId) return null;
+  const GTM_ID = gtmId;
   return (
     <>
       <noscript>

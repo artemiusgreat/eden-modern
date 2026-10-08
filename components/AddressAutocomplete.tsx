@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { clientEnv } from '@/lib/env-client';
 import styles from './AddressAutocomplete.module.css';
 
 /** Parsed address from a Google Places selection, mapped to checkout fields. */
@@ -15,6 +14,9 @@ export interface ParsedAddress {
 
 interface Props {
   id: string;
+  /** Google Places API key, passed from the server (client components can't
+      read non-NEXT_PUBLIC_ env vars). Empty = lookup unavailable. */
+  apiKey: string;
   onSelect: (addr: ParsedAddress) => void;
 }
 
@@ -24,7 +26,6 @@ interface Suggestion {
   secondaryText: string;
 }
 
-const API_KEY = clientEnv.NEXT_PUBLIC_GOOGLE_PLACES_KEY;
 const DEBOUNCE_MS = 300;
 
 type AddressComponent = {
@@ -52,7 +53,7 @@ function parseComponents(components: AddressComponent[]): ParsedAddress {
   return { street, city, state, postcode, country };
 }
 
-export default function AddressAutocomplete({ id, onSelect }: Props) {
+export default function AddressAutocomplete({ id, apiKey, onSelect }: Props) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [open, setOpen] = useState(false);
@@ -74,7 +75,7 @@ export default function AddressAutocomplete({ id, onSelect }: Props) {
   }, []);
 
   const fetchSuggestions = useCallback(async (input: string) => {
-    if (!API_KEY || input.trim().length < 3) {
+    if (!apiKey || input.trim().length < 3) {
       setSuggestions([]);
       setOpen(false);
       return;
@@ -85,7 +86,7 @@ export default function AddressAutocomplete({ id, onSelect }: Props) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Goog-Api-Key': API_KEY,
+          'X-Goog-Api-Key': apiKey,
         },
         body: JSON.stringify({
           input,
@@ -138,7 +139,7 @@ export default function AddressAutocomplete({ id, onSelect }: Props) {
       try {
         const res = await fetch(`https://places.googleapis.com/v1/places/${s.placeId}`, {
           headers: {
-            'X-Goog-Api-Key': API_KEY,
+            'X-Goog-Api-Key': apiKey,
             'X-Goog-FieldMask': 'addressComponents',
           },
         });
@@ -167,7 +168,7 @@ export default function AddressAutocomplete({ id, onSelect }: Props) {
     }
   };
 
-  if (!API_KEY) return null;
+  if (!apiKey) return null;
 
   return (
     <div ref={wrapRef} className={styles.wrap}>

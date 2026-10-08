@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: 'Enter a valid email address.' }, { status: 400 });
     }
 
-    const to = env.EMAIL_FROM;
+    const to = env.SMTP_SENDER;
     const sent = await sendEmail({
       to,
       subject: `Newsletter signup: ${clean}`,

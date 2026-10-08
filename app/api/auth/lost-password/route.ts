@@ -9,7 +9,7 @@ import { env } from '@/lib/env';
 
 const WP = env.WC_STORE_URL;
 const SITE = env.NEXT_PUBLIC_SITE_URL;
-const TOKEN_SECRET = env.PASSWORD_RESET_SECRET;
+const TOKEN_SECRET = env.WP_RESET_SECRET;
 // WP admin Application Password for user lookup (Users → Profile → Application Passwords).
 const WP_ADMIN_USER = env.WP_ADMIN_USER;
 const WP_APP_PASSWORD = env.WP_APP_PASSWORD;

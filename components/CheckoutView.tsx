@@ -17,7 +17,6 @@ import { useCart } from '@/components/cart/CartProvider';
 import AddressAutocomplete, { type ParsedAddress } from '@/components/AddressAutocomplete';
 import { cartLineToGaItem, minorToDecimal, trackBeginCheckout, trackPurchase } from '@/lib/analytics';
 import { decodeEntities } from '@/lib/format';
-import { clientEnv } from '@/lib/env-client';
 import type { StoreCart } from '@/lib/woo';
 import type {
   CheckoutAddress,
@@ -26,9 +25,6 @@ import type {
   CheckoutShippingRate,
 } from '@/lib/woo-cart';
 import styles from './CheckoutView.module.css';
-
-const STRIPE_KEY = clientEnv.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null;
 
 const COUNTRIES: [string, string][] = [
   ['US', 'United States'], ['CA', 'Canada'], ['GB', 'United Kingdom'], ['IE', 'Ireland'],
@@ -137,8 +133,17 @@ function Field({
   );
 }
 
-export default function CheckoutView() {
+export default function CheckoutView({
+  stripeKey,
+  placesKey,
+}: {
+  stripeKey: string;
+  placesKey: string;
+}) {
   const { cart, removeItem, updateQuantity, busy } = useCart();
+  // Browser keys come from the server as props — client components can't
+  // read non-NEXT_PUBLIC_ env vars (see app/checkout/page.tsx).
+  const stripePromise = useMemo(() => (stripeKey ? loadStripe(stripeKey) : null), [stripeKey]);
   const [checkout, setCheckout] = useState<CheckoutResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -565,10 +570,12 @@ export default function CheckoutView() {
       // Shipping only: explicit recalculation for manual entry. Passed at
       // call time (not closed over) so the handler always sees fresh state.
       calc: { onCalculate: () => void; calculating: boolean } | null,
+      placesApiKey: string,
     ) => (
       <>
         <AddressAutocomplete
           id={`${idPrefix}-lookup`}
+          apiKey={placesApiKey}
           onSelect={(p: ParsedAddress) => {
             lookupSelectedRef.current = true;
             if (p.street) set('address_1', p.street);
@@ -727,7 +734,7 @@ export default function CheckoutView() {
             {addressFields(ship, setShipField, 'ship', shipExpanded, setShipExpanded, {
               onCalculate: () => calculateShipping(),
               calculating: calcBusy,
-            })}
+            }, placesKey)}
             {calcBusy && (
               <p className={styles.hint} role="status">Calculating shipping…</p>
             )}
@@ -768,7 +775,7 @@ export default function CheckoutView() {
               <input type="checkbox" checked={billSame} onChange={(e) => setBillSame(e.target.checked)} />
               <span>Same as shipping address</span>
             </label>
-            {!billSame && addressFields(bill, setBillField, 'bill', billExpanded, setBillExpanded, null)}
+            {!billSame && addressFields(bill, setBillField, 'bill', billExpanded, setBillExpanded, null, placesKey)}
           </section>
 
           {/* Payment — revealed only after shipping is calculated (or when the
