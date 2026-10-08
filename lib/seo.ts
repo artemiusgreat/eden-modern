@@ -2,10 +2,12 @@ import type { StoreProduct } from './woo';
 import { stripHtml } from './format';
 import { env } from './env';
 
-const SITE = env.NEXT_PUBLIC_SITE_URL;
+// Read lazily: this module must stay import-safe even if a client
+// component ever imports it (see lib/env.ts).
+const siteBase = (): string => env.NEXT_PUBLIC_SITE_URL;
 
 export function siteUrl(path: string): string {
-  return `${SITE}${path.startsWith('/') ? path : `/${path}`}`;
+  return `${siteBase()}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
 /** Minor-units price string -> major-units number for schema.org. */
@@ -66,6 +68,6 @@ export function organizationJsonLd(): Record<string, unknown> {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Indemos',
-    url: SITE,
+    url: siteBase(),
   };
 }

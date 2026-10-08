@@ -6,8 +6,6 @@
 import { cache } from 'react';
 import { env } from './env';
 
-const WC_STORE_URL = env.WC_STORE_URL;
-
 /** Woo sometimes returns HTML entities (e.g. "Health &amp; Beauty") in plain-text
  *  fields. Decode them before rendering so "&" shows as "&". */
 const NAMED_ENTITIES: Record<string, string> = {
@@ -144,7 +142,9 @@ export interface WpPage {
 }
 
 function apiUrl(base: string, params: Record<string, string | number | undefined> = {}) {
-  const url = new URL(base, WC_STORE_URL);
+  // Read lazily: this module is imported (for types/helpers) by client
+  // components, where server env values don't exist.
+  const url = new URL(base, env.WC_STORE_URL);
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== '') url.searchParams.set(k, String(v));
   }

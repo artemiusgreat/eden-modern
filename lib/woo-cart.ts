@@ -8,7 +8,9 @@ import { cookies } from 'next/headers';
 import type { StoreCart } from './woo';
 import { env } from './env';
 
-const WC = env.WC_STORE_URL;
+// Backend base URL, read lazily: this module must stay import-safe even if
+// a client component ever imports it (see lib/env.ts).
+const wcBase = (): string => env.WC_STORE_URL;
 const TOKEN_COOKIE = 'woo_cart_token';
 
 async function cartRequest(method: 'GET' | 'POST', path: string, body?: unknown): Promise<StoreCart> {
@@ -19,7 +21,7 @@ async function cartRequest(method: 'GET' | 'POST', path: string, body?: unknown)
   const sessionHeaders: Record<string, string> = {};
   if (storedToken) sessionHeaders['Cart-Token'] = storedToken;
 
-  const sessionRes = await fetch(`${WC}/wp-json/wc/store/v1/cart`, {
+  const sessionRes = await fetch(`${wcBase()}/wp-json/wc/store/v1/cart`, {
     method: 'GET',
     headers: sessionHeaders,
     cache: 'no-store',
@@ -31,7 +33,7 @@ async function cartRequest(method: 'GET' | 'POST', path: string, body?: unknown)
   if (nonce) headers['Nonce'] = nonce;
   if (sessionToken) headers['Cart-Token'] = sessionToken;
 
-  const res = await fetch(`${WC}/wp-json/wc/store/v1${path}`, {
+  const res = await fetch(`${wcBase()}/wp-json/wc/store/v1${path}`, {
     method,
     headers,
     body: body !== undefined ? JSON.stringify(body) : undefined,
@@ -162,7 +164,7 @@ async function checkoutRequest(
   const sessionHeaders: Record<string, string> = {};
   if (storedToken) sessionHeaders['Cart-Token'] = storedToken;
 
-  const sessionRes = await fetch(`${WC}/wp-json/wc/store/v1/cart`, {
+  const sessionRes = await fetch(`${wcBase()}/wp-json/wc/store/v1/cart`, {
     method: 'GET',
     headers: sessionHeaders,
     cache: 'no-store',
@@ -174,7 +176,7 @@ async function checkoutRequest(
   if (nonce) headers['Nonce'] = nonce;
   if (sessionToken) headers['Cart-Token'] = sessionToken;
 
-  const res = await fetch(`${WC}/wp-json/wc/store/v1${path}`, {
+  const res = await fetch(`${wcBase()}/wp-json/wc/store/v1${path}`, {
     method,
     headers,
     body: body !== undefined ? JSON.stringify(body) : undefined,

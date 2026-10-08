@@ -17,16 +17,17 @@ import { env } from './env';
  * The REST API keys then do all data access, scoped to that customer id.
  */
 
-const WC_URL = env.WC_STORE_URL;
-
-const JWT_SECRET = env.WP_API_TOKEN;
+// Read lazily: this module must stay import-safe even if a client
+// component ever imports it (see lib/env.ts).
+const wcUrl = (): string => env.WC_STORE_URL;
+const jwtSecret = (): string => env.WP_API_TOKEN;
 const JWT_COOKIE = 'eden_jwt';
 
 const UA = { 'User-Agent': 'EdenStorefront/1.0' };
 
 function basicAuth(): string | null {
-  const key = process.env.WC_CONSUMER_KEY;
-  const secret = process.env.WC_CONSUMER_SECRET;
+  const key = env.WC_CONSUMER_KEY;
+  const secret = env.WC_CONSUMER_SECRET;
   if (!key || !secret) return null;
   return 'Basic ' + Buffer.from(`${key}:${secret}`).toString('base64');
 }
@@ -67,7 +68,7 @@ async function customerIdForUsername(username: string): Promise<number | null> {
   if (!auth) return null;
   try {
     const res = await fetch(
-      `${WC_URL}/wp-json/wc/v3/customers?search=${encodeURIComponent(username)}&per_page=20`,
+      `${wcUrl()}/wp-json/wc/v3/customers?search=${encodeURIComponent(username)}&per_page=20`,
       { headers: { Authorization: auth, ...UA }, cache: 'no-store' }
     );
     if (!res.ok) return null;
@@ -98,7 +99,7 @@ export async function getSessionCustomer(): Promise<SessionResolution> {
   let userId: number | null = null;
   let username: string | null = null;
   try {
-    const payload = jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] }) as {
+    const payload = jwt.verify(token, jwtSecret(), { algorithms: ["HS256"] }) as {
       data?: { user?: { id?: number | string; user_nicename?: string } };
     };
     // The WP JWT plugin json_encodes the MySQL row, so the user id arrives
@@ -132,7 +133,7 @@ export async function wcFetch<T = any>(path: string, init?: RequestInit): Promis
       503
     );
   }
-  const res = await fetch(`${WC_URL}/wp-json/wc/v3${path}`, {
+  const res = await fetch(`${wcUrl()}/wp-json/wc/v3${path}`, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
