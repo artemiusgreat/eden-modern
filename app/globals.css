@@ -412,7 +412,7 @@ nav .breadcrumb {
   color: var(--ink);
 }
 .prose-wp {
-  line-height: 1.85;
+  line-height: 1.4rem;
   color: var(--muted);
   font-size: 0.875rem;
 }

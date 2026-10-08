@@ -5,16 +5,14 @@ import styles from './ContactForm.module.css';
 
 /** Native contact form (Elementor-free). Validates client-side, posts to /api/contact. */
 export default function ContactForm() {
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; message?: string }>({});
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'failed'>('idle');
   const [serverError, setServerError] = useState('');
 
   function validate(): boolean {
     const e: typeof errors = {};
-    if (!name.trim()) e.name = 'Please enter your name.';
     if (!email.trim()) e.email = 'Please enter your email address.';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = 'Enter a valid email address.';
     if (!message.trim()) e.message = 'Please enter your message.';
@@ -32,12 +30,11 @@ export default function ContactForm() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), email: email.trim(), message: message.trim() }),
+        body: JSON.stringify({ email: email.trim(), message: message.trim() }),
       });
       const out = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
       if (out?.ok) {
         setStatus('sent');
-        setName('');
         setEmail('');
         setMessage('');
       } else {
@@ -61,18 +58,6 @@ export default function ContactForm() {
 
   return (
     <form className={styles.form} onSubmit={submit} noValidate>
-      <div className={styles.field}>
-        <label htmlFor="cf-name">Name *</label>
-        <input
-          id="cf-name"
-          type="text"
-          autoComplete="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          aria-invalid={!!errors.name}
-        />
-        {errors.name && <p className={styles.error}>{errors.name}</p>}
-      </div>
       <div className={styles.field}>
         <label htmlFor="cf-email">Email address *</label>
         <input

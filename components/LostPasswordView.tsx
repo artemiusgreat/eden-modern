@@ -54,7 +54,7 @@ export default function LostPasswordView() {
                 {sent ? (
                   <div className="text-start">
                     <h2 className={`${styles.formTitle} text-start`}>Check your email</h2>
-                    <p style={{ color: 'var(--muted)' }}>
+                    <p style={{ color: 'var(--muted)', fontSize: '14px', lineHeight: '1.4rem' }}>
                       If an account exists for <strong style={{ color: 'var(--ink)' }}>{email}</strong>,
                       you&apos;ll receive a password reset link shortly.
                     </p>

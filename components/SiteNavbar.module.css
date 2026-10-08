@@ -209,6 +209,15 @@
   display: flex;
   width: 100%;
 }
+/* Mobile: search and action buttons break onto their own lines when the
+   row gets too narrow. */
+@media (max-width: 1199.98px) {
+  .menu .menuRow {
+    flex-wrap: wrap;
+    row-gap: 0.9rem;
+    padding-bottom: 0.5rem;
+  }
+}
 .menu .links {
   display: flex;
   flex-direction: column;

@@ -5,10 +5,11 @@ export const metadata = {
   description: 'Choose a new password for your Indemos account.',
 };
 
-export default function ResetPasswordPage({
+export default async function ResetPasswordPage({
   searchParams,
 }: {
-  searchParams: { token?: string };
+  searchParams: Promise<{ token?: string }>;
 }) {
-  return <ResetPasswordView token={searchParams.token ?? ''} />;
+  const { token } = await searchParams;
+  return <ResetPasswordView token={token ?? ''} />;
 }

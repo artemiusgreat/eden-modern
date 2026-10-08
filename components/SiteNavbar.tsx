@@ -88,10 +88,18 @@ export default function SiteNavbar() {
   const router = useRouter();
   const { cart, setDrawerOpen } = useCart();
 
+  /** Close the mobile menu and any open desktop dropdown. The navbar
+      persists across SPA navigations, so without blurring, :focus-within
+      would keep a dropdown open on the new page. */
+  const closeAll = () => {
+    setOpen(false);
+    (document.activeElement as HTMLElement | null)?.blur?.();
+  };
+
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      setOpen(false);
+      closeAll();
       router.push(`/catalog?search=${encodeURIComponent(query.trim())}`);
     }
   };
@@ -113,12 +121,12 @@ export default function SiteNavbar() {
           <MDBIcon fas icon="bars" />
         </MDBNavbarToggler>
         <MDBCollapse navbar open={open} id="lux-navbar" className={styles.menu}>
-          <div className="d-flex align-items-center">
+          <div className={`d-flex align-items-center ${styles.menuRow}`}>
             <MDBNavbarNav className={`${styles.links} mx-auto w-auto me-5`}>
               {MENU.map((entry) => (
                 <MDBNavbarItem key={entry.name} className={styles.dropWrap}>
                   <Link href={entry.href}>
-                    <MDBNavbarLink tag="span" className={styles.navLink} onClick={() => setOpen(false)}>
+                    <MDBNavbarLink tag="span" className={styles.navLink} onClick={closeAll}>
                       {entry.name}
                       <MDBIcon fas icon="chevron-down" className="ms-2" style={{ fontSize: '0.6rem' }} />
                     </MDBNavbarLink>
@@ -131,7 +139,7 @@ export default function SiteNavbar() {
                           <Link
                             key={l.name}
                             href={l.href}
-                            onClick={() => setOpen(false)}
+                            onClick={closeAll}
                             className={l.highlight ? styles.dropAll : undefined}>
                             {l.name}
                             {l.highlight && <MDBIcon fas icon="arrow-right" className="ms-1" />}
@@ -144,7 +152,7 @@ export default function SiteNavbar() {
               ))}
               <MDBNavbarItem>
                 <Link href="/magazine">
-                  <MDBNavbarLink tag="span" className={styles.navLink} onClick={() => setOpen(false)}>
+                  <MDBNavbarLink tag="span" className={styles.navLink} onClick={closeAll}>
                     Magazine
                   </MDBNavbarLink>
                 </Link>
@@ -167,10 +175,10 @@ export default function SiteNavbar() {
             </form>
 
             <div className={styles.actions}>
-              <Link href="/catalog?on_sale=1" className={`btn-outline-noir ${styles.cta}`}>
+              <Link href="/catalog?on_sale=1" className={`btn-outline-noir ${styles.cta}`} onClick={closeAll}>
                 Shop Sale
               </Link>
-              <Link href="/account">
+              <Link href="/account" onClick={closeAll}>
                 <MDBBtn tag="span" color="link" className={styles.iconBtn} aria-label="My account">
                   <MDBIcon far icon="user" />
                 </MDBBtn>
@@ -179,7 +187,10 @@ export default function SiteNavbar() {
                 color="link"
                 className={`${styles.iconBtn} px-2`}
                 aria-label="Open shopping bag"
-                onClick={() => setDrawerOpen(true)}>
+                onClick={() => {
+                  closeAll();
+                  setDrawerOpen(true);
+                }}>
                 <MDBIcon fas icon="bag-shopping" />
                 {cart && cart.items_count > 0 && (
                   <MDBBadge color="danger" className="ms-2 position-static">

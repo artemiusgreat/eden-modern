@@ -6,14 +6,13 @@ import { env } from '@/lib/env';
 
 export async function POST(req: Request) {
   try {
-    const { name, email, message } = (await req.json()) as {
-      name?: string;
+    const { email, message } = (await req.json()) as {
       email?: string;
       message?: string;
     };
-    if (!name?.trim() || !email?.trim() || !message?.trim()) {
+    if (!email?.trim() || !message?.trim()) {
       return NextResponse.json(
-        { ok: false, error: 'Please fill in your name, email and message.' },
+        { ok: false, error: 'Please fill in your email and message.' },
         { status: 400 }
       );
     }
@@ -24,9 +23,8 @@ export async function POST(req: Request) {
     const to = env.SMTP_SENDER;
     const sent = await sendEmail({
       to,
-      subject: `Contact form: ${name.trim()}`,
+      subject: 'Contact form message',
       html:
-        `<p><strong>Name:</strong> ${escapeHtml(name.trim())}</p>` +
         `<p><strong>Email:</strong> ${escapeHtml(email.trim())}</p>` +
         `<p><strong>Message:</strong></p><p>${escapeHtml(message.trim()).replace(/\n/g, '<br>')}</p>`,
       replyTo: email.trim(),
