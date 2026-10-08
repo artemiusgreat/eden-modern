@@ -79,7 +79,7 @@ export default function ResetPasswordView({ token }: { token: string }) {
                 ) : done ? (
                   <div className="text-start">
                     <h2 className={`${styles.formTitle} text-start`}>Password updated</h2>
-                    <p style={{ color: 'var(--muted)' }}>
+                    <p style={{ color: 'var(--muted)', fontSize: '14px', lineHeight: '1.4rem' }}>
                       Your password has been reset. You can now sign in with your new password.
                     </p>
                     <div className="d-flex justify-content-end mt-4">

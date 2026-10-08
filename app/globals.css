@@ -56,6 +56,9 @@ html body {
   -webkit-font-smoothing: antialiased;
   font-weight: 300;
   color-scheme: dark;
+  /* App-wide default text rhythm. Headings keep their own (see above);
+     header/footer set 1.2rem on their scopes. */
+  line-height: 1.4rem;
   /* Font tokens that chain through next/font variables MUST live here, not
      in :root: var() inside a custom property resolves on the defining
      element, and <html> cannot see the font variables defined on <body>,
@@ -420,6 +423,7 @@ nav .breadcrumb {
   font-family: var(--font-serif);
   color: var(--ink);
   margin: 1rem 0;
+  line-height: 1.85;
 }
 .prose-wp p {
   margin-bottom: 1.1rem;
@@ -429,6 +433,11 @@ nav .breadcrumb {
 }
 .prose-wp a {
   color: var(--gold-soft);
+}
+/* Card body copy rhythm — paragraphs and lists only; headings keep theirs. */
+.card p,
+.card li {
+  line-height: 1.4rem;
 }
 /* Images inside article content. */
 .prose-wp img {

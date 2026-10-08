@@ -5,6 +5,7 @@
   background: rgba(11, 10, 9, 0.97);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
+  line-height: 1.2rem;
 }
 
 /* Full-bleed header: brand at the far left, actions at the far right. */

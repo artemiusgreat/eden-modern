@@ -13,6 +13,22 @@ export function escapeHtml(s: string): string {
     .replace(/"/g, '&quot;');
 }
 
+/** Minimal HTML→text for the plain-text MIME part (spam filters prefer
+    multipart mail over HTML-only). */
+function htmlToText(html: string): string {
+  return html
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 export async function sendEmail(opts: {
   to: string;
   subject: string;
@@ -34,6 +50,7 @@ export async function sendEmail(opts: {
     to: opts.to,
     subject: opts.subject,
     html: opts.html,
+    text: htmlToText(opts.html),
     replyTo: opts.replyTo,
   });
   return true;
