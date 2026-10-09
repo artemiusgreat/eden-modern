@@ -54,7 +54,15 @@ const ADDR_KEYS = [
 const cleanAddress = (a: any) => {
   const out: Record<string, string> = {};
   if (a && typeof a === 'object') {
-    for (const k of ADDR_KEYS) if (typeof a[k] === 'string') out[k] = a[k].slice(0, 200);
+    for (const k of ADDR_KEYS) {
+      if (typeof a[k] !== 'string') continue;
+      const v = a[k].slice(0, 200);
+      // Woo validates billing.email against the email format; an empty string
+      // fails it ("Invalid parameter(s): billing"). The address form never
+      // edits email, so drop it when blank instead of sending "".
+      if (k === 'email' && v === '') continue;
+      out[k] = v;
+    }
   }
   // Woo rejects country names ("United States" → 400); it wants ISO codes.
   if (out.country) out.country = countryCode(out.country);
