@@ -58,7 +58,7 @@ export default function BlogPostView({ post, related }: { post: WpPost; related:
                   </div>
                   <div className="p-4">
                     <h3 className="font-serif" style={{ fontSize: '1.3rem' }}>{p.title}</h3>
-                    <span className="text-gold" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
+                    <span className="text-gold mt-3 d-block" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
                       Read story <MDBIcon fas icon="arrow-right" className="ms-1" />
                     </span>
                   </div>

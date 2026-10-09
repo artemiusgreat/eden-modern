@@ -122,7 +122,7 @@ export default function SiteNavbar() {
         </MDBNavbarToggler>
         <MDBCollapse navbar open={open} id="lux-navbar" className={styles.menu}>
           <div className={`d-flex align-items-center ${styles.menuRow}`}>
-            <MDBNavbarNav className={`${styles.links} mx-auto w-auto me-5`}>
+            <MDBNavbarNav className={`${styles.links} w-auto`}>
               {MENU.map((entry) => (
                 <MDBNavbarItem key={entry.name} className={styles.dropWrap}>
                   <Link href={entry.href}>

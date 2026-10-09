@@ -122,7 +122,7 @@ function MagazineCard({ post }: { post: WpPost }) {
           style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
           dangerouslySetInnerHTML={{ __html: post.excerpt }}
         />
-        <span className="text-gold" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
+        <span className="text-gold mt-3 d-block" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
           Read story <MDBIcon fas icon="arrow-right" className="ms-1" />
         </span>
       </div>
