@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSessionCustomer, wcFetch, WcError } from '@/lib/wc-admin';
+import { countryCode } from '@/lib/countries';
 
 // The signed-in customer's own profile: email, name, billing & shipping
 // addresses. Everything is scoped to the WP session user — the id never
@@ -55,6 +56,8 @@ const cleanAddress = (a: any) => {
   if (a && typeof a === 'object') {
     for (const k of ADDR_KEYS) if (typeof a[k] === 'string') out[k] = a[k].slice(0, 200);
   }
+  // Woo rejects country names ("United States" → 400); it wants ISO codes.
+  if (out.country) out.country = countryCode(out.country);
   return out;
 };
 

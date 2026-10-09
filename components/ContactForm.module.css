@@ -103,6 +103,8 @@
   font-size: 1.6rem;
   color: var(--ink);
   margin-bottom: 0.75rem;
+  /* Not body copy: keep the original rhythm, not the 1.4rem default. */
+  line-height: normal;
 }
 
 .sent p {

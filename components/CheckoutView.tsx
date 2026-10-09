@@ -351,12 +351,14 @@ export default function CheckoutView() {
     return null;
   }
 
-  async function calculateShipping(silent = false) {
+  async function calculateShipping(silent = false, addr?: CheckoutAddress) {
     // Auto-calc only needs the address itself (name/email/payment are
-    // validated at place-order time).
+    // validated at place-order time). An explicit address bypasses React
+    // state timing when called right after an autocomplete selection.
+    const a = addr ?? ship;
     const addrReq: (keyof CheckoutAddress)[] = ['address_1', 'city', 'postcode', 'country'];
     for (const k of addrReq) {
-      if (!(ship[k] ?? '').trim()) {
+      if (!(a[k] ?? '').trim()) {
         if (!silent) showError('Please complete the shipping address.');
         return;
       }
@@ -368,8 +370,8 @@ export default function CheckoutView() {
         method: 'POST',
         body: JSON.stringify({
           action: 'update-customer',
-          billing_address: { ...ship, email },
-          shipping_address: ship,
+          billing_address: { ...a, email },
+          shipping_address: a,
         }),
       })) as CartWithRates;
       setLiveCart(updated);
@@ -407,6 +409,10 @@ export default function CheckoutView() {
   // Skipped when shipping isn't needed or a calc is already in flight.
   const lastCalcKey = useRef('');
   const lookupSelectedRef = useRef(false);
+  // Latest calculateShipping for the memoized addressFields below (which
+  // closes over the first render's copy).
+  const calcRef = useRef(calculateShipping);
+  calcRef.current = calculateShipping;
   const shipKey = [ship.address_1, ship.city, ship.postcode, ship.country].join('|');
   useEffect(() => {
     if (!needsShipping || calcBusy || placing || orderNumber) return;
@@ -569,12 +575,29 @@ export default function CheckoutView() {
         <AddressAutocomplete
           id={`${idPrefix}-lookup`}
           onSelect={(p: ParsedAddress) => {
-            lookupSelectedRef.current = true;
-            if (p.street) set('address_1', p.street);
-            if (p.city) set('city', p.city);
-            if (p.state) set('state', p.state);
-            if (p.postcode) set('postcode', p.postcode);
-            if (p.country) set('country', p.country);
+            const merged: CheckoutAddress = {
+              ...addr,
+              address_1: p.street || addr.address_1,
+              city: p.city || addr.city,
+              state: p.state || addr.state,
+              postcode: p.postcode || addr.postcode,
+              country: p.country || addr.country,
+            };
+            // Sync the visible fields.
+            (Object.keys(merged) as (keyof CheckoutAddress)[]).forEach((k) => {
+              if (merged[k] !== addr[k]) set(k, merged[k] ?? '');
+            });
+            const key = [merged.address_1, merged.city, merged.postcode, merged.country].join('|');
+            const complete = [merged.address_1, merged.city, merged.postcode, merged.country].every(
+              (v) => (v ?? '').trim()
+            );
+            if (!complete || key === lastCalcKey.current) return;
+            // Claim the key so the debounced effect below doesn't double-fire,
+            // then calculate immediately with the selected values (explicit,
+            // so this doesn't depend on React state timing).
+            lastCalcKey.current = key;
+            lookupSelectedRef.current = false;
+            setTimeout(() => { void calcRef.current(true, merged); }, 60);
           }}
         />
         <div className={`${styles.manualWrap}${expanded ? ` ${styles.open}` : ''}`}>
