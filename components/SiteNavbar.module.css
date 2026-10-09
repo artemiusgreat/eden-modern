@@ -245,7 +245,6 @@
 /* Desktop: one clean row — brand | links | search+actions pinned right. */
 @media (min-width: 1200px) {
   .navbarInner {
-    padding: 0.65rem 2rem;
     flex-wrap: nowrap;
   }
   .menu:global(.navbar-collapse) {
