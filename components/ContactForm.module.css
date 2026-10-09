@@ -98,7 +98,9 @@
   padding: 3rem 2rem;
 }
 
-.sentTitle {
+/* (0,2,0) beats .sent p (0,1,1) below — the title is a <p>, so it would
+   otherwise inherit the 14px body copy style. */
+.sent .sentTitle {
   font-family: var(--font-card-title, var(--font-serif));
   font-size: 1.6rem;
   color: var(--ink);
