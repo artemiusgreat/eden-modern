@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBIcon } from 'mdb-react-ui-kit';
 import { progressBegin, progressEnd } from '@/lib/progress';
 import styles from './AccountView.module.css';
+import { COUNTRIES, countryCode } from '@/lib/countries';
 
 type Tab = 'orders' | 'addresses' | 'account';
 
@@ -376,12 +377,29 @@ function AddressForm({
       <div className={styles.grid2}>
         {ADDR_FIELDS.map((f) => (
           <div key={f.key} className={f.half ? '' : styles.span2}>
-            <Field
-              label={f.label}
-              value={value[f.key] ?? ''}
-              onChange={(e) => onChange({ ...value, [f.key]: e.target.value })}
-              autoComplete={f.key === 'address_1' ? 'street-address' : undefined}
-            />
+            {f.key === 'country' ? (
+              <div className="mb-3 text-start">
+                <label className="form-label small" style={{ color: 'var(--muted)' }}>
+                  {f.label}
+                </label>
+                <select
+                  className={`form-control ${styles.input}`}
+                  value={countryCode(value[f.key] ?? '')}
+                  onChange={(e) => onChange({ ...value, [f.key]: e.target.value })}>
+                  <option value="">Select country</option>
+                  {COUNTRIES.map(([code, name]) => (
+                    <option key={code} value={code}>{name}</option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <Field
+                label={f.label}
+                value={value[f.key] ?? ''}
+                onChange={(e) => onChange({ ...value, [f.key]: e.target.value })}
+                autoComplete={f.key === 'address_1' ? 'street-address' : undefined}
+              />
+            )}
           </div>
         ))}
       </div>
