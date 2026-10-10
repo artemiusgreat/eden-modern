@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSessionCustomer, wcFetch, WcError } from '@/lib/wc-admin';
+import { getSessionCustomer, wcFetchWithHeaders, WcError } from '@/lib/wc-admin';
 
 // The signed-in customer's own orders, newest first. Scoped by WP session
 // user id — never by client input.
@@ -19,20 +19,19 @@ export async function GET(req: Request) {
         { status: 401 }
       );
     const userId = session.id;
-    // Paged, 10 per page. We fetch one extra to know whether a next page
-    // exists (wcFetch doesn't expose the X-WP-TotalPages header).
+    // Paged, 10 per page. Total pages come from Woo's X-WP-TotalPages header.
     const PER_PAGE = 10;
     const page = Math.max(
       1,
       parseInt(new URL(req.url).searchParams.get('page') ?? '1', 10) || 1
     );
-    const orders = await wcFetch<any[]>(
-      `/orders?customer=${userId}&per_page=${PER_PAGE + 1}&page=${page}&orderby=date&order=desc`,
+    const { data: orders, headers } = await wcFetchWithHeaders<any[]>(
+      `/orders?customer=${userId}&per_page=${PER_PAGE}&page=${page}&orderby=date&order=desc`,
     );
-    const hasMore = orders.length > PER_PAGE;
+    const totalPages = parseInt(headers.get('X-WP-TotalPages') ?? '1', 10) || 1;
     return NextResponse.json({
       ok: true,
-      orders: orders.slice(0, PER_PAGE).map((o) => ({
+      orders: orders.map((o) => ({
         id: o.id,
         number: o.number,
         date: o.date_created,
@@ -42,7 +41,7 @@ export async function GET(req: Request) {
         items: (o.line_items ?? []).map(pickLine),
       })),
       page,
-      hasMore,
+      totalPages,
     });
   } catch (e) {
     if (e instanceof WcError)

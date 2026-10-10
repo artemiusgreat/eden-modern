@@ -12,6 +12,11 @@ interface Props {
   params: Record<string, string>;
   /** URL base the ?page= param attaches to. Defaults to /catalog. */
   basePath?: string;
+  /**
+   * When provided, page changes call this instead of navigating to a URL.
+   * For client-state pagination (e.g. the account order history).
+   */
+  onPage?: (page: number) => void;
 }
 
 function pageUrl(basePath: string, params: Record<string, string>, page: number): string {
@@ -23,7 +28,7 @@ function pageUrl(basePath: string, params: Record<string, string>, page: number)
 }
 
 /** First / prev / [page input] of N / next / last. */
-export default function CatalogPagination({ page, totalPages, params, basePath = '/catalog' }: Props) {
+export default function CatalogPagination({ page, totalPages, params, basePath = '/catalog', onPage }: Props) {
   const router = useRouter();
   const [value, setValue] = useState(String(page));
 
@@ -36,7 +41,8 @@ export default function CatalogPagination({ page, totalPages, params, basePath =
 
   const go = (n: number) => {
     const target = Math.min(Math.max(1, Math.floor(n) || 1), totalPages);
-    router.push(pageUrl(basePath, params, target), { scroll: false });
+    if (onPage) onPage(target);
+    else router.push(pageUrl(basePath, params, target), { scroll: false });
   };
 
   const commit = () => {
@@ -50,6 +56,14 @@ export default function CatalogPagination({ page, totalPages, params, basePath =
       <span className={`${styles.pageLink} ${styles.pageDisabled}`} aria-hidden="true">
         <MDBIcon fas icon={icon} />
       </span>
+    ) : onPage ? (
+      <button
+        type="button"
+        onClick={() => go(target)}
+        className={styles.pageLink}
+        aria-label={label}>
+        <MDBIcon fas icon={icon} />
+      </button>
     ) : (
       <Link
         href={pageUrl(basePath, params, target)}

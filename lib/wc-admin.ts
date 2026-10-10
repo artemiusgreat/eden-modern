@@ -126,6 +126,18 @@ export async function getSessionCustomer(): Promise<SessionResolution> {
  * Returns the parsed JSON body; throws WcError (with HTTP status) on failure.
  */
 export async function wcFetch<T = any>(path: string, init?: RequestInit): Promise<T> {
+  const { data } = await wcFetchWithHeaders<T>(path, init);
+  return data;
+}
+
+/**
+ * Same as wcFetch, but also returns the response headers — used when the
+ * caller needs Woo's X-WP-Total / X-WP-TotalPages pagination headers.
+ */
+export async function wcFetchWithHeaders<T = any>(
+  path: string,
+  init?: RequestInit
+): Promise<{ data: T; headers: Headers }> {
   const auth = basicAuth();
   if (!auth) {
     throw new WcError(
@@ -150,5 +162,5 @@ export async function wcFetch<T = any>(path: string, init?: RequestInit): Promis
       `Store request failed (HTTP ${res.status}).`;
     throw new WcError(msg, res.status);
   }
-  return data as T;
+  return { data: data as T, headers: res.headers };
 }

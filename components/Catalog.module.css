@@ -475,3 +475,9 @@
     align-items: flex-start;
   }
 }
+
+/* Button variant of pageLink (client-state pagination, e.g. account orders). */
+button.pageLink {
+  font: inherit;
+  cursor: pointer;
+}

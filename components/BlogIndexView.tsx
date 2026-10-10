@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 import PageHero from './PageHero';
+import CatalogPagination from './CatalogPagination';
 import type { WpPost } from '@/lib/woo';
 
 function PostCard({ post }: { post: WpPost }) {
@@ -38,7 +39,15 @@ function PostCard({ post }: { post: WpPost }) {
   );
 }
 
-export default function BlogIndexView({ posts }: { posts: WpPost[] }) {
+export default function BlogIndexView({
+  posts,
+  page = 1,
+  totalPages = 1,
+}: {
+  posts: WpPost[];
+  page?: number;
+  totalPages?: number;
+}) {
   return (
     <>
       <PageHero
@@ -61,6 +70,7 @@ export default function BlogIndexView({ posts }: { posts: WpPost[] }) {
             ))}
           </MDBRow>
         )}
+        <CatalogPagination page={page} totalPages={totalPages} params={{}} basePath="/magazine" />
       </MDBContainer>
     </>
   );

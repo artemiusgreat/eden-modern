@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBIcon } from 'mdb-react-ui-kit';
 import { progressBegin, progressEnd } from '@/lib/progress';
+import CatalogPagination from './CatalogPagination';
 import styles from './AccountView.module.css';
 import { COUNTRIES, countryCode } from '@/lib/countries';
 
@@ -182,7 +183,7 @@ type OrderSummary = {
 function OrdersTab() {
   const [orders, setOrders] = useState<OrderSummary[] | null>(null);
   const [orderPage, setOrderPage] = useState(1);
-  const [ordersHasMore, setOrdersHasMore] = useState(false);
+  const [orderTotalPages, setOrderTotalPages] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [setup, setSetup] = useState<string | null>(null);
   const [expired, setExpired] = useState(false);
@@ -202,7 +203,7 @@ function OrdersTab() {
           return setError(data.error ?? 'Could not load orders.');
         }
         setOrders(data.orders);
-        setOrdersHasMore(!!data.hasMore);
+        setOrderTotalPages(data.totalPages ?? 1);
         setOpenId(null);
         setDetail(null);
       } catch {
@@ -348,25 +349,12 @@ function OrdersTab() {
           )}
         </div>
       ))}
-      {(orderPage > 1 || ordersHasMore) && (
-        <div className={styles.pager}>
-          <button
-            type="button"
-            className={styles.pagerBtn}
-            disabled={orderPage <= 1}
-            onClick={() => setOrderPage((p) => Math.max(1, p - 1))}>
-            ← Previous
-          </button>
-          <span className={styles.pagerInfo}>Page {orderPage}</span>
-          <button
-            type="button"
-            className={styles.pagerBtn}
-            disabled={!ordersHasMore}
-            onClick={() => setOrderPage((p) => p + 1)}>
-            Next →
-          </button>
-        </div>
-      )}
+      <CatalogPagination
+        page={orderPage}
+        totalPages={orderTotalPages}
+        params={{}}
+        onPage={setOrderPage}
+      />
     </div>
   );
 }

@@ -301,6 +301,32 @@ export async function getPosts(perPage = 9): Promise<WpPost[]> {
   return posts.map((p) => toPost(p, false));
 }
 
+/** Paged posts for /magazine — also returns WP's total page count. */
+export async function getPostsPaged(
+  perPage = 12,
+  page = 1
+): Promise<{ posts: WpPost[]; totalPages: number }> {
+  const res = await fetch(
+    apiUrl('/wp-json/wp/v2/posts', {
+      per_page: perPage,
+      page,
+      _embed: 'wp:featuredmedia',
+    }),
+    {
+      headers: { Accept: 'application/json' },
+      next: { revalidate: 3600 },
+    }
+  );
+  if (!res.ok) {
+    throw new Error(`WP API /posts failed: ${res.status}`);
+  }
+  const raw = (await res.json()) as WpPostRaw[];
+  return {
+    posts: raw.map((p) => toPost(p, false)),
+    totalPages: parseInt(res.headers.get('X-WP-TotalPages') ?? '1', 10) || 1,
+  };
+}
+
 export async function getPostBySlug(slug: string): Promise<WpPost | null> {
   const posts = await wpGet<WpPostRaw[]>('/posts', {
     slug,
