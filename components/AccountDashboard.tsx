@@ -181,6 +181,8 @@ type OrderSummary = {
 
 function OrdersTab() {
   const [orders, setOrders] = useState<OrderSummary[] | null>(null);
+  const [orderPage, setOrderPage] = useState(1);
+  const [ordersHasMore, setOrdersHasMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [setup, setSetup] = useState<string | null>(null);
   const [expired, setExpired] = useState(false);
@@ -192,7 +194,7 @@ function OrdersTab() {
     (async () => {
       progressBegin();
       try {
-        const res = await fetch('/api/account/orders');
+        const res = await fetch(`/api/account/orders?page=${orderPage}`);
         const data = await res.json();
         if (res.status === 401) return isCustomerMissing(data) ? setError(noCustomerMsg) : setExpired(true);
         if (!data.ok) {
@@ -200,13 +202,16 @@ function OrdersTab() {
           return setError(data.error ?? 'Could not load orders.');
         }
         setOrders(data.orders);
+        setOrdersHasMore(!!data.hasMore);
+        setOpenId(null);
+        setDetail(null);
       } catch {
         setError('Could not reach the store. Please try again.');
       } finally {
         progressEnd();
       }
     })();
-  }, []);
+  }, [orderPage]);
 
   const toggle = async (id: number) => {
     if (openId === id) {
@@ -343,6 +348,25 @@ function OrdersTab() {
           )}
         </div>
       ))}
+      {(orderPage > 1 || ordersHasMore) && (
+        <div className={styles.pager}>
+          <button
+            type="button"
+            className={styles.pagerBtn}
+            disabled={orderPage <= 1}
+            onClick={() => setOrderPage((p) => Math.max(1, p - 1))}>
+            ← Previous
+          </button>
+          <span className={styles.pagerInfo}>Page {orderPage}</span>
+          <button
+            type="button"
+            className={styles.pagerBtn}
+            disabled={!ordersHasMore}
+            onClick={() => setOrderPage((p) => p + 1)}>
+            Next →
+          </button>
+        </div>
+      )}
     </div>
   );
 }

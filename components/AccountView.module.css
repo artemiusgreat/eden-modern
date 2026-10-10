@@ -384,3 +384,32 @@
 .skelField {
   margin-bottom: 1rem;
 }
+
+/* Order history pager. */
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.25rem 0 0.25rem;
+}
+.pagerBtn {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--ink);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.pagerBtn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.pagerBtn:not(:disabled):hover {
+  border-color: var(--gold, #c9a25e);
+}
+.pagerInfo {
+  color: var(--muted);
+  font-size: 0.875rem;
+}

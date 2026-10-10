@@ -10,7 +10,7 @@ const pickLine = (li: any) => ({
   total: li.total,
 });
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const session = await getSessionCustomer();
     if (!session.id)
@@ -19,12 +19,20 @@ export async function GET() {
         { status: 401 }
       );
     const userId = session.id;
-    const orders = await wcFetch<any[]>(
-      `/orders?customer=${userId}&per_page=25&orderby=date&order=desc`,
+    // Paged, 10 per page. We fetch one extra to know whether a next page
+    // exists (wcFetch doesn't expose the X-WP-TotalPages header).
+    const PER_PAGE = 10;
+    const page = Math.max(
+      1,
+      parseInt(new URL(req.url).searchParams.get('page') ?? '1', 10) || 1
     );
+    const orders = await wcFetch<any[]>(
+      `/orders?customer=${userId}&per_page=${PER_PAGE + 1}&page=${page}&orderby=date&order=desc`,
+    );
+    const hasMore = orders.length > PER_PAGE;
     return NextResponse.json({
       ok: true,
-      orders: orders.map((o) => ({
+      orders: orders.slice(0, PER_PAGE).map((o) => ({
         id: o.id,
         number: o.number,
         date: o.date_created,
@@ -33,6 +41,8 @@ export async function GET() {
         currency: o.currency,
         items: (o.line_items ?? []).map(pickLine),
       })),
+      page,
+      hasMore,
     });
   } catch (e) {
     if (e instanceof WcError)
