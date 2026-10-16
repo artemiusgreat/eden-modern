@@ -17,6 +17,7 @@ import {
   MDBTableBody,
 } from 'mdb-react-ui-kit';
 import type { StoreProduct } from '@/lib/woo';
+import { isSellable } from '@/lib/woo';
 import { formatPrice } from '@/lib/format';
 import TrackViewItem from './TrackViewItem';
 import ProductCard from './ProductCard';
@@ -75,7 +76,7 @@ export default function ProductView({
   const { prices } = product;
   const [qty, setQty] = useState(1);
   const rating = parseFloat(product.average_rating || '0');
-  const purchasable = product.is_purchasable && product.is_in_stock;
+  const purchasable = isSellable(product);
   const discount =
     product.on_sale &&
     parseInt(prices.regular_price || '0', 10) > parseInt(prices.sale_price || '0', 10)

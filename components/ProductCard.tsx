@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { MDBCard, MDBCardBody, MDBIcon } from 'mdb-react-ui-kit';
 import type { StoreProduct } from '@/lib/woo';
+import { isSellable } from '@/lib/woo';
 import { formatPrice } from '@/lib/format';
 import AddToCartButton from './AddToCartButton';
 import RatingStars from './RatingStars';
@@ -24,7 +25,7 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
   const { prices } = product;
   const rating = parseFloat(product.average_rating || '0');
   const pct = discountPct(product);
-  const purchasable = product.is_purchasable && product.is_in_stock;
+  const purchasable = isSellable(product);
 
   return (
     <MDBCard className={`h-100 ${styles.card}`}>

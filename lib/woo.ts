@@ -270,9 +270,9 @@ export function isSellable(p: StoreProduct): boolean {
 export async function getRelatedProducts(productId: number, perPage = 3) {
   const products = await wooGet<StoreProduct[]>('/products', {
     related: productId,
-    per_page: perPage * 2, // over-fetch: filtering may drop some
+    per_page: perPage,
   } as Record<string, string | number | undefined>);
-  return products.map(decodeProduct).filter(isSellable).slice(0, perPage);
+  return products.map(decodeProduct);
 }
 
 interface WpPostRaw {
@@ -420,7 +420,7 @@ export async function getCatalogProducts(f: CatalogFilters): Promise<CatalogResu
   if (f.maxPrice !== undefined) params.max_price = f.maxPrice;
   if (f.rating) params.rating = f.rating;
   if (f.onSale) params.on_sale = 'true';
-  params.stock_status = 'instock'; // listings never show out-of-stock products
+  if (f.inStock) params.stock_status = 'instock';
   // The Store API accepts a single attribute filter per request — send the
   // first and intersect any further selections in memory below.
   const [firstAttr, ...restAttrs] = f.attributes;
