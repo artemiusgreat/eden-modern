@@ -229,12 +229,15 @@ export const getProductBySlug = cache(async (slug: string): Promise<StoreProduct
   // WP shop loops. But WP still serves them on direct URL access, so for URL
   // parity we resolve the ID via wp/v2 and fetch by ID: a direct ID lookup
   // bypasses the Store API's visibility filter.
+  // NOTE: wp/v2 with auth returns draft products too — filter to publish only,
+  // otherwise supplier-marked drafts (out of stock) leak through here.
   try {
-    const wpProducts = await wpGet<{ id: number; slug: string }[]>('/product', {
+    const wpProducts = await wpGet<{ id: number; slug: string; status: string }[]>('/product', {
       slug,
       per_page: 1,
+      status: 'publish',
     } as Record<string, string | number | undefined>);
-    const match = wpProducts.find((p) => p.slug === slug);
+    const match = wpProducts.find((p) => p.slug === slug && p.status === 'publish');
     if (!match) return null;
     const byId = await wooGet<StoreProduct>(`/products/${match.id}`);
     return decodeProduct(byId);
