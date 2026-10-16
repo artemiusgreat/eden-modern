@@ -261,12 +261,18 @@ export async function getCategoryBySlug(slug: string): Promise<StoreCategory | n
   return c ? { ...c, name: decodeEntities(c.name) } : null;
 }
 
+/** In-memory filter: drop out-of-stock and $0-price products from listings.
+ * No extra API/DB queries — runs on already-fetched data. */
+export function isSellable(p: StoreProduct): boolean {
+  return p.is_in_stock && Number(p.prices?.price || 0) > 0;
+}
+
 export async function getRelatedProducts(productId: number, perPage = 3) {
   const products = await wooGet<StoreProduct[]>('/products', {
     related: productId,
-    per_page: perPage,
+    per_page: perPage * 2, // over-fetch: filtering may drop some
   } as Record<string, string | number | undefined>);
-  return products.map(decodeProduct);
+  return products.map(decodeProduct).filter(isSellable).slice(0, perPage);
 }
 
 interface WpPostRaw {
@@ -414,7 +420,7 @@ export async function getCatalogProducts(f: CatalogFilters): Promise<CatalogResu
   if (f.maxPrice !== undefined) params.max_price = f.maxPrice;
   if (f.rating) params.rating = f.rating;
   if (f.onSale) params.on_sale = 'true';
-  if (f.inStock) params.stock_status = 'instock';
+  params.stock_status = 'instock'; // listings never show out-of-stock products
   // The Store API accepts a single attribute filter per request — send the
   // first and intersect any further selections in memory below.
   const [firstAttr, ...restAttrs] = f.attributes;
