@@ -4,6 +4,11 @@ import HomeView from '@/components/HomeView';
 
 export const revalidate = 3600;
 
+export const metadata = {
+  title: 'Indemos — Designer Perfumes, Skincare & Cosmetics',
+  description: 'Shop authentic designer fragrances, skincare and cosmetics. New arrivals, bestsellers and exclusive deals on top brands.',
+};
+
 export default async function HomePage() {
   const [onSale, newest, categories, posts] = await Promise.all([
     getProducts({ on_sale: true, per_page: 4, min_price: 1 }).catch(() => []),
