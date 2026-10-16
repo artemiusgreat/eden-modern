@@ -48,6 +48,8 @@ const nextConfig = {
       // /checkout-link?products=ID:QTY,…&coupon=CODE lands on /checkout,
       // which imports the bundle itself. Query string passes through.
       { source: '/checkout-link', destination: '/checkout', permanent: true },
+      // Legacy /releases -> /magazine (301).
+      { source: '/releases/:path*', destination: '/magazine/:path*', permanent: true },
     ];
   },
 };
