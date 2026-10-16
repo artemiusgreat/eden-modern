@@ -198,18 +198,33 @@ export default function ProductView({
             <div className="mb-4">
               {variationAttrs.map(attr => (
                 <div key={attr.name} className="mb-3">
-                  <label className="form-label fw-bold">{attr.name}: {selectedAttrs[attr.name] || 'Select...'}</label>
+                  <label className="form-label fw-bold" style={{ color: '#e8dcc0' }}>{attr.name}: {selectedAttrs[attr.name] || 'Select...'}</label>
                   <div className="d-flex flex-wrap gap-2">
-                    {attr.values.map(value => (
-                      <button
-                        key={value}
-                        type="button"
-                        className={`btn ${selectedAttrs[attr.name] === value ? 'btn-primary' : 'btn-outline-secondary'} btn-sm`}
-                        onClick={() => setSelectedAttrs(prev => ({ ...prev, [attr.name]: value }))}
-                      >
-                        {value}
-                      </button>
-                    ))}
+                    {attr.values.map(value => {
+                      const selected = selectedAttrs[attr.name] === value;
+                      return (
+                        <button
+                          key={value}
+                          type="button"
+                          onClick={() => setSelectedAttrs(prev => ({ ...prev, [attr.name]: value }))}
+                          style={{
+                            background: selected ? 'linear-gradient(135deg, #d9b46c, #b08a2e)' : 'transparent',
+                            color: selected ? '#14100b' : '#e8dcc0',
+                            border: `1px solid ${selected ? '#d9b46c' : '#4a4458'}`,
+                            borderRadius: '2px',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.8rem',
+                            fontWeight: 500,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                          }}
+                        >
+                          {value}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
