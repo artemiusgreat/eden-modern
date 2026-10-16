@@ -27,7 +27,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
             <div className={`${styles.brand} mb-3`}>
               Indemos<small>Beauty & Fragrance</small>
             </div>
-            <p className="me-5" style={{ fontSize: '0.85rem' }}>
+            <p className={"me-5 " + styles.textSm}>
               Indemos LLC offers a select collection of skincare, cosmetics, and fragrances from trusted brands around the world.
             </p>
             <a
@@ -36,7 +36,7 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
               rel="noopener noreferrer"
               className="d-inline-flex align-items-center gap-2 mt-2">
               <TrustpilotStars size={16} />
-              <span style={{ fontSize: '0.78rem', color: 'var(--ink)' }}>Trust Pilot Reviews</span>
+              <span className={styles.trustLabel}>Trust Pilot Reviews</span>
             </a>
             <div className="d-flex gap-2 mt-4 flex-wrap">
               {SOCIALS.map((s) => (
@@ -90,14 +90,14 @@ export default function SiteFooter({ categories }: { categories: StoreCategory[]
         </MDBRow>
       </MDBContainer>
 
-      <div style={{ borderTop: '1px solid var(--line)' }}>
+      <div className={styles.dividerTop}>
         <MDBContainer className="py-3 d-flex flex-column flex-md-row justify-content-between gap-2">
-          <span style={{ fontSize: '0.75rem', color: 'var(--faint)', textTransform: 'uppercase' }}>
+          <span className={styles.legalText}>
             © 2026 Indemos LLC. All rights reserved.
           </span>
-          <span style={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>
-            <Link href="/privacy" className="me-3" style={{ color: 'var(--faint)' }}>Privacy Policy</Link>
-            <Link href="/refunds-and-returns" style={{ color: 'var(--faint)' }}>Refunds & Returns</Link>
+          <span className={styles.legalTextNoColor}>
+            <Link href="/privacy" className={"me-3 " + styles.faintLink}>Privacy Policy</Link>
+            <Link href="/refunds-and-returns" className={styles.faintLink}>Refunds & Returns</Link>
           </span>
         </MDBContainer>
       </div>

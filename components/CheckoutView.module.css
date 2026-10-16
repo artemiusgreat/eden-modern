@@ -443,3 +443,13 @@
   opacity: 0.55;
   cursor: default;
 }
+.muted {
+  color: var(--muted);
+}
+.goldSoft {
+  color: var(--gold-soft);
+}
+.qtyScaleSm {
+  transform: scale(0.8);
+  transform-origin: left center;
+}

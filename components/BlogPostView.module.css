@@ -4,3 +4,29 @@
   background: var(--surface);
   border-radius: 2px;
 }
+.title {
+  font-size: 2.8rem;
+  line-height: 1.15;
+}
+.heroImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.dividerTop {
+  border-top: 1px solid var(--line);
+}
+.backLink {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+.sectionTitle {
+  font-size: 2rem;
+}
+.cardTitle {
+  font-size: 1.3rem;
+}
+.readMore {
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}

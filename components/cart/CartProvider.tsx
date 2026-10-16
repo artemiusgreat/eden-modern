@@ -159,7 +159,7 @@ function CartDrawer() {
       />
       <aside className={`${styles.drawer}${drawerOpen ? ` ${styles.show}` : ''}`} aria-hidden={!drawerOpen}>
         <div className="d-flex align-items-center justify-content-between p-4 border-bottom">
-          <h5 className="mb-0 font-serif" style={{ fontSize: '1.5rem' }}>
+          <h5 className={"mb-0 font-serif " + styles.drawerTitle}>
             Your Bag
           </h5>
           <button
@@ -174,8 +174,8 @@ function CartDrawer() {
         <div className={`${styles.body} p-4`}>
           {!cart || cart.items.length === 0 ? (
             <div className="text-center mt-5">
-              <MDBIcon fas icon="bag-shopping" size="3x" className="mb-3" style={{ color: 'var(--gold-soft)' }} />
-              <p style={{ color: 'var(--muted)' }}>Your bag is empty.</p>
+              <MDBIcon fas icon="bag-shopping" size="3x" className={"mb-3 " + styles.emptyIcon} />
+              <p className={styles.muted}>Your bag is empty.</p>
               <button type="button" className="btn-outline-noir mt-2" onClick={() => setDrawerOpen(false)}>
                 Start shopping
               </button>
@@ -209,7 +209,7 @@ function CartDrawer() {
                           {decodeEntities(item.name)}
                         </Link>
                       ) : (
-                        <strong className="font-serif" style={{ fontSize: '1.05rem', fontWeight: 600 }}>
+                        <strong className={"font-serif " + styles.itemName}>
                           {decodeEntities(item.name)}
                         </strong>
                       );
@@ -223,7 +223,7 @@ function CartDrawer() {
                     </button>
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-2">
-                    <div className="qty-stepper" style={{ transform: 'scale(0.85)', transformOrigin: 'left' }}>
+                    <div className={"qty-stepper " + styles.qtyScale}>
                       <button type="button" aria-label="Decrease quantity" disabled={busy} onClick={() => updateQuantity(item.key, item.quantity - 1)}>
                         −
                       </button>
@@ -232,7 +232,7 @@ function CartDrawer() {
                         +
                       </button>
                     </div>
-                    <strong className="font-serif" style={{ fontFamily: 'var(--font-price)', fontWeight: 100 }}>
+                    <strong className={"font-serif " + styles.itemPrice}>
                       {formatPrice(
                         item.totals.line_total,
                         item.prices.currency_minor_unit,
@@ -249,12 +249,12 @@ function CartDrawer() {
         {cart && cart.items.length > 0 && (
           <div className="p-4 border-top">
             <div className="d-flex justify-content-between mb-1">
-              <span style={{ fontFamily: 'var(--font-card-title)' }}>Subtotal</span>
-              <strong className="font-serif" style={{ fontSize: '1.3rem', fontFamily: 'var(--font-price)', fontWeight: 100 }}>
+              <span className={styles.subtotalLabel}>Subtotal</span>
+              <strong className={"font-serif " + styles.totalPrice}>
                 {formatPrice(cart.totals.total_items, cart.totals.currency_minor_unit, cart.totals.currency_symbol)}
               </strong>
             </div>
-            <p className="small mb-3" style={{ color: 'var(--muted)' }}>
+            <p className={"small mb-3 " + styles.muted}>
               Shipping & taxes calculated at checkout.
             </p>
             <Link href="/checkout">
@@ -264,8 +264,7 @@ function CartDrawer() {
             </Link>
             <button
               type="button"
-              className="btn btn-link w-100 mt-2"
-              style={{ color: 'var(--muted)', fontSize: '0.82rem', textTransform: 'uppercase' }}
+              className={"btn btn-link w-100 mt-2 " + styles.shippingLabel}
               onClick={() => setDrawerOpen(false)}>
               Continue shopping
             </button>

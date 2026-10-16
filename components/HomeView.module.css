@@ -492,3 +492,40 @@
   background: linear-gradient(135deg, #d9b46c, #b08a2e);
   color: #14100b;
 }
+.inkBold {
+  color: var(--ink);
+  font-weight: 600;
+}
+.errorSmall {
+  color: #e0655f;
+  font-size: 0.85rem;
+}
+.goldIcon {
+  color: var(--gold-soft);
+}
+.kickerSm {
+  font-size: 0.62rem;
+}
+.h2Md {
+  font-size: 1.5rem;
+}
+.readMore {
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+.scrollMt {
+  scroll-margin-top: 90px;
+}
+.pt2 {
+  padding-top: 2rem;
+}
+.faintIcon {
+  color: var(--faint);
+}
+.pt0 {
+  padding-top: 0;
+}
+.flex110 {
+  flex: 1 1 0;
+}
+.clamp3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }

@@ -67,7 +67,7 @@ function NewsletterCta() {
         <h2>Ready to find your signature scent?</h2>
         <p>Join the list for exclusive offers and new arrivals.</p>
         {done ? (
-          <p className="mb-0" style={{ color: 'var(--ink)', fontWeight: 600 }}>
+          <p className={"mb-0 " + styles.inkBold}>
             <MDBIcon fas icon="circle-check" className="me-2" />
             You're on the list — welcome.
           </p>
@@ -88,7 +88,7 @@ function NewsletterCta() {
           </form>
         )}
         {error && !done && (
-          <p className="mb-0 mt-2" style={{ color: '#e0655f', fontSize: '0.85rem' }}>
+          <p className={"mb-0 mt-2 " + styles.errorSmall}>
             {error}
           </p>
         )}
@@ -110,19 +110,18 @@ function MagazineCard({ post }: { post: WpPost }) {
           <img src={post.image} alt={post.title} loading="lazy" />
         ) : (
           <div className="w-100 h-100 d-flex align-items-center justify-content-center">
-            <MDBIcon fas icon="pen-nib" size="2x" style={{ color: 'var(--gold-soft)' }} />
+            <MDBIcon fas icon="pen-nib" size="2x" className={styles.goldIcon} />
           </div>
         )}
       </div>
       <div className="p-4">
-        <p className="kicker mb-2" style={{ fontSize: '0.62rem' }}>{date}</p>
-        <h2 className="mb-2" style={{ fontSize: '1.5rem' }}>{post.title}</h2>
+        <p className={"kicker mb-2 " + styles.kickerSm}>{date}</p>
+        <h2 className={"mb-2 " + styles.h2Md}>{post.title}</h2>
         <div
-          className="prose-wp small"
-          style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+          className={"prose-wp small " + styles.clamp3}
           dangerouslySetInnerHTML={{ __html: post.excerpt }}
         />
-        <span className="text-gold mt-3 d-block" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
+        <span className={"text-gold mt-3 d-block " + styles.readMore}>
           Read story <MDBIcon fas icon="arrow-right" className="ms-1" />
         </span>
       </div>
@@ -204,7 +203,7 @@ export default function HomeView({
 
       {/* ============ BEST SELLERS ============ */}
       {newest.length > 0 && (
-        <section className="pb-5" id="bestsellers" style={{ scrollMarginTop: 90 }}>
+        <section className={"pb-5 " + styles.scrollMt} id="bestsellers">
           <MDBContainer>
             <div className="noir-head-split">
               <h2>Best sellers</h2>
@@ -224,7 +223,7 @@ export default function HomeView({
       )}
 
       {/* ============ COLLECTIONS ============ */}
-      <section className="noir-section" style={{ paddingTop: '2rem' }}>
+      <section className={"noir-section " + styles.pt2}>
         <MDBContainer>
           <div className="noir-head-split">
             <h2>Featured collections</h2>
@@ -244,7 +243,7 @@ export default function HomeView({
                       <img src={image} alt={c.name} loading="lazy" />
                     ) : (
                       <div className="w-100 h-100 d-flex align-items-center justify-content-center">
-                        <MDBIcon fas icon="tags" size="2x" style={{ color: 'var(--faint)' }} />
+                        <MDBIcon fas icon="tags" size="2x" className={styles.faintIcon} />
                       </div>
                     )}
                   </div>
@@ -260,7 +259,7 @@ export default function HomeView({
 
       {/* ============ STORY ============ */}
       {storyCat && (
-        <section className="noir-section" style={{ paddingTop: 0 }}>
+        <section className={"noir-section " + styles.pt0}>
           <MDBContainer fluid className="px-0">
             <MDBRow className="g-0">
               <MDBCol md="6">
@@ -304,14 +303,14 @@ export default function HomeView({
       )}
 
       {/* ============ PROCESS ============ */}
-      <section className="noir-section" style={{ paddingTop: '2rem' }}>
+      <section className={"noir-section " + styles.pt2}>
         <MDBContainer>
           <p className="noir-kicker">Easy by design</p>
           <h2 className="noir-title">From discovery to your doorstep</h2>
           <div className={styles.processTrack}>
             <MDBRow>
               {STEPS.map((s) => (
-                <MDBCol key={s.num} className="mb-4" xs="6" md="auto" style={{ flex: '1 1 0' }}>
+                <MDBCol key={s.num} className={"mb-4 " + styles.flex110} xs="6" md="auto">
                   <div className={styles.processStep}>
                     <span className={styles.stepIcon}>
                       <MDBIcon fas icon={s.icon} />
@@ -329,7 +328,7 @@ export default function HomeView({
       </section>
 
       {/* ============ MAGAZINE ============ */}
-      <section className="noir-section" style={{ paddingTop: '2rem' }}>
+      <section className={"noir-section " + styles.pt2}>
         <MDBContainer>
           <p className="noir-kicker">From the magazine</p>
           <h2 className="noir-title">Stories & rituals</h2>
@@ -343,7 +342,7 @@ export default function HomeView({
             </MDBRow>
           )}
           <div className="text-center mt-4">
-            <Link href="/magazine" className="text-gold text-decoration-none" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
+            <Link href="/magazine" className={"text-gold text-decoration-none " + styles.readMore}>
               View all stories <MDBIcon fas icon="arrow-right" className="ms-1" />
             </Link>
           </div>

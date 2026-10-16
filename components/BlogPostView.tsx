@@ -25,18 +25,18 @@ export default function BlogPostView({ post, related }: { post: WpPost; related:
       </MDBBreadcrumb>
 
       <p className="kicker mb-2">{date}</p>
-      <h1 className="font-serif mb-4" style={{ fontSize: '2.8rem', lineHeight: 1.15 }}>{post.title}</h1>
+      <h1 className={"font-serif mb-4 " + styles.title}>{post.title}</h1>
 
       {post.image && (
         <div className={`${styles.heroImg} mb-5`}>
-          <img src={post.image} alt={post.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
+          <img src={post.image} alt={post.title} className={styles.heroImage} />
         </div>
       )}
 
       <div className="prose-wp" dangerouslySetInnerHTML={{ __html: post.content }} />
 
-      <div className="mt-5 pt-4" style={{ borderTop: '1px solid var(--line)' }}>
-        <Link href="/magazine" className="text-decoration-none text-gold" style={{ textTransform: 'uppercase', fontSize: '0.75rem' }}>
+      <div className={"mt-5 pt-4 " + styles.dividerTop}>
+        <Link href="/magazine" className={"text-decoration-none text-gold " + styles.backLink}>
           <MDBIcon fas icon="arrow-left" className="me-2" />
           All stories
         </Link>
@@ -46,7 +46,7 @@ export default function BlogPostView({ post, related }: { post: WpPost; related:
         <section className="mt-5">
           <div className="text-center mb-4">
             <p className="kicker mb-2">Keep reading</p>
-            <h2 className="font-serif" style={{ fontSize: '2rem' }}>More Stories</h2>
+            <h2 className={"font-serif " + styles.sectionTitle}>More Stories</h2>
             <div className="divider-gold" />
           </div>
           <MDBRow>
@@ -57,8 +57,8 @@ export default function BlogPostView({ post, related }: { post: WpPost; related:
                     {p.image && <img src={p.image} alt={p.title} loading="lazy" />}
                   </div>
                   <div className="p-4">
-                    <h3 className="font-serif" style={{ fontSize: '1.3rem' }}>{p.title}</h3>
-                    <span className="text-gold mt-3 d-block" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
+                    <h3 className={"font-serif " + styles.cardTitle}>{p.title}</h3>
+                    <span className={"text-gold mt-3 d-block " + styles.readMore}>
                       Read story <MDBIcon fas icon="arrow-right" className="ms-1" />
                     </span>
                   </div>

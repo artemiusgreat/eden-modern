@@ -481,3 +481,4 @@ button.pageLink {
   font: inherit;
   cursor: pointer;
 }
+.faintIcon { color: var(--faint); }

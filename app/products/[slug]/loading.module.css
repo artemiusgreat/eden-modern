@@ -1,0 +1,10 @@
+.skelBreadcrumb { height: 18px; width: 320px; }
+.skelImage { aspect-ratio: 1 / 1; }
+.skelThumb { width: 76px; height: 76px; }
+.skelCategory { height: 16px; width: 140px; }
+.skelName { height: 44px; width: 85%; }
+.skelPrice { height: 20px; width: 200px; }
+.skelCta { height: 54px; width: 220px; }
+.skelLine { height: 16px; }
+.skelLineWide { height: 16px; width: 70%; }
+.skelButton { height: 54px; }

@@ -108,4 +108,37 @@
   background-color: transparent;
   border-color: transparent;
   box-shadow: none;
+}.drawerTitle {
+  font-size: 1.5rem;
+}
+.emptyIcon {
+  color: var(--gold-soft);
+}
+.muted {
+  color: var(--muted);
+}
+.itemName {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.qtyScale {
+  transform: scale(0.85);
+  transform-origin: left;
+}
+.itemPrice {
+  font-family: var(--font-price);
+  font-weight: 100;
+}
+.subtotalLabel {
+  font-family: var(--font-card-title);
+}
+.totalPrice {
+  font-size: 1.3rem;
+  font-family: var(--font-price);
+  font-weight: 100;
+}
+.shippingLabel {
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
 }

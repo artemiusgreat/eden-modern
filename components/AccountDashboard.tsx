@@ -51,7 +51,7 @@ function Field({
 }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   return (
     <div className="mb-3 text-start">
-      <label className="form-label small" style={{ color: 'var(--muted)' }}>
+      <label className={"form-label small " + styles.muted}>
         {label}
       </label>
       <input {...props} className={`form-control ${styles.input}`} />
@@ -75,7 +75,7 @@ function SessionExpired() {
   return (
     <Notice kind="info">
       Your session expired.{' '}
-      <a href="/account" onClick={handleSignInAgain} style={{ color: 'var(--gold)' }}>
+      <a href="/account" onClick={handleSignInAgain} className={styles.goldLink}>
         Sign in again
       </a>{' '}
       to continue.
@@ -86,7 +86,7 @@ function SessionExpired() {
 function SetupNeeded({ message }: { message: string }) {
   return (
     <Notice kind="info">
-      <strong style={{ color: 'var(--ink)' }}>Almost there.</strong>
+      <strong className={styles.inkText}>Almost there.</strong>
       <br />
       {message}
     </Notice>
@@ -108,11 +108,11 @@ function OrdersSkeleton() {
     <div aria-hidden="true">
       {[0, 1, 2].map((i) => (
         <div key={i} className={styles.skelOrderRow}>
-          <div style={{ flex: 1 }}>
-            <div className={styles.skel} style={{ height: '1rem', width: '42%', marginBottom: '0.5rem' }} />
-            <div className={styles.skel} style={{ height: '0.8rem', width: '30%' }} />
+          <div className={styles.flex1}>
+            <div className={styles.skel + " " + styles.skelH1W42Mb} />
+            <div className={styles.skel + " " + styles.skelH08W30} />
           </div>
-          <div className={styles.skel} style={{ height: '0.9rem', width: '5.5rem', flexShrink: 0 }} />
+          <div className={styles.skel + " " + styles.skelH09W55} />
         </div>
       ))}
     </div>
@@ -125,42 +125,42 @@ function AddressesSkeleton() {
       <MDBRow>
         {[0, 1].map((col) => (
           <MDBCol key={col} md="6" className="mb-4">
-            <div className={styles.skel} style={{ height: '1.1rem', width: '45%', marginBottom: '1.25rem' }} />
+            <div className={styles.skel + " " + styles.skelH11W45Mb} />
             {[0, 1, 2, 3].map((i) => (
               <div key={i} className={styles.skelField}>
-                <div className={styles.skel} style={{ height: '0.75rem', width: '28%', marginBottom: '0.45rem' }} />
-                <div className={styles.skel} style={{ height: '2.9rem' }} />
+                <div className={styles.skel + " " + styles.skelH075W28Mb} />
+                <div className={styles.skel + " " + styles.skelH29} />
               </div>
             ))}
           </MDBCol>
         ))}
       </MDBRow>
-      <div className={styles.skel} style={{ height: '2.75rem', width: '11rem' }} />
+      <div className={styles.skel + " " + styles.skelH275W11} />
     </div>
   );
 }
 
 function AccountSkeleton() {
   return (
-    <div aria-hidden="true" style={{ maxWidth: 560 }}>
-      <div className={styles.grid2} style={{ marginBottom: '1rem' }}>
+    <div aria-hidden="true" className={styles.maxW560}>
+      <div className={styles.grid2 + " " + styles.mb1}>
         {[0, 1].map((i) => (
-          <div key={i} className={styles.skelField} style={{ marginBottom: 0 }}>
-            <div className={styles.skel} style={{ height: '0.75rem', width: '35%', marginBottom: '0.45rem' }} />
-            <div className={styles.skel} style={{ height: '2.9rem' }} />
+          <div key={i} className={styles.skelField + " " + styles.mb0}>
+            <div className={styles.skel + " " + styles.skelH075W35Mb} />
+            <div className={styles.skel + " " + styles.skelH29} />
           </div>
         ))}
       </div>
       <div className={styles.skelField}>
-        <div className={styles.skel} style={{ height: '0.75rem', width: '30%', marginBottom: '0.45rem' }} />
-        <div className={styles.skel} style={{ height: '2.9rem' }} />
+        <div className={styles.skel + " " + styles.skelH075W30Mb} />
+        <div className={styles.skel + " " + styles.skelH29} />
       </div>
-      <div className={styles.skel} style={{ height: '1.1rem', width: '40%', margin: '1.75rem 0 1rem' }} />
+      <div className={styles.skel + " " + styles.skelH11W40M} />
       <div className={styles.grid2}>
         {[0, 1].map((i) => (
-          <div key={i} className={styles.skelField} style={{ marginBottom: 0 }}>
-            <div className={styles.skel} style={{ height: '0.75rem', width: '40%', marginBottom: '0.45rem' }} />
-            <div className={styles.skel} style={{ height: '2.9rem' }} />
+          <div key={i} className={styles.skelField + " " + styles.mb0}>
+            <div className={styles.skel + " " + styles.skelH075W40Mb} />
+            <div className={styles.skel + " " + styles.skelH29} />
           </div>
         ))}
       </div>
@@ -274,7 +274,7 @@ function OrdersTab() {
           </button>
           {openId === o.id && (
             <div className={styles.orderDetail}>
-              {detailBusy && <p style={{ color: 'var(--muted)' }}>Loading…</p>}
+              {detailBusy && <p className={styles.muted}>Loading…</p>}
               {detail && (
                 <>
                   <div className={styles.detailGrid}>
@@ -283,7 +283,7 @@ function OrdersTab() {
                       {detail.items.map((it: any, i: number) => (
                         <div key={i} className={styles.lineItem}>
                           <span>
-                            {it.name} <span style={{ color: 'var(--muted)' }}>× {it.quantity}</span>
+                            {it.name} <span className={styles.muted}>× {it.quantity}</span>
                           </span>
                           <span>{money(it.total, detail.currency)}</span>
                         </div>
@@ -292,18 +292,18 @@ function OrdersTab() {
                     <div>
                       <h4 className={styles.detailH}>Totals</h4>
                       <div className={styles.lineItem}>
-                        <span style={{ color: 'var(--muted)' }}>Payment</span>
+                        <span className={styles.muted}>Payment</span>
                         <span>{detail.payment_method || '—'}</span>
                       </div>
                       {detail.shipping_total != null && (
                         <div className={styles.lineItem}>
-                          <span style={{ color: 'var(--muted)' }}>Shipping</span>
+                          <span className={styles.muted}>Shipping</span>
                           <span>{money(detail.shipping_total, detail.currency)}</span>
                         </div>
                       )}
                       {detail.tax_total != null && Number(detail.tax_total) > 0 && (
                         <div className={styles.lineItem}>
-                          <span style={{ color: 'var(--muted)' }}>Tax</span>
+                          <span className={styles.muted}>Tax</span>
                           <span>{money(detail.tax_total, detail.currency)}</span>
                         </div>
                       )}
@@ -391,7 +391,7 @@ function AddressForm({
           <div key={f.key} className={f.half ? '' : styles.span2}>
             {f.key === 'country' ? (
               <div className="mb-3 text-start">
-                <label className="form-label small" style={{ color: 'var(--muted)' }}>
+                <label className={"form-label small " + styles.muted}>
                   {f.label}
                 </label>
                 <select
@@ -584,8 +584,8 @@ function AccountTab() {
         <Field label="Last name" value={last} onChange={(e) => setLast(e.target.value)} autoComplete="family-name" />
       </div>
       <Field label="Email address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required />
-      <h3 className={styles.formH} style={{ marginTop: '1.75rem' }}>Change password</h3>
-      <p className="small mb-3" style={{ color: 'var(--muted)' }}>
+      <h3 className={styles.formH + " " + styles.mt175}>Change password</h3>
+      <p className={"small mb-3 " + styles.muted}>
         Leave blank to keep your current password.
       </p>
       <div className={styles.grid2}>
@@ -661,9 +661,9 @@ export default function AccountDashboard() {
               {tab === 'account' && <AccountTab />}
             </MDBCardBody>
           </MDBCard>
-          <p className="small my-3" style={{ color: 'var(--muted)' }}>
+          <p className={"small my-3 " + styles.muted}>
             Need help?{' '}
-            <Link href="/contacts" style={{ color: 'var(--gold)' }}>
+            <Link href="/contacts" className={styles.goldLink}>
               Contact us
             </Link>
           </p>

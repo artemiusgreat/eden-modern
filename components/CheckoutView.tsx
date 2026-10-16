@@ -664,7 +664,7 @@ export default function CheckoutView() {
     return (
       <MDBContainer className="py-5 text-center">
         <MDBSpinner role="status" className={styles.spinner} />
-        <p className="mt-3" style={{ color: 'var(--muted)' }}>Preparing checkout…</p>
+        <p className={"mt-3 " + styles.muted}>Preparing checkout…</p>
       </MDBContainer>
     );
   }
@@ -673,7 +673,7 @@ export default function CheckoutView() {
     return (
       <MDBContainer className="py-5 text-center">
         <h1 className={styles.title}>Checkout</h1>
-        <p style={{ color: 'var(--muted)' }}>{loadError || 'Checkout is unavailable right now.'}</p>
+        <p className={styles.muted}>{loadError || 'Checkout is unavailable right now.'}</p>
         <MDBBtn outline color="light" onClick={() => window.location.reload()}>Try again</MDBBtn>
       </MDBContainer>
     );
@@ -688,8 +688,8 @@ export default function CheckoutView() {
               <MDBCardBody className="p-5 text-center">
                 <div className={styles.check}>✓</div>
                 <h1 className={styles.title}>Thank you</h1>
-                <p style={{ color: 'var(--muted)' }}>
-                  Your order <strong style={{ color: 'var(--gold-soft)' }}>#{orderNumber}</strong> has
+                <p className={styles.muted}>
+                  Your order <strong className={styles.goldSoft}>#{orderNumber}</strong> has
                   been placed. A confirmation email is on its way.
                 </p>
                 <Link href="/" className={styles.goldBtn}>Continue shopping</Link>
@@ -705,7 +705,7 @@ export default function CheckoutView() {
     return (
       <MDBContainer className="py-5 text-center">
         <h1 className={styles.title}>Checkout</h1>
-        <p style={{ color: 'var(--muted)' }}>Your bag is empty.</p>
+        <p className={styles.muted}>Your bag is empty.</p>
         <Link href="/" className={styles.goldBtn}>Browse the collection</Link>
       </MDBContainer>
     );
@@ -762,7 +762,7 @@ export default function CheckoutView() {
               {packages.map((pkg) => (
                 <div key={pkg.package_id}>
                   {pkg.shipping_rates.length === 0 && (
-                    <p style={{ color: 'var(--muted)' }}>No shipping methods available for this address.</p>
+                    <p className={styles.muted}>No shipping methods available for this address.</p>
                   )}
                   {pkg.shipping_rates.map((r) => (
                     <label key={r.rate_id} className={styles.radioRow}>
@@ -801,7 +801,7 @@ export default function CheckoutView() {
             <section className={styles.section}>
               <h2 className={styles.h2}>Payment</h2>
               {paymentMethods.length === 0 && (
-                <p style={{ color: 'var(--muted)' }}>No payment methods are available right now.</p>
+                <p className={styles.muted}>No payment methods are available right now.</p>
               )}
               {paymentMethods.map((m) => {
                 const disabled = m === 'stripe' && !stripePromise;
@@ -862,7 +862,7 @@ export default function CheckoutView() {
                       decodeEntities(item.name)
                     )}
                     <span className={styles.lineControls}>
-                      <span className="qty-stepper" style={{ transform: 'scale(0.8)', transformOrigin: 'left center' }}>
+                      <span className={"qty-stepper " + styles.qtyScaleSm}>
                         <button type="button" aria-label="Decrease quantity" disabled={busy} onClick={() => changeQty(item.key, item.quantity - 1)}>
                           −
                         </button>

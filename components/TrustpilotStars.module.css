@@ -6,6 +6,9 @@
   vertical-align: middle;
 }
 .star {
+  width: var(--star-size);
+  height: var(--star-size);
+  font-size: calc(var(--star-size) * 0.55);
   display: inline-flex;
   align-items: center;
   justify-content: center;

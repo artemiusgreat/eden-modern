@@ -384,3 +384,111 @@
 .skelField {
   margin-bottom: 1rem;
 }
+
+/* AccountDashboard additions */
+.muted {
+  color: var(--muted);
+}
+.goldLink {
+  color: var(--gold);
+}
+.inkText {
+  color: var(--ink);
+}
+.flex1 {
+  flex: 1;
+}
+.skelH1W42Mb {
+  height: 1rem;
+  width: 42%;
+  margin-bottom: 0.5rem;
+}
+.skelH08W30 {
+  height: 0.8rem;
+  width: 30%;
+}
+.skelH09W55 {
+  height: 0.9rem;
+  width: 5.5rem;
+  flex-shrink: 0;
+}
+.skelH11W45Mb {
+  height: 1.1rem;
+  width: 45%;
+  margin-bottom: 1.25rem;
+}
+.skelH075W28Mb {
+  height: 0.75rem;
+  width: 28%;
+  margin-bottom: 0.45rem;
+}
+.skelH29 {
+  height: 2.9rem;
+}
+.skelH275W11 {
+  height: 2.75rem;
+  width: 11rem;
+}
+.skelH075W35Mb {
+  height: 0.75rem;
+  width: 35%;
+  margin-bottom: 0.45rem;
+}
+.skelH075W30Mb {
+  height: 0.75rem;
+  width: 30%;
+  margin-bottom: 0.45rem;
+}
+.skelH11W40M {
+  height: 1.1rem;
+  width: 40%;
+  margin: 1.75rem 0 1rem;
+}
+.skelH075W40Mb {
+  height: 0.75rem;
+  width: 40%;
+  margin-bottom: 0.45rem;
+}
+.maxW560 {
+  max-width: 560px;
+}
+.mb1 {
+  margin-bottom: 1rem;
+}
+.mb0 {
+  margin-bottom: 0;
+}
+.mt175 {
+  margin-top: 1.75rem;
+}
+.muted {
+  color: var(--muted);
+}
+.errorText {
+  color: #e8a0a0;
+}
+.cardTitle {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+/* components/LostPasswordView.tsx additions */
+.infoText {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4rem;
+}
+.inkText {
+  color: var(--ink);
+}
+.muted {
+  color: var(--muted);
+}
+.errorText {
+  color: #e8a0a0;
+}
+
+/* components/ResetPasswordView.tsx additions */
+.muted { color: var(--muted); }
+.infoText { color: var(--muted); font-size: 14px; line-height: 1.4rem; }
+.errorText { color: #e8a0a0; }

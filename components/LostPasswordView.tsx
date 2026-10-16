@@ -1,5 +1,6 @@
 'use client';
 
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody } from 'mdb-react-ui-kit';
@@ -54,8 +55,8 @@ export default function LostPasswordView() {
                 {sent ? (
                   <div className="text-start">
                     <h2 className={`${styles.formTitle} text-start`}>Check your email</h2>
-                    <p style={{ color: 'var(--muted)', fontSize: '14px', lineHeight: '1.4rem' }}>
-                      If an account exists for <strong style={{ color: 'var(--ink)' }}>{email}</strong>,
+                    <p className={styles.infoText}>
+                      If an account exists for <strong className={styles.inkText}>{email}</strong>,
                       you&apos;ll receive a password reset link shortly.
                     </p>
                     <p className="small mb-0">
@@ -68,7 +69,7 @@ export default function LostPasswordView() {
                   <form onSubmit={submit}>
                     <h2 className={`${styles.formTitle} text-start`}>Reset password</h2>
                     <div className="mb-3 text-start">
-                      <label className="form-label small" style={{ color: 'var(--muted)' }}>
+                      <label className={"form-label small " + styles.muted}>
                         Email address
                       </label>
                       <input
@@ -81,12 +82,12 @@ export default function LostPasswordView() {
                       />
                     </div>
                     {error && (
-                      <p className="small mb-3" style={{ color: '#e8a0a0' }} role="alert">
+                      <p className={"small mb-3 " + styles.errorText} role="alert">
                         {error}
                       </p>
                     )}
                     <div className="d-flex justify-content-between align-items-center mt-4">
-                      <Link href="/account" className="text-decoration-none small" style={{ color: 'var(--muted)' }}>
+                      <Link href="/account" className={"text-decoration-none small " + styles.muted}>
                         Back to sign in
                       </Link>
                       <button type="submit" className="btn-gold" disabled={busy}>

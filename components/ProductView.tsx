@@ -30,7 +30,7 @@ function Gallery({ images, name }: { images: StoreProduct['images']; name: strin
   const current = images[active] ?? images[0];
   if (!current) {
     return (
-      <div className={`${styles.gallery} d-flex align-items-center justify-content-center`} style={{ minHeight: 400 }}>
+      <div className={`${styles.gallery} ${styles.galleryMin} d-flex align-items-center justify-content-center`}>
         <MDBIcon fas icon="image" size="3x" className="text-muted" />
       </div>
     );
@@ -143,7 +143,7 @@ export default function ProductView({
           <div className="mb-3 d-flex align-items-center gap-2">
             <RatingStars rating={rating} />
             {rating > 0 && (
-              <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>
+              <span className={styles.mutedSmall}>
                 {rating.toFixed(1)} · {product.review_count} review{product.review_count === 1 ? '' : 's'}
               </span>
             )}
@@ -155,17 +155,17 @@ export default function ProductView({
                 <span className="price-regular fs-5">
                   {formatPrice(prices.regular_price, prices.currency_minor_unit, prices.currency_symbol)}
                 </span>
-                <span style={{ fontSize: '2.2rem', fontFamily: 'var(--font-price)', fontWeight: 100 }}>
+                <span className={styles.priceLarge}>
                   {formatPrice(prices.sale_price, prices.currency_minor_unit, prices.currency_symbol)}
                 </span>
                 {discount !== null && (
-                  <MDBBadge className="product-badge badge-sale" style={{ position: 'static' }}>
+                  <MDBBadge className={`product-badge badge-sale ${styles.badgeStatic}`}>
                     Save {discount}%
                   </MDBBadge>
                 )}
               </>
             ) : (
-              <span style={{ fontSize: '2.2rem', fontFamily: 'var(--font-price)', fontWeight: 100 }}>
+              <span className={styles.priceLarge}>
                 {formatPrice(prices.price, prices.currency_minor_unit, prices.currency_symbol)}
               </span>
             )}
@@ -173,7 +173,7 @@ export default function ProductView({
 
           <div className="mb-4 d-flex align-items-center gap-3">
             {product.is_in_stock ? (
-              <span style={{ color: '#7fb08a', fontSize: '0.9rem' }}>
+              <span className={styles.inStockLabel}>
                 <MDBIcon fas icon="check" className="me-2" />
                 {product.stock_availability.text || 'In stock'}
               </span>
@@ -198,7 +198,7 @@ export default function ProductView({
             <div className="mb-4">
               {variationAttrs.map(attr => (
                 <div key={attr.name} className="mb-3">
-                  <label className="form-label fw-bold" style={{ color: '#e8dcc0' }}>{attr.name}: {selectedAttrs[attr.name] || 'Select...'}</label>
+                  <label className={`form-label fw-bold ${styles.varLabel}`}>{attr.name}:</label>
                   <div className="d-flex flex-wrap gap-2">
                     {attr.values.map(value => {
                       const selected = selectedAttrs[attr.name] === value;
@@ -207,19 +207,7 @@ export default function ProductView({
                           key={value}
                           type="button"
                           onClick={() => setSelectedAttrs(prev => ({ ...prev, [attr.name]: value }))}
-                          style={{
-                            background: selected ? 'linear-gradient(135deg, #d9b46c, #b08a2e)' : 'transparent',
-                            color: selected ? '#14100b' : '#e8dcc0',
-                            border: `1px solid ${selected ? '#d9b46c' : '#4a4458'}`,
-                            borderRadius: '2px',
-                            padding: '0.5rem 1rem',
-                            fontSize: '0.8rem',
-                            fontWeight: 500,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                          }}
+                          className={`${styles.varBtn} ${selected ? styles.varBtnSelected : ''}`}
                         >
                           {value}
                         </button>
@@ -260,7 +248,7 @@ export default function ProductView({
             <div className={styles.perkRow}>
               <MDBIcon fas icon="rotate-left" /> 15-day returns on eligible items
             </div>
-            <div className={styles.perkRow} style={{ borderBottom: '1px solid var(--line)' }}>
+            <div className={`${styles.perkRow} ${styles.perkBorder}`}>
               <MDBIcon fas icon="shield-halved" /> 100% authentic - sourced from trusted brands
             </div>
           </div>
@@ -277,7 +265,7 @@ export default function ProductView({
                   <MDBTableBody>
                     {product.attributes.map((a) => (
                       <tr key={a.id}>
-                        <td className="fw-bold" style={{ width: '40%' }}>{a.name}</td>
+                        <td className={`fw-bold ${styles.attrNameCell}`}>{a.name}</td>
                         <td>{a.terms.map((t) => t.name).join(', ')}</td>
                       </tr>
                     ))}

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import styles from './CategoryView.module.css';
 import { MDBContainer, MDBRow, MDBCol, MDBBreadcrumb, MDBBreadcrumbItem } from 'mdb-react-ui-kit';
 import type { StoreProduct, StoreCategory } from '@/lib/woo';
 import { stripHtml } from '@/lib/format';
@@ -41,7 +42,7 @@ export default function CategoryView({
 
       <MDBContainer className="py-5">
         {products.length === 0 ? (
-          <p style={{ color: 'var(--muted)' }}>No products in this category yet.</p>
+          <p className={styles.muted}>No products in this category yet.</p>
         ) : (
           <>
             <MDBRow>

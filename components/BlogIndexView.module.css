@@ -1,0 +1,22 @@
+.goldIcon {
+  color: var(--gold-soft);
+}
+.dateKicker {
+  font-size: 0.62rem;
+}
+.postTitle {
+  font-size: 1.5rem;
+}
+.clamp3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.readMore {
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+.muted {
+  color: var(--muted);
+}

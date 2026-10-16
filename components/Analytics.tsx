@@ -1,5 +1,7 @@
 'use client';
 
+import styles from './Analytics.module.css';
+
 import Script from 'next/script';
 
 const GTM_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_KEY;
@@ -20,7 +22,7 @@ export default function Analytics() {
           src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
           height="0"
           width="0"
-          style={{ display: 'none', visibility: 'hidden' }}
+          className={styles.hidden}
           title="gtm"
         />
       </noscript>

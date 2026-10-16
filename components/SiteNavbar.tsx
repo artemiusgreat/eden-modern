@@ -128,7 +128,7 @@ export default function SiteNavbar() {
                   <Link href={entry.href}>
                     <MDBNavbarLink tag="span" className={styles.navLink} onClick={closeAll}>
                       {entry.name}
-                      <MDBIcon fas icon="chevron-down" className="ms-2" style={{ fontSize: '0.6rem' }} />
+                      <MDBIcon fas icon="chevron-down" className={"ms-2 " + styles.chevronSm} />
                     </MDBNavbarLink>
                   </Link>
                   <div className={styles.dropMenu}>

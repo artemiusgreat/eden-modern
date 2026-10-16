@@ -89,3 +89,25 @@
   border-radius: 2px;
   font-weight: 600;
 }
+.textSm {
+  font-size: 0.85rem;
+}
+.trustLabel {
+  font-size: 0.78rem;
+  color: var(--ink);
+}
+.dividerTop {
+  border-top: 1px solid var(--line);
+}
+.legalText {
+  font-size: 0.75rem;
+  color: var(--faint);
+  text-transform: uppercase;
+}
+.legalTextNoColor {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+.faintLink {
+  color: var(--faint);
+}

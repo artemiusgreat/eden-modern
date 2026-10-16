@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import styles from './BlogIndexView.module.css';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 import PageHero from './PageHero';
 import CatalogPagination from './CatalogPagination';
@@ -19,19 +20,18 @@ function PostCard({ post }: { post: WpPost }) {
           <img src={post.image} alt={post.title} loading="lazy" />
         ) : (
           <div className="w-100 h-100 d-flex align-items-center justify-content-center">
-            <MDBIcon fas icon="pen-nib" size="2x" style={{ color: 'var(--gold-soft)' }} />
+            <MDBIcon fas icon="pen-nib" size="2x" className={styles.goldIcon} />
           </div>
         )}
       </div>
       <div className="p-4">
-        <p className="kicker mb-2" style={{ fontSize: '0.62rem' }}>{date}</p>
-        <h2 className="font-serif mb-2" style={{ fontSize: '1.5rem' }}>{post.title}</h2>
+        <p className={"kicker mb-2 " + styles.dateKicker}>{date}</p>
+        <h2 className={"font-serif mb-2 " + styles.postTitle}>{post.title}</h2>
         <div
-          className="prose-wp small"
-          style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+          className={"prose-wp small " + styles.clamp3}
           dangerouslySetInnerHTML={{ __html: post.excerpt }}
         />
-        <span className="text-gold mt-3 d-block" style={{ textTransform: 'uppercase', fontSize: '0.72rem' }}>
+        <span className={"text-gold mt-3 d-block " + styles.readMore}>
           Read story <MDBIcon fas icon="arrow-right" className="ms-1" />
         </span>
       </div>
@@ -60,7 +60,7 @@ export default function BlogIndexView({
       />
       <MDBContainer className="py-5">
         {posts.length === 0 ? (
-          <p style={{ color: 'var(--muted)' }}>Stories are on their way — check back soon.</p>
+          <p className={styles.muted}>Stories are on their way — check back soon.</p>
         ) : (
           <MDBRow>
             {posts.map((p) => (

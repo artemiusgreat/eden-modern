@@ -48,7 +48,7 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
               sizes="(max-width: 768px) 50vw, 360px"
             />
           ) : (
-            <span style={{ color: 'var(--faint)' }}>
+            <span className={styles.noImage}>
               <MDBIcon fas icon="image" size="3x" />
             </span>
           )}

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import styles from './not-found.module.css';
 
 export const metadata = {
   title: 'Page not found',
@@ -7,27 +8,14 @@ export const metadata = {
 
 export default function NotFound() {
   return (
-    <div className="container text-center" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
-      <p
-        style={{
-          fontFamily: 'var(--font-serif)',
-          fontSize: '4rem',
-          color: 'var(--gold-soft)',
-          marginBottom: '0.5rem',
-          lineHeight: 1,
-        }}>
+    <div className={`container text-center ${styles.wrapper}`}>
+      <p className={styles.code}>
         404
       </p>
-      <h1
-        style={{
-          fontFamily: 'var(--font-serif)',
-          color: 'var(--ink)',
-          fontSize: '1.8rem',
-          marginBottom: '1rem',
-        }}>
+      <h1 className={styles.title}>
         This page is gone
       </h1>
-      <p style={{ color: 'var(--muted)', maxWidth: '32rem', margin: '0 auto 2rem' }}>
+      <p className={styles.message}>
         The page you are looking for does not exist or was moved. Try the catalog or head back
         home.
       </p>

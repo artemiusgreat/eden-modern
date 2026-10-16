@@ -1,5 +1,7 @@
 'use client';
 
+import styles from './ProductGallery.module.css';
+
 import { useState } from 'react';
 import Image from 'next/image';
 import { MDBBadge } from 'mdb-react-ui-kit';
@@ -24,8 +26,7 @@ export default function ProductGallery({ images, name, onSale }: { images: Store
           alt={current.alt || name}
           width={1000}
           height={1000}
-          className="w-100 rounded"
-          style={{ objectFit: 'cover', aspectRatio: '1 / 1' }}
+          className={"w-100 rounded " + styles.mainImage}
           priority
         />
       </div>
@@ -38,8 +39,7 @@ export default function ProductGallery({ images, name, onSale }: { images: Store
               alt={img.alt || `${name} ${i + 1}`}
               width={80}
               height={80}
-              className={i === active ? 'active' : ''}
-              style={{ objectFit: 'cover' }}
+              className={(i === active ? 'active ' : '') + styles.thumbImage}
               onClick={() => setActive(i)}
             />
           ))}

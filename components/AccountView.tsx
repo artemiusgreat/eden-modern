@@ -13,7 +13,7 @@ function Field({
 }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   return (
     <div className="mb-3 text-start">
-      <label className="form-label small" style={{ color: 'var(--muted)' }}>
+      <label className={"form-label small " + styles.muted}>
         {label}
       </label>
       <input {...props} className={`form-control ${styles.input}`} required />
@@ -68,12 +68,12 @@ function SignInForm() {
         onChange={(e) => setPassword(e.target.value)}
       />
       {error && (
-        <p className="small mb-3" style={{ color: '#e8a0a0' }} role="alert">
+        <p className={"small mb-3 " + styles.errorText} role="alert">
           {error}
         </p>
       )}
       <div className="d-flex justify-content-between align-items-center mt-4">
-        <Link href="/account/lost-password" className="text-decoration-none small" style={{ color: 'var(--muted)' }}>
+        <Link href="/account/lost-password" className={"text-decoration-none small " + styles.muted}>
           Lost your password?
         </Link>
         <button type="submit" className="btn-gold" disabled={busy}>
@@ -114,10 +114,10 @@ export default function AccountView() {
                       <div key={title} className="d-flex gap-3 mb-4">
                         <MDBIcon fas fixed icon={icon} className={styles.perkIcon} />
                         <div className="text-start">
-                          <h6 className="mb-1" style={{ textTransform: 'uppercase', fontSize: '0.8rem' }}>
+                          <h6 className={"mb-1 " + styles.cardTitle}>
                             {title}
                           </h6>
-                          <p className="small mb-0" style={{ color: 'var(--muted)' }}>{text}</p>
+                          <p className={"small mb-0 " + styles.muted}>{text}</p>
                         </div>
                       </div>
                     ))}

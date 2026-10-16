@@ -1,5 +1,6 @@
 'use client';
 
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -67,7 +68,7 @@ export default function ResetPasswordView({ token }: { token: string }) {
                 {!validLink ? (
                   <div className="text-start">
                     <h2 className={`${styles.formTitle} text-start`}>Invalid link</h2>
-                    <p style={{ color: 'var(--muted)' }}>
+                    <p className={styles.muted}>
                       This password reset link is invalid or incomplete.
                     </p>
                     <p className="small mb-0">
@@ -79,7 +80,7 @@ export default function ResetPasswordView({ token }: { token: string }) {
                 ) : done ? (
                   <div className="text-start">
                     <h2 className={`${styles.formTitle} text-start`}>Password updated</h2>
-                    <p style={{ color: 'var(--muted)', fontSize: '14px', lineHeight: '1.4rem' }}>
+                    <p className={styles.infoText}>
                       Your password has been reset. You can now sign in with your new password.
                     </p>
                     <div className="d-flex justify-content-end mt-4">
@@ -92,7 +93,7 @@ export default function ResetPasswordView({ token }: { token: string }) {
                   <form onSubmit={submit}>
                     <h2 className={`${styles.formTitle} text-start`}>New password</h2>
                     <div className="mb-3 text-start">
-                      <label className="form-label small" style={{ color: 'var(--muted)' }}>
+                      <label className={"form-label small " + styles.muted}>
                         New password
                       </label>
                       <input
@@ -106,7 +107,7 @@ export default function ResetPasswordView({ token }: { token: string }) {
                       />
                     </div>
                     <div className="mb-3 text-start">
-                      <label className="form-label small" style={{ color: 'var(--muted)' }}>
+                      <label className={"form-label small " + styles.muted}>
                         Confirm new password
                       </label>
                       <input
@@ -120,7 +121,7 @@ export default function ResetPasswordView({ token }: { token: string }) {
                       />
                     </div>
                     {error && (
-                      <p className="small mb-3" style={{ color: '#e8a0a0' }} role="alert">
+                      <p className={"small mb-3 " + styles.errorText} role="alert">
                         {error}
                       </p>
                     )}

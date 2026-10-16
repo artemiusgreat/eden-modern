@@ -136,3 +136,36 @@
   --mdb-table-bg: transparent;
   color: var(--ink);
 }
+
+/* Variation selectors */
+.varLabel {
+  color: #e8dcc0;
+  font-weight: 700;
+}
+.varBtn {
+  background: transparent;
+  color: #e8dcc0;
+  border: 1px solid #4a4458;
+  border-radius: 2px;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.varBtnSelected {
+  background: linear-gradient(135deg, #d9b46c, #b08a2e);
+  color: #14100b;
+  border-color: #d9b46c;
+}
+
+/* Refactored from inline styles */
+.galleryMin { min-height: 400px; }
+.mutedSmall { color: var(--muted); font-size: 0.85rem; }
+.priceLarge { font-size: 2.2rem; font-family: var(--font-price); font-weight: 100; }
+.badgeStatic { position: static; }
+.inStockLabel { color: #7fb08a; font-size: 0.9rem; }
+.perkBorder { border-bottom: 1px solid var(--line); }
+.attrNameCell { width: 40%; }

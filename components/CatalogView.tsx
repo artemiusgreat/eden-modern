@@ -121,7 +121,7 @@ export default function CatalogView(props: Props) {
 
             {products.length === 0 ? (
               <div className={styles.empty}>
-                <MDBIcon fas icon="magnifying-glass" size="2x" className="mb-3" style={{ color: 'var(--faint)' }} />
+                <MDBIcon fas icon="magnifying-glass" size="2x" className={"mb-3 " + styles.faintIcon} />
                 <p className="mb-3">No products match these filters.</p>
                 <Link href="/catalog" className="btn btn-outline-light">
                   Clear all filters
