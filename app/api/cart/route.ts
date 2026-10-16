@@ -19,9 +19,9 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { action, id, key, quantity, code, billing_address, shipping_address, package_id, rate_id } =
+    const { action, id, key, quantity, variation_id, code, billing_address, shipping_address, package_id, rate_id } =
       await req.json();
-    if (action === 'add') return NextResponse.json(await addItem(Number(id), Number(quantity) || 1));
+    if (action === 'add') return NextResponse.json(await addItem(Number(id), Number(quantity) || 1, variation_id ? Number(variation_id) : undefined));
     if (action === 'update') return NextResponse.json(await updateItem(String(key), Number(quantity)));
     if (action === 'remove') return NextResponse.json(await removeItem(String(key)));
     if (action === 'apply-coupon')

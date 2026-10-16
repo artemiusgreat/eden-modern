@@ -75,6 +75,12 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
               </span>
             )}
           </div>
+          {product.type === 'variable' ? (
+            <Link href={`/products/${product.slug}`} className={btnStyles.cartBtn} aria-label={`Select options for ${product.name}`}>
+              <MDBIcon fas icon="list-check" />
+              <span className={styles.cartLabel}>Select Options</span>
+            </Link>
+          ) : (
           <AddToCartButton
             productId={product.id}
             disabled={!purchasable}
@@ -84,6 +90,7 @@ export default function ProductCard({ product, badge }: { product: StoreProduct;
             <MDBIcon fas icon="cart-shopping" />
             <span className={styles.cartLabel}>Add to Bag</span>
           </AddToCartButton>
+          )}
         </div>
       </MDBCardBody>
     </MDBCard>

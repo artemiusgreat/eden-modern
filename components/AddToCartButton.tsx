@@ -6,6 +6,7 @@ import { useCart } from './cart/CartProvider';
 
 export default function AddToCartButton({
   productId,
+  variationId,
   quantity = 1,
   disabled,
   size,
@@ -15,6 +16,7 @@ export default function AddToCartButton({
   ariaLabel,
 }: {
   productId: number;
+  variationId?: number;
   quantity?: number;
   disabled?: boolean;
   size?: 'sm' | 'lg';
@@ -38,7 +40,7 @@ export default function AddToCartButton({
       onClick={async () => {
         setAdding(true);
         try {
-          await addItem(productId, quantity);
+          await addItem(productId, quantity, variationId);
           setAdded(true);
           setTimeout(() => setAdded(false), 1600);
         } catch (e) {

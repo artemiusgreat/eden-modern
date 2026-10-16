@@ -75,6 +75,36 @@ export default function ProductView({
 }) {
   const { prices } = product;
   const [qty, setQty] = useState(1);
+  const isVariable = product.type === 'variable' && (product.variations?.length ?? 0) > 0;
+  // Group variations by attribute name -> unique values
+  const variationAttrs = (() => {
+    const map = new Map<string, Set<string>>();
+    for (const v of product.variations ?? []) {
+      const attrs = v.attributes as unknown as { name: string; value: string }[] | Record<string, string>;
+      const entries = Array.isArray(attrs)
+        ? attrs.map(a => [a.name, a.value] as const)
+        : Object.entries(attrs);
+      for (const [name, value] of entries) {
+        if (!map.has(name)) map.set(name, new Set());
+        if (value) map.get(name)!.add(value);
+      }
+    }
+    return [...map.entries()].map(([name, values]) => ({ name, values: [...values] }));
+  })();
+  const [selectedAttrs, setSelectedAttrs] = useState<Record<string, string>>({});
+  // Find matching variation ID
+  const selectedVariationId = (() => {
+    if (!isVariable) return undefined;
+    if (Object.keys(selectedAttrs).length < variationAttrs.length) return undefined;
+    for (const v of product.variations ?? []) {
+      const attrs = v.attributes as unknown as { name: string; value: string }[] | Record<string, string>;
+      const entries = Array.isArray(attrs)
+        ? attrs.map(a => [a.name, a.value] as const)
+        : Object.entries(attrs);
+      if (entries.every(([name, value]) => selectedAttrs[name] === value)) return v.id;
+    }
+    return undefined;
+  })();
   const rating = parseFloat(product.average_rating || '0');
   const purchasable = isSellable(product);
   const discount =
@@ -164,6 +194,28 @@ export default function ProductView({
             />
           )}
 
+          {isVariable && variationAttrs.length > 0 && (
+            <div className="mb-4">
+              {variationAttrs.map(attr => (
+                <div key={attr.name} className="mb-3">
+                  <label className="form-label fw-bold">{attr.name}: {selectedAttrs[attr.name] || 'Select...'}</label>
+                  <div className="d-flex flex-wrap gap-2">
+                    {attr.values.map(value => (
+                      <button
+                        key={value}
+                        type="button"
+                        className={`btn ${selectedAttrs[attr.name] === value ? 'btn-primary' : 'btn-outline-secondary'} btn-sm`}
+                        onClick={() => setSelectedAttrs(prev => ({ ...prev, [attr.name]: value }))}
+                      >
+                        {value}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="d-flex gap-3 mb-4 align-items-stretch flex-wrap">
             <div className={styles.qtyStepper}>
               <button type="button" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))}>
@@ -174,9 +226,15 @@ export default function ProductView({
                 +
               </button>
             </div>
-            <AddToCartButton productId={product.id} quantity={qty} disabled={!purchasable} className="btn-gold flex-grow-1">
+            <AddToCartButton
+              productId={product.id}
+              variationId={selectedVariationId}
+              quantity={qty}
+              disabled={!purchasable || (isVariable && !selectedVariationId)}
+              className="btn-gold flex-grow-1"
+            >
               <MDBIcon fas icon="bag-shopping" className="me-2" />
-              {purchasable ? 'Add to bag' : 'Out of stock'}
+              {!purchasable ? 'Out of stock' : isVariable && !selectedVariationId ? 'Select options' : 'Add to bag'}
             </AddToCartButton>
           </div>
 
