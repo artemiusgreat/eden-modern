@@ -578,6 +578,7 @@ export default function CheckoutView() {
             const merged: CheckoutAddress = {
               ...addr,
               address_1: p.street || addr.address_1,
+              address_2: p.apt || addr.address_2,
               city: p.city || addr.city,
               state: p.state || addr.state,
               postcode: p.postcode || addr.postcode,
@@ -600,12 +601,12 @@ export default function CheckoutView() {
             setTimeout(() => { void calcRef.current(true, merged); }, 60);
           }}
         />
+        <Field id={`${idPrefix}-a2`} label="Apt, suite, etc. (optional)" value={addr.address_2}
+          onChange={(e) => set('address_2', e.target.value)} autoComplete="off" />
         <div className={`${styles.manualWrap}${expanded ? ` ${styles.open}` : ''}`}>
           <div className={styles.manualInner}>
         <Field id={`${idPrefix}-a1`} label="Street address *" value={addr.address_1}
           onChange={(e) => set('address_1', e.target.value)} autoComplete="off" />
-        <Field id={`${idPrefix}-a2`} label="Apt, suite, etc. (optional)" value={addr.address_2}
-          onChange={(e) => set('address_2', e.target.value)} autoComplete="off" />
         <MDBRow>
           <MDBCol md="5">
             <Field id={`${idPrefix}-city`} label="City *" value={addr.city}

@@ -6,6 +6,7 @@ import styles from './AddressAutocomplete.module.css';
 /** Parsed address from a Google Places selection, mapped to checkout fields. */
 export interface ParsedAddress {
   street: string;
+  apt: string;
   city: string;
   state: string;
   postcode: string;
@@ -48,8 +49,9 @@ function parseComponents(components: AddressComponent[]): ParsedAddress {
   const state = get('administrative_area_level_1')?.shortText ?? '';
   const postcode = get('postal_code')?.longText ?? '';
   const country = get('country')?.shortText ?? '';
+  const apt = get('subpremise')?.longText ?? '';
   const street = [streetNumber, route].filter(Boolean).join(' ');
-  return { street, city, state, postcode, country };
+  return { street, apt, city, state, postcode, country };
 }
 
 export default function AddressAutocomplete({ id, onSelect }: Props) {
