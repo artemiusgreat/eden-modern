@@ -58,8 +58,16 @@ async function cartRequest(method: 'GET' | 'POST', path: string, body?: unknown)
 }
 
 export const getCart = () => cartRequest('GET', '/cart');
-export const addItem = (id: number, quantity = 1, variationId?: number) =>
-  cartRequest('POST', '/cart/add-item', variationId ? { id, variation_id: variationId, quantity } : { id, quantity });
+export const addItem = (
+  id: number,
+  quantity = 1,
+  variation?: { attribute: string; value: string }[],
+) =>
+  cartRequest(
+    'POST',
+    '/cart/add-item',
+    variation?.length ? { id, quantity, variation } : { id, quantity },
+  );
 export const updateItem = (key: string, quantity: number) =>
   cartRequest('POST', '/cart/update-item', { key, quantity });
 export const removeItem = (key: string) => cartRequest('POST', '/cart/remove-item', { key });

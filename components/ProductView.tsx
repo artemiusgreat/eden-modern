@@ -231,7 +231,7 @@ export default function ProductView({
             </div>
             <AddToCartButton
               productId={product.id}
-              variationId={selectedVariationId}
+              variation={Object.entries(selectedAttrs).map(([attribute, value]) => ({ attribute, value }))}
               quantity={qty}
               disabled={!purchasable || (isVariable && !selectedVariationId)}
               className="btn-gold flex-grow-1"

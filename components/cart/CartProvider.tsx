@@ -17,7 +17,7 @@ interface CartContextValue {
   busy: boolean;
   drawerOpen: boolean;
   setDrawerOpen: (open: boolean) => void;
-  addItem: (id: number, quantity?: number, variationId?: number) => Promise<void>;
+  addItem: (id: number, quantity?: number, variation?: { attribute: string; value: string }[]) => Promise<void>;
   /**
    * Sharable-checkout-URL bundle import: adds every entry sequentially,
    * applies the coupon, then sets the cart once. Never opens the drawer —
@@ -76,12 +76,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const addItem = useCallback((id: number, quantity = 1, variationId?: number) => {
+  const addItem = useCallback((id: number, quantity = 1, variation?: { attribute: string; value: string }[]) => {
     // Own mutate path (instead of the shared `mutate`) so the fresh cart is
     // available for the GA4 add_to_cart event.
     setBusy(true);
     progressBegin();
-    return cartApi('add', variationId ? { id, quantity, variation_id: variationId } : { id, quantity })
+    return cartApi('add', variation?.length ? { id, quantity, variation } : { id, quantity })
       .then((next) => {
         setCart(next);
         const added = next.items.find((i) => i.id === id);
