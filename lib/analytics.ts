@@ -47,7 +47,7 @@ export function minorToDecimal(minor: string | null | undefined, minorUnit = 2):
 
 export function productToGaItem(p: StoreProduct, quantity = 1): GaItem {
   return {
-    item_id: p.sku || String(p.id),
+    item_id: String(p.id),
     item_name: decodeEntities(p.name),
     price: minorToDecimal(p.prices.price, p.prices.currency_minor_unit),
     quantity,
@@ -57,7 +57,7 @@ export function productToGaItem(p: StoreProduct, quantity = 1): GaItem {
 
 export function cartLineToGaItem(item: StoreCartItem, quantity?: number): GaItem {
   return {
-    item_id: item.sku || String(item.id),
+    item_id: String(item.id),
     item_name: decodeEntities(item.name),
     price: minorToDecimal(item.prices.price, item.prices.currency_minor_unit),
     quantity: quantity ?? item.quantity,
