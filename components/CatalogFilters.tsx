@@ -34,14 +34,6 @@ function pushUrl(router: Router, params: Record<string, string>, updates: Record
   router.push(s ? `/catalog?${s}` : '/catalog', { scroll: false });
 }
 
-function toggleList(current: string | undefined, value: string): string | undefined {
-  const vals = (current ?? '').split(',').filter(Boolean);
-  const i = vals.indexOf(value);
-  if (i >= 0) vals.splice(i, 1);
-  else vals.push(value);
-  return vals.length ? vals.join(',') : undefined;
-}
-
 interface CatNode {
   cat: StoreCategory;
   children: CatNode[];
@@ -59,9 +51,13 @@ function buildTree(categories: StoreCategory[]): CatNode[] {
   return build(0);
 }
 
-/** Attribute groups longer than this render as a multiselect dropdown. */
-const LONG_GROUP_THRESHOLD = 12;
-
+/**
+ * Attribute filter as a multiselect dropdown. Selections are STAGED
+ * locally while the panel is open and applied to the URL only on Done;
+ * closing any other way (outside click, Escape, the toggle button)
+ * discards them. Opening re-stages from the applied URL selection, and
+ * Done clears the search box.
+ */
 function AttributeDropdown({
   attr,
   params,
@@ -73,19 +69,30 @@ function AttributeDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [staged, setStaged] = useState<string[]>([]);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  const selectedSlugs = (params[attr.taxonomy] ?? '').split(',').filter(Boolean);
-  const selectedTerms = attr.terms.filter((t) => selectedSlugs.includes(t.slug));
+  const appliedSlugs = (params[attr.taxonomy] ?? '').split(',').filter(Boolean);
+  const appliedTerms = attr.terms.filter((t) => appliedSlugs.includes(t.slug));
 
-  // Close on outside click / Escape.
+  const openPanel = () => {
+    setStaged(appliedSlugs);
+    setQuery('');
+    setOpen(true);
+  };
+  const closePanel = () => {
+    setOpen(false);
+    setQuery('');
+  };
+
+  // Outside click / Escape close WITHOUT applying the staged selection.
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) closePanel();
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') closePanel();
     };
     document.addEventListener('mousedown', onDown);
     document.addEventListener('keydown', onKey);
@@ -95,18 +102,31 @@ function AttributeDropdown({
     };
   }, [open ]);
 
+  const applyStaged = () => {
+    pushUrl(router, params, {
+      [attr.taxonomy]: staged.length ? staged.join(',') : undefined,
+    });
+    setQuery('');
+    setOpen(false);
+  };
+
+  const toggleStaged = (slug: string) =>
+    setStaged((prev) =>
+      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
+    );
+
   const q = query.trim().toLowerCase();
   const visible = attr.terms
     .filter((t) => !q || t.name.toLowerCase().includes(q))
-    // Selected terms pin to the top so active choices are always reachable.
-    .sort((a, b) => Number(selectedSlugs.includes(b.slug)) - Number(selectedSlugs.includes(a.slug)));
+    // Staged selections pin to the top so chosen terms stay reachable.
+    .sort((a, b) => Number(staged.includes(b.slug)) - Number(staged.includes(a.slug)));
 
   const summary =
-    selectedTerms.length === 0
+    appliedTerms.length === 0
       ? `All ${attr.name.toLowerCase()}`
-      : selectedTerms.length <= 2
-        ? selectedTerms.map((t) => t.name).join(', ')
-        : `${selectedTerms[0].name}, +${selectedTerms.length - 1} more`;
+      : appliedTerms.length <= 2
+        ? appliedTerms.map((t) => t.name).join(', ')
+        : `${appliedTerms[0].name}, +${appliedTerms.length - 1} more`;
 
   return (
     <div className={styles.ddWrap} ref={wrapRef}>
@@ -115,7 +135,7 @@ function AttributeDropdown({
         className={styles.ddBtn}
         aria-haspopup="true"
         aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}>
+        onClick={() => (open ? closePanel() : openPanel())}>
         <span className={styles.ddBtnText}>{summary}</span>
         <MDBIcon fas icon={open ? 'chevron-up' : 'chevron-down'} className={styles.ddChevron} />
       </button>
@@ -131,38 +151,21 @@ function AttributeDropdown({
             autoFocus
           />
           <div className={styles.ddList}>
-            {visible.map((t) => {
-              const selected = selectedSlugs.includes(t.slug);
-              return (
-                <label className={styles.check} key={t.id}>
-                  <input
-                    type="checkbox"
-                    checked={selected}
-                    onChange={() =>
-                      pushUrl(router, params, {
-                        [attr.taxonomy]: toggleList(params[attr.taxonomy], t.slug),
-                      })
-                    }
-                  />
-                  <span className={styles.checkLabel}>{t.name}</span>
-                  <span className={styles.checkCount}>{t.count}</span>
-                </label>
-              );
-            })}
+            {visible.map((t) => (
+              <label className={styles.check} key={t.id}>
+                <input
+                  type="checkbox"
+                  checked={staged.includes(t.slug)}
+                  onChange={() => toggleStaged(t.slug)}
+                />
+                <span className={styles.checkLabel}>{t.name}</span>
+                <span className={styles.checkCount}>{t.count}</span>
+              </label>
+            ))}
             {visible.length === 0 && <p className={styles.ddEmpty}>No matches for “{query}”.</p>}
           </div>
           <div className={styles.ddFoot}>
-            {selectedTerms.length > 0 ? (
-              <button
-                type="button"
-                className={styles.ddClear}
-                onClick={() => pushUrl(router, params, { [attr.taxonomy]: undefined })}>
-                Clear ({selectedTerms.length})
-              </button>
-            ) : (
-              <span />
-            )}
-            <button type="button" className={styles.ddDone} onClick={() => setOpen(false)}>
+            <button type="button" className={styles.ddDone} onClick={applyStaged}>
               Done
             </button>
           </div>
@@ -225,7 +228,7 @@ export default function CatalogFilters(props: Props) {
   // The category param may hold IDs, slugs, or a mix (inbound links use
   // slugs; this sidebar writes IDs). Toggling must work in every form:
   // unchecking strips both the ID and the slug spelling of the category,
-  // checking appends the ID. A naive ID-only toggleList could never
+  // checking appends the ID. A naive ID-only toggle could never
   // uncheck a slug-valued selection.
   const onToggleCat = (cat: StoreCategory) => {
     const entries = (params.category ?? '')
@@ -361,28 +364,7 @@ export default function CatalogFilters(props: Props) {
         {attributes.map((attr) => (
           <div className={styles.group} key={attr.taxonomy}>
             <h3 className={styles.groupTitle}>{attr.name}</h3>
-            {attr.terms.length > LONG_GROUP_THRESHOLD ? (
-              <AttributeDropdown attr={attr} params={params} router={router} />
-            ) : (
-              attr.terms.map((t) => {
-              const selected = (params[attr.taxonomy] ?? '').split(',').includes(t.slug);
-              return (
-                <label className={styles.check} key={t.id}>
-                  <input
-                    type="checkbox"
-                    checked={selected}
-                    onChange={() =>
-                      pushUrl(router, params, {
-                        [attr.taxonomy]: toggleList(params[attr.taxonomy], t.slug),
-                      })
-                    }
-                  />
-                  <span className={styles.checkLabel}>{t.name}</span>
-                  <span className={styles.checkCount}>{t.count}</span>
-                </label>
-              );
-              })
-            )}
+            <AttributeDropdown attr={attr} params={params} router={router} />
           </div>
         ))}
 

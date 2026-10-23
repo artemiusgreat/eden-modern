@@ -260,24 +260,11 @@
 }
 .ddFoot {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   border-top: 1px solid var(--line);
   margin-top: 0.6rem;
   padding-top: 0.6rem;
-}
-.ddClear.ddClear {
-  background: none;
-  border: 0;
-  padding: 0;
-  color: var(--muted);
-  font-size: 0.82rem;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-.ddClear.ddClear:hover {
-  color: var(--ink);
 }
 .ddDone.ddDone {
   background: transparent;
