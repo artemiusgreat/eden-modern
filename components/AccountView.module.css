@@ -152,6 +152,17 @@
   box-shadow: none;
 }
 
+/* Standard inline validation (see lib/validation.ts): invalid fields
+   get the red border, the message sits under the field. */
+.input.input[aria-invalid="true"] {
+  border-color: #e0655f;
+}
+.fieldError {
+  color: #e8a0a0;
+  font-size: 0.82rem;
+  margin: 0.35rem 0 0;
+}
+
 .input.input::placeholder {
   color: var(--faint);
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { emailError } from '@/lib/validation';
 import styles from './ContactForm.module.css';
 
 /** Native contact form (Elementor-free). Validates client-side, posts to /api/contact. */
@@ -13,8 +14,9 @@ export default function ContactForm() {
 
   function validate(): boolean {
     const e: typeof errors = {};
-    if (!email.trim()) e.email = 'Please enter your email address.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = 'Enter a valid email address.';
+    // Shared site-standard messages (lib/validation.ts).
+    const ee = emailError(email);
+    if (ee) e.email = ee;
     if (!message.trim()) e.message = 'Please enter your message.';
     else if (message.trim().length < 10) e.message = 'Your message is a bit short.';
     setErrors(e);

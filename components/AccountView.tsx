@@ -9,14 +9,16 @@ import styles from './AccountView.module.css';
 
 function Field({
   label,
+  error,
   ...props
-}: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
+}: React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string }) {
   return (
     <div className="mb-3 text-start">
       <label className={"form-label small " + styles.muted}>
         {label}
       </label>
-      <input {...props} className={`form-control ${styles.input}`} required />
+      <input {...props} className={`form-control ${styles.input}`} aria-invalid={!!error} />
+      {error && <p className={styles.fieldError}>{error}</p>}
     </div>
   );
 }
@@ -25,11 +27,18 @@ function SignInForm() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{ username?: string; password?: string }>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Standard inline validation (lib/validation.ts) — no native popovers.
+    const fe: typeof fieldErrors = {};
+    if (!username.trim()) fe.username = 'Please enter your username or email.';
+    if (!password) fe.password = 'Please enter your password.';
+    setFieldErrors(fe);
+    if (Object.keys(fe).length) return;
     setBusy(true);
     setError(null);
     try {
@@ -52,13 +61,14 @@ function SignInForm() {
   };
 
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={submit} noValidate>
       <Field
         label="Username or email"
         type="text"
         autoComplete="username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+        error={fieldErrors.username}
       />
       <Field
         label="Password"
@@ -66,6 +76,7 @@ function SignInForm() {
         autoComplete="current-password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        error={fieldErrors.password}
       />
       {error && (
         <p className={"small mb-3 " + styles.errorText} role="alert">

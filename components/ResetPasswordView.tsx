@@ -13,6 +13,7 @@ export default function ResetPasswordView({ token }: { token: string }) {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [done, setDone] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ password?: string; confirm?: string }>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -20,14 +21,15 @@ export default function ResetPasswordView({ token }: { token: string }) {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirm) {
-      setError('Passwords do not match.');
-      return;
-    }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
+    // Standard inline validation (lib/validation.ts) — no native popovers;
+    // length and mismatch are field errors now, not form-level alerts.
+    const fe: typeof fieldErrors = {};
+    if (!password) fe.password = 'Please enter your new password.';
+    else if (password.length < 8) fe.password = 'Password must be at least 8 characters.';
+    if (!confirm) fe.confirm = 'Please confirm your new password.';
+    else if (password && password !== confirm) fe.confirm = 'Passwords do not match.';
+    setFieldErrors(fe);
+    if (Object.keys(fe).length) return;
     setBusy(true);
     setError(null);
     try {
@@ -90,7 +92,7 @@ export default function ResetPasswordView({ token }: { token: string }) {
                     </div>
                   </div>
                 ) : (
-                  <form onSubmit={submit}>
+                  <form onSubmit={submit} noValidate>
                     <h2 className={`${styles.formTitle} text-start`}>New password</h2>
                     <div className="mb-3 text-start">
                       <label className={"form-label small " + styles.muted}>
@@ -102,9 +104,11 @@ export default function ResetPasswordView({ token }: { token: string }) {
                         className={`form-control ${styles.input}`}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required
-                        minLength={8}
+                        aria-invalid={!!fieldErrors.password}
                       />
+                      {fieldErrors.password && (
+                        <p className={styles.fieldError}>{fieldErrors.password}</p>
+                      )}
                     </div>
                     <div className="mb-3 text-start">
                       <label className={"form-label small " + styles.muted}>
@@ -116,9 +120,11 @@ export default function ResetPasswordView({ token }: { token: string }) {
                         className={`form-control ${styles.input}`}
                         value={confirm}
                         onChange={(e) => setConfirm(e.target.value)}
-                        required
-                        minLength={8}
+                        aria-invalid={!!fieldErrors.confirm}
                       />
+                      {fieldErrors.confirm && (
+                        <p className={styles.fieldError}>{fieldErrors.confirm}</p>
+                      )}
                     </div>
                     {error && (
                       <p className={"small mb-3 " + styles.errorText} role="alert">

@@ -5,16 +5,22 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody } from 'mdb-react-ui-kit';
 import PageHero from './PageHero';
+import { emailError } from '@/lib/validation';
 import styles from './AccountView.module.css';
 
 export default function LostPasswordView() {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
+  const [fieldError, setFieldError] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Standard inline validation (lib/validation.ts) — no native popovers.
+    const fe = emailError(email);
+    setFieldError(fe);
+    if (fe) return;
     setBusy(true);
     setError(null);
     try {
@@ -66,7 +72,7 @@ export default function LostPasswordView() {
                     </p>
                   </div>
                 ) : (
-                  <form onSubmit={submit}>
+                  <form onSubmit={submit} noValidate>
                     <h2 className={`${styles.formTitle} text-start`}>Reset password</h2>
                     <div className="mb-3 text-start">
                       <label className={"form-label small " + styles.muted}>
@@ -78,8 +84,9 @@ export default function LostPasswordView() {
                         className={`form-control ${styles.input}`}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        required
+                        aria-invalid={!!fieldError}
                       />
+                      {fieldError && <p className={styles.fieldError}>{fieldError}</p>}
                     </div>
                     {error && (
                       <p className={"small mb-3 " + styles.errorText} role="alert">

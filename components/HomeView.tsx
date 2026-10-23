@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 import type { StoreProduct, StoreCategory, WpPost } from '@/lib/woo';
 import { stripHtml } from '@/lib/format';
+import { emailError } from '@/lib/validation';
 import ProductCard from './ProductCard';
 import HeroFeatured from './HeroFeatured';
 import HeroParallax from './HeroParallax';
@@ -38,13 +39,17 @@ const COLLECTIONS = [
 function NewsletterCta() {
   const [email, setEmail] = useState('');
   const [done, setDone] = useState(false);
+  const [fieldError, setFieldError] = useState<string | undefined>(undefined);
   const [error, setError] = useState('');
 
   async function subscribe(e: FormEvent) {
     e.preventDefault();
     setError('');
+    // Standard inline validation (lib/validation.ts) — no native popovers.
+    const fe = emailError(email);
+    setFieldError(fe);
+    if (fe) return;
     const clean = email.trim();
-    if (!clean) return;
     try {
       const res = await fetch('/api/subscriptions', {
         method: 'POST',
@@ -73,19 +78,25 @@ function NewsletterCta() {
           </p>
         ) : (
           <form
-            className="newsletter-shell"
+            className={"newsletter-shell" + (fieldError ? " invalid" : "")}
             onSubmit={subscribe}
+            noValidate
           >
             <input
               type="email"
-              required
               placeholder="Enter your email address"
               aria-label="Email address"
+              aria-invalid={!!fieldError}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <button type="submit">Subscribe</button>
           </form>
+        )}
+        {fieldError && !done && (
+          <p className={"mb-0 mt-2 " + styles.errorSmall}>
+            {fieldError}
+          </p>
         )}
         {error && !done && (
           <p className={"mb-0 mt-2 " + styles.errorSmall}>

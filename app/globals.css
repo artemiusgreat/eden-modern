@@ -276,6 +276,11 @@ em {
   max-width: 520px;
   background: var(--surface);
 }
+/* Standard inline validation (see lib/validation.ts): the shell carries
+   the border here, so the shell gets the invalid highlight. */
+.newsletter-shell.invalid {
+  border-color: #e0655f;
+}
 .newsletter-shell input {
   background: transparent;
   border: 0;

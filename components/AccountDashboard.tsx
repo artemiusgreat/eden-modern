@@ -8,6 +8,7 @@ import { progressBegin, progressEnd } from '@/lib/progress';
 import CatalogPagination from './CatalogPagination';
 import styles from './AccountView.module.css';
 import { COUNTRIES, countryCode } from '@/lib/countries';
+import { emailError } from '@/lib/validation';
 
 type Tab = 'orders' | 'addresses' | 'account';
 
@@ -47,14 +48,16 @@ function Notice({ kind, children }: { kind: 'error' | 'ok' | 'info'; children: R
 
 function Field({
   label,
+  error,
   ...props
-}: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
+}: React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string }) {
   return (
     <div className="mb-3 text-start">
       <label className={"form-label small " + styles.muted}>
         {label}
       </label>
-      <input {...props} className={`form-control ${styles.input}`} />
+      <input {...props} className={`form-control ${styles.input}`} aria-invalid={!!error} />
+      {error && <p className={styles.fieldError}>{error}</p>}
     </div>
   );
 }
@@ -512,6 +515,7 @@ function AccountTab() {
   const [expired, setExpired] = useState(false);
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; pw1?: string; pw2?: string }>({});
 
   useEffect(() => {
     (async () => {
@@ -539,10 +543,17 @@ function AccountTab() {
   const save = async () => {
     setError(null);
     setSaved(false);
+    // Standard inline validation (lib/validation.ts) — field errors under
+    // the inputs, the same wording as the reset-password form.
+    const fe: { email?: string; pw1?: string; pw2?: string } = {};
+    const ee = emailError(email);
+    if (ee) fe.email = ee;
     if (pw1 || pw2) {
-      if (pw1 !== pw2) return setError('New passwords do not match.');
-      if (pw1.length < 8) return setError('New password must be at least 8 characters.');
+      if (pw1.length < 8) fe.pw1 = 'Password must be at least 8 characters.';
+      if (pw1 !== pw2) fe.pw2 = 'Passwords do not match.';
     }
+    setFieldErrors(fe);
+    if (Object.keys(fe).length) return;
     setBusy(true);
     progressBegin();
     try {
@@ -583,14 +594,14 @@ function AccountTab() {
         <Field label="First name" value={first} onChange={(e) => setFirst(e.target.value)} autoComplete="given-name" />
         <Field label="Last name" value={last} onChange={(e) => setLast(e.target.value)} autoComplete="family-name" />
       </div>
-      <Field label="Email address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required />
+      <Field label="Email address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" error={fieldErrors.email} />
       <h3 className={styles.formH + " " + styles.mt175}>Change password</h3>
       <p className={"small mb-3 " + styles.muted}>
         Leave blank to keep your current password.
       </p>
       <div className={styles.grid2}>
-        <Field label="New password" type="password" value={pw1} onChange={(e) => setPw1(e.target.value)} autoComplete="new-password" />
-        <Field label="Confirm new password" type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} autoComplete="new-password" />
+        <Field label="New password" type="password" value={pw1} onChange={(e) => setPw1(e.target.value)} autoComplete="new-password" error={fieldErrors.pw1} />
+        <Field label="Confirm new password" type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} autoComplete="new-password" error={fieldErrors.pw2} />
       </div>
       <button type="button" className="btn-gold mt-2" disabled={busy} onClick={save}>
         {busy ? 'Saving…' : 'Save changes'}
