@@ -188,6 +188,112 @@
   color: #0a0f1a;
 }
 
+/* ---------- Attribute multiselect dropdown (long groups) ---------- */
+.ddWrap {
+  position: relative;
+}
+.ddBtn.ddBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--ink);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.88rem;
+  font-weight: 300;
+  cursor: pointer;
+  text-align: left;
+}
+.ddBtn.ddBtn:hover {
+  border-color: var(--gold-soft);
+}
+.ddBtnText {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ddChevron {
+  color: var(--muted);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+.ddPanel.ddPanel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+  padding: 0.7rem;
+}
+.ddSearch.ddSearch {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--ink);
+  padding: 0.5rem 0.7rem;
+  font-size: 0.88rem;
+  margin-bottom: 0.5rem;
+}
+.ddSearch.ddSearch:focus {
+  outline: none;
+  border-color: var(--gold-soft);
+}
+.ddList {
+  max-height: 260px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.ddEmpty {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 300;
+  margin: 0.4rem 0;
+}
+.ddFoot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+}
+.ddClear.ddClear {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.ddClear.ddClear:hover {
+  color: var(--ink);
+}
+.ddDone.ddDone {
+  background: transparent;
+  border: 1px solid var(--gold-soft);
+  border-radius: 3px;
+  color: var(--gold-soft);
+  padding: 0.35rem 0.9rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.ddDone.ddDone:hover {
+  background: var(--gold-soft);
+  color: #0a0f1a;
+}
+
 /* ---------- Toolbar ---------- */
 .toolbar {
   display: flex;

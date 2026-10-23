@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { MDBIcon } from 'mdb-react-ui-kit';
 import { progressBegin } from '@/lib/progress';
@@ -57,6 +57,119 @@ function buildTree(categories: StoreCategory[]): CatNode[] {
   const build = (parent: number): CatNode[] =>
     (byParent.get(parent) ?? []).map((cat) => ({ cat, children: build(cat.id) }));
   return build(0);
+}
+
+/** Attribute groups longer than this render as a multiselect dropdown. */
+const LONG_GROUP_THRESHOLD = 12;
+
+function AttributeDropdown({
+  attr,
+  params,
+  router,
+}: {
+  attr: CatalogAttribute;
+  params: Record<string, string>;
+  router: Router;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  const selectedSlugs = (params[attr.taxonomy] ?? '').split(',').filter(Boolean);
+  const selectedTerms = attr.terms.filter((t) => selectedSlugs.includes(t.slug));
+
+  // Close on outside click / Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open ]);
+
+  const q = query.trim().toLowerCase();
+  const visible = attr.terms
+    .filter((t) => !q || t.name.toLowerCase().includes(q))
+    // Selected terms pin to the top so active choices are always reachable.
+    .sort((a, b) => Number(selectedSlugs.includes(b.slug)) - Number(selectedSlugs.includes(a.slug)));
+
+  const summary =
+    selectedTerms.length === 0
+      ? `All ${attr.name.toLowerCase()}`
+      : selectedTerms.length <= 2
+        ? selectedTerms.map((t) => t.name).join(', ')
+        : `${selectedTerms[0].name}, +${selectedTerms.length - 1} more`;
+
+  return (
+    <div className={styles.ddWrap} ref={wrapRef}>
+      <button
+        type="button"
+        className={styles.ddBtn}
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}>
+        <span className={styles.ddBtnText}>{summary}</span>
+        <MDBIcon fas icon={open ? 'chevron-up' : 'chevron-down'} className={styles.ddChevron} />
+      </button>
+      {open && (
+        <div className={styles.ddPanel}>
+          <input
+            type="text"
+            className={styles.ddSearch}
+            placeholder={`Search ${attr.name.toLowerCase()}…`}
+            aria-label={`Search ${attr.name}`}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            autoFocus
+          />
+          <div className={styles.ddList}>
+            {visible.map((t) => {
+              const selected = selectedSlugs.includes(t.slug);
+              return (
+                <label className={styles.check} key={t.id}>
+                  <input
+                    type="checkbox"
+                    checked={selected}
+                    onChange={() =>
+                      pushUrl(router, params, {
+                        [attr.taxonomy]: toggleList(params[attr.taxonomy], t.slug),
+                      })
+                    }
+                  />
+                  <span className={styles.checkLabel}>{t.name}</span>
+                  <span className={styles.checkCount}>{t.count}</span>
+                </label>
+              );
+            })}
+            {visible.length === 0 && <p className={styles.ddEmpty}>No matches for “{query}”.</p>}
+          </div>
+          <div className={styles.ddFoot}>
+            {selectedTerms.length > 0 ? (
+              <button
+                type="button"
+                className={styles.ddClear}
+                onClick={() => pushUrl(router, params, { [attr.taxonomy]: undefined })}>
+                Clear ({selectedTerms.length})
+              </button>
+            ) : (
+              <span />
+            )}
+            <button type="button" className={styles.ddDone} onClick={() => setOpen(false)}>
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 const RATING_OPTIONS: { value: number | null; label: string }[] = [
@@ -233,7 +346,10 @@ export default function CatalogFilters(props: Props) {
         {attributes.map((attr) => (
           <div className={styles.group} key={attr.taxonomy}>
             <h3 className={styles.groupTitle}>{attr.name}</h3>
-            {attr.terms.map((t) => {
+            {attr.terms.length > LONG_GROUP_THRESHOLD ? (
+              <AttributeDropdown attr={attr} params={params} router={router} />
+            ) : (
+              attr.terms.map((t) => {
               const selected = (params[attr.taxonomy] ?? '').split(',').includes(t.slug);
               return (
                 <label className={styles.check} key={t.id}>
@@ -250,7 +366,8 @@ export default function CatalogFilters(props: Props) {
                   <span className={styles.checkCount}>{t.count}</span>
                 </label>
               );
-            })}
+              })
+            )}
           </div>
         ))}
 
