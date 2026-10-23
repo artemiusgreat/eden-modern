@@ -219,6 +219,16 @@ export async function getProductsPaged(q: ProductQuery = {}) {
   return { products: data.map(decodeProduct), totalPages };
 }
 
+/** Fetch specific products by ID. Order is NOT preserved — callers re-sort. */
+export async function getProductsByIds(ids: number[]) {
+  if (!ids.length) return [];
+  const products = await wooGet<StoreProduct[]>('/products', {
+    include: ids.join(','),
+    per_page: ids.length,
+  });
+  return products.map(decodeProduct);
+}
+
 export const getProductBySlug = cache(async (slug: string): Promise<StoreProduct | null> => {
   // Fast path: Store API slug query (works for catalog-visible products).
   const products = await getProducts({ slug, per_page: 1 });
@@ -424,23 +434,20 @@ export async function getCatalogProducts(f: CatalogFilters): Promise<CatalogResu
   if (f.rating) params.rating = f.rating;
   if (f.onSale) params.on_sale = 'true';
   if (f.inStock) params.stock_status = 'instock';
-  // The Store API accepts a single attribute filter per request — send the
-  // first and intersect any further selections in memory below.
-  const [firstAttr, ...restAttrs] = f.attributes;
-  if (firstAttr) {
-    params.attribute = firstAttr.taxonomy;
-    params.attribute_term = firstAttr.termIds.join(',');
-  }
+  // Attribute filters use the Store API's `attributes` array shape:
+  // attributes[i][attribute]=<taxonomy> + attributes[i][term_id]=<ids,
+  // comma-joined (the endpoint parses it with wp_parse_id_list). The old
+  // wc/v3-style `attribute`/`attribute_term` params are silently IGNORED
+  // by the Store API — that was the "filters don't filter" bug. All
+  // selected attributes go server-side (attribute_relation=and), so
+  // totals and pagination stay correct for multi-attribute selections.
+  f.attributes.forEach((attr, i) => {
+    params[`attributes[${i}][attribute]`] = attr.taxonomy;
+    params[`attributes[${i}][term_id]`] = attr.termIds.join(',');
+  });
+  if (f.attributes.length) params.attribute_relation = 'and';
   const { data, total, totalPages } = await wooGetPaged<StoreProduct[]>('/products', params);
-  let products = data.map(decodeProduct);
-  for (const attr of restAttrs) {
-    const ids = new Set(attr.termIds);
-    products = products.filter((p) =>
-      (p.attributes ?? []).some(
-        (a) => a.taxonomy === attr.taxonomy && a.terms.some((t) => ids.has(t.id))
-      )
-    );
-  }
+  const products = data.map(decodeProduct);
   return { products, total, totalPages };
 }
 
@@ -449,9 +456,18 @@ export async function getProductAttributes(): Promise<CatalogAttribute[]> {
   const attrs = await wooGet<{ id: number; name: string; taxonomy: string }[]>('/products/attributes');
   const out: CatalogAttribute[] = [];
   for (const a of attrs) {
-    const terms = await wooGet<CatalogAttributeTerm[]>(`/products/attributes/${a.id}/terms`, {
-      per_page: 100,
-    });
+    // Terms paginate at 100 — pa_brand alone has ~500. Fetch every page,
+    // otherwise most terms never reach the sidebar (and slug -> id
+    // resolution in the catalog page silently drops those selections).
+    const terms: CatalogAttributeTerm[] = [];
+    for (let page = 1; ; page++) {
+      const batch = await wooGet<CatalogAttributeTerm[]>(`/products/attributes/${a.id}/terms`, {
+        per_page: 100,
+        page,
+      });
+      terms.push(...batch);
+      if (batch.length < 100) break;
+    }
     if (!terms.length) continue;
     out.push({
       id: a.id,
