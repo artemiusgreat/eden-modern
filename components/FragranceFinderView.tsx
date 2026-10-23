@@ -123,8 +123,12 @@ export default function FragranceFinderView() {
               <MDBRow>
                 {results.map(({ product, reason }) => (
                   <MDBCol md="4" sm="6" className="mb-4" key={product.id}>
-                    <ProductCard product={product} />
-                    <p className={styles.reason}>{reason}</p>
+                    <div className={styles.colWrap}>
+                      <div className={styles.cardSlot}>
+                        <ProductCard product={product} />
+                      </div>
+                      <p className={styles.reason}>{reason}</p>
+                    </div>
                   </MDBCol>
                 ))}
               </MDBRow>

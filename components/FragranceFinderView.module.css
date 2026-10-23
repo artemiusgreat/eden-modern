@@ -100,6 +100,18 @@
   font-weight: 300;
   margin: 0;
 }
+/* ProductCard is h-100 (100% of its container): without this flex wrap
+   the reason line after it overflowed the column and overlapped the
+   next row. The card slot flexes, the reason flows below the card. */
+.colWrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.cardSlot {
+  flex: 1 1 auto;
+  min-height: 0;
+}
 .reason.reason {
   color: var(--gold-soft);
   font-size: 0.88rem;
