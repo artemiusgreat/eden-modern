@@ -111,4 +111,8 @@ export const env = {
   get WC_CONSUMER_SECRET(): string {
     return optional('WC_CONSUMER_SECRET');
   },
+  /** Optional: without it, the fragrance finder runs on embeddings only. */
+  get OPENROUTER_API_KEY(): string {
+    return optional('OPENROUTER_API_KEY');
+  },
 };

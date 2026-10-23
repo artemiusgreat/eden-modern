@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // The fragrance finder's local embedding model loads native ONNX
+  // binaries — keep it out of the webpack bundle, load it from
+  // node_modules at runtime instead.
+  serverExternalPackages: ['@huggingface/transformers'],
   images: {
     remotePatterns: [
       {
