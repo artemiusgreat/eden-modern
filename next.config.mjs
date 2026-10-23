@@ -54,6 +54,8 @@ const nextConfig = {
       { source: '/checkout-link', destination: '/checkout', permanent: true },
       // Legacy /releases -> /magazine (301).
       { source: '/releases/:path*', destination: '/magazine/:path*', permanent: true },
+      // The finder was renamed to the category-neutral /product-finder (301).
+      { source: '/fragrance-finder', destination: '/product-finder', permanent: true },
     ];
   },
 };

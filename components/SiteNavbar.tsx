@@ -151,7 +151,7 @@ export default function SiteNavbar() {
                 </MDBNavbarItem>
               ))}
               <MDBNavbarItem>
-                <Link href="/fragrance-finder">
+                <Link href="/product-finder">
                   <MDBNavbarLink tag="span" className={styles.navLink} onClick={closeAll}>
                     Finder
                   </MDBNavbarLink>
