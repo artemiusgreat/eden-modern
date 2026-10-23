@@ -97,3 +97,24 @@ export function trackPurchase(
     items,
   });
 }
+
+/** Push a flat custom event to the dataLayer. No-op during SSR. */
+function pushEvent(event: string, params: Record<string, unknown>) {
+  if (typeof window === 'undefined') return;
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event, ...params });
+}
+
+/**
+ * Product Finder funnel (for a future finder campaign): the search step
+ * and the click-through to a product. The product page itself fires
+ * view_item as usual; these two mark the mid-funnel steps a Meta custom
+ * conversion would optimize on. GTM maps them like the other events.
+ */
+export function trackFinderSearch(resultsCount: number, mode: string) {
+  pushEvent('finder_search', { finder_results: resultsCount, finder_mode: mode });
+}
+
+export function trackFinderResultClick(item: GaItem) {
+  pushEvent('finder_result_click', { items: [item] });
+}

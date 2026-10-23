@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { MDBBtn, MDBCol, MDBContainer, MDBRow, MDBSpinner } from 'mdb-react-ui-kit';
 import type { StoreProduct } from '@/lib/woo';
+import { productToGaItem, trackFinderResultClick, trackFinderSearch } from '@/lib/analytics';
 import ProductCard from './ProductCard';
 import styles from './FragranceFinderView.module.css';
 
@@ -48,6 +49,7 @@ export default function FragranceFinderView() {
       setResults(data.results ?? []);
       setMode(data.mode ?? 'llm');
       setSearched(true);
+      trackFinderSearch((data.results ?? []).length, data.mode ?? 'llm');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Search failed — please try again.');
     } finally {
@@ -123,7 +125,9 @@ export default function FragranceFinderView() {
               <MDBRow>
                 {results.map(({ product, reason }) => (
                   <MDBCol md="4" sm="6" className="mb-4" key={product.id}>
-                    <div className={styles.colWrap}>
+                    <div
+                      className={styles.colWrap}
+                      onClick={() => trackFinderResultClick(productToGaItem(product))}>
                       <div className={styles.cardSlot}>
                         <ProductCard product={product} />
                       </div>
