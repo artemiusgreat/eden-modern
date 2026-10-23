@@ -107,13 +107,20 @@ function catalogUrl(flat: Record<string, string>): string {
   return s ? `/catalog?${s}` : '/catalog';
 }
 
-/** URL with one filter removed (single value from a comma list, or whole key). */
-function withoutFilter(flat: Record<string, string>, key: string, value?: string): string {
+/** URL with one filter removed (value(s) from a comma list, or whole key).
+ *  Matching is case-insensitive and accepts several spellings of the same
+ *  value — the category param legitimately arrives as IDs (?category=93)
+ *  or slugs (?category=skin-care-cosmetics) depending on the inbound link,
+ *  and a chip must strip its category in either form. Stripping only the
+ *  ID from a slug-valued param used to produce the same URL, so the chip
+ *  click showed the loading bar and changed nothing. */
+function withoutFilter(flat: Record<string, string>, key: string, value?: string | string[]): string {
   const p = new URLSearchParams(flat);
   if (value === undefined) {
     p.delete(key);
   } else {
-    const vals = (p.get(key) ?? '').split(',').filter((v) => v !== value);
+    const strip = (Array.isArray(value) ? value : [value]).map((v) => v.toLowerCase());
+    const vals = (p.get(key) ?? '').split(',').filter((v) => !strip.includes(v.toLowerCase()));
     if (vals.length) p.set(key, vals.join(','));
     else p.delete(key);
   }
@@ -224,7 +231,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
   }
   for (const id of categoryIds) {
     const c = catById.get(id);
-    if (c) chips.push({ label: c.name, href: withoutFilter(flat, 'category', String(id)) });
+    if (c) chips.push({ label: c.name, href: withoutFilter(flat, 'category', [String(id), c.slug]) });
   }
   if (minPrice !== null || maxPrice !== null) {
     const lo = minPrice !== null ? `$${minPrice.toFixed(0)}` : '$0';

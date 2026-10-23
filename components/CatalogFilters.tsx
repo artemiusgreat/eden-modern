@@ -222,8 +222,23 @@ export default function CatalogFilters(props: Props) {
       return next;
     });
 
-  const onToggleCat = (id: number) =>
-    pushUrl(router, params, { category: toggleList(params.category, String(id)) });
+  // The category param may hold IDs, slugs, or a mix (inbound links use
+  // slugs; this sidebar writes IDs). Toggling must work in every form:
+  // unchecking strips both the ID and the slug spelling of the category,
+  // checking appends the ID. A naive ID-only toggleList could never
+  // uncheck a slug-valued selection.
+  const onToggleCat = (cat: StoreCategory) => {
+    const entries = (params.category ?? '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const next = selectedCategoryIds.includes(cat.id)
+      ? entries.filter(
+          (e) => e !== String(cat.id) && e.toLowerCase() !== cat.slug.toLowerCase()
+        )
+      : [...entries, String(cat.id)];
+    pushUrl(router, params, { category: next.length ? next.join(',') : undefined });
+  };
 
   // Tooltip for each category: its description when set in WP,
   // otherwise name + product count.
@@ -258,7 +273,7 @@ export default function CatalogFilters(props: Props) {
               />
             )}
             <label className={depth === 0 ? styles.catBtnLabel : styles.check} title={catTip(n.cat)}>
-              <input type="checkbox" checked={checked} onChange={() => onToggleCat(n.cat.id)} />
+              <input type="checkbox" checked={checked} onChange={() => onToggleCat(n.cat)} />
               <span className={styles.checkLabel}>{n.cat.name}</span>
               <span className={styles.checkCount}>{n.cat.count}</span>
             </label>
