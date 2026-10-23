@@ -51,32 +51,39 @@ function buildTree(categories: StoreCategory[]): CatNode[] {
   return build(0);
 }
 
+interface FilterOption {
+  value: string;
+  label: string;
+  count?: number;
+}
+
 /**
- * Attribute filter as a multiselect dropdown. Selections are STAGED
- * locally while the panel is open and applied to the URL only on Done;
- * closing any other way (outside click, Escape, the toggle button)
- * discards them. Opening re-stages from the applied URL selection, and
- * Done clears the search box.
+ * Multiselect dropdown filter. Selections are STAGED locally while the
+ * panel is open and committed via onApply only on Done; closing any
+ * other way (outside click, Escape, the toggle button) discards them.
+ * Opening re-stages from the applied selection, and Done clears the
+ * search box.
  */
-function AttributeDropdown({
-  attr,
-  params,
-  router,
+function FilterDropdown({
+  name,
+  options,
+  appliedValues,
+  onApply,
 }: {
-  attr: CatalogAttribute;
-  params: Record<string, string>;
-  router: Router;
+  name: string;
+  options: FilterOption[];
+  appliedValues: string[];
+  onApply: (values: string[]) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [staged, setStaged] = useState<string[]>([]);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  const appliedSlugs = (params[attr.taxonomy] ?? '').split(',').filter(Boolean);
-  const appliedTerms = attr.terms.filter((t) => appliedSlugs.includes(t.slug));
+  const appliedOptions = options.filter((o) => appliedValues.includes(o.value));
 
   const openPanel = () => {
-    setStaged(appliedSlugs);
+    setStaged(appliedValues);
     setQuery('');
     setOpen(true);
   };
@@ -103,30 +110,28 @@ function AttributeDropdown({
   }, [open ]);
 
   const applyStaged = () => {
-    pushUrl(router, params, {
-      [attr.taxonomy]: staged.length ? staged.join(',') : undefined,
-    });
+    onApply(staged);
     setQuery('');
     setOpen(false);
   };
 
-  const toggleStaged = (slug: string) =>
+  const toggleStaged = (value: string) =>
     setStaged((prev) =>
-      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
+      prev.includes(value) ? prev.filter((s) => s !== value) : [...prev, value]
     );
 
   const q = query.trim().toLowerCase();
-  const visible = attr.terms
-    .filter((t) => !q || t.name.toLowerCase().includes(q))
-    // Staged selections pin to the top so chosen terms stay reachable.
-    .sort((a, b) => Number(staged.includes(b.slug)) - Number(staged.includes(a.slug)));
+  const visible = options
+    .filter((o) => !q || o.label.toLowerCase().includes(q))
+    // Staged selections pin to the top so chosen options stay reachable.
+    .sort((a, b) => Number(staged.includes(b.value)) - Number(staged.includes(a.value)));
 
   const summary =
-    appliedTerms.length === 0
-      ? `All ${attr.name.toLowerCase()}`
-      : appliedTerms.length <= 2
-        ? appliedTerms.map((t) => t.name).join(', ')
-        : `${appliedTerms[0].name}, +${appliedTerms.length - 1} more`;
+    appliedOptions.length === 0
+      ? `All ${name.toLowerCase()}`
+      : appliedOptions.length <= 2
+        ? appliedOptions.map((o) => o.label).join(', ')
+        : `${appliedOptions[0].label}, +${appliedOptions.length - 1} more`;
 
   return (
     <div className={styles.ddWrap} ref={wrapRef}>
@@ -141,25 +146,27 @@ function AttributeDropdown({
       </button>
       {open && (
         <div className={styles.ddPanel}>
-          <input
-            type="text"
-            className={styles.ddSearch}
-            placeholder={`Search ${attr.name.toLowerCase()}…`}
-            aria-label={`Search ${attr.name}`}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            autoFocus
-          />
+          {options.length > 8 && (
+            <input
+              type="text"
+              className={styles.ddSearch}
+              placeholder={`Search ${name.toLowerCase()}…`}
+              aria-label={`Search ${name}`}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              autoFocus
+            />
+          )}
           <div className={styles.ddList}>
-            {visible.map((t) => (
-              <label className={styles.check} key={t.id}>
+            {visible.map((o) => (
+              <label className={styles.check} key={o.value}>
                 <input
                   type="checkbox"
-                  checked={staged.includes(t.slug)}
-                  onChange={() => toggleStaged(t.slug)}
+                  checked={staged.includes(o.value)}
+                  onChange={() => toggleStaged(o.value)}
                 />
-                <span className={styles.checkLabel}>{t.name}</span>
-                <span className={styles.checkCount}>{t.count}</span>
+                <span className={styles.checkLabel}>{o.label}</span>
+                {o.count !== undefined && <span className={styles.checkCount}>{o.count}</span>}
               </label>
             ))}
             {visible.length === 0 && <p className={styles.ddEmpty}>No matches for “{query}”.</p>}
@@ -172,6 +179,30 @@ function AttributeDropdown({
         </div>
       )}
     </div>
+  );
+}
+
+/** Attribute group backed by one comma-separated URL param of term slugs. */
+function AttributeDropdown({
+  attr,
+  params,
+  router,
+}: {
+  attr: CatalogAttribute;
+  params: Record<string, string>;
+  router: Router;
+}) {
+  return (
+    <FilterDropdown
+      name={attr.name}
+      options={attr.terms.map((t) => ({ value: t.slug, label: t.name, count: t.count }))}
+      appliedValues={(params[attr.taxonomy] ?? '').split(',').filter(Boolean)}
+      onApply={(values) =>
+        pushUrl(router, params, {
+          [attr.taxonomy]: values.length ? values.join(',') : undefined,
+        })
+      }
+    />
   );
 }
 
@@ -310,7 +341,7 @@ export default function CatalogFilters(props: Props) {
 
       <div className={`${styles.sideBody} ${open ? styles.sideOpen : ''}`}>
         <div className={styles.group}>
-          <h3 className={`${styles.groupTitle} text-uppercase`}>Category</h3>
+          <h3 className={styles.groupTitle}>Category</h3>
           {renderCats(tree, 0)}
         </div>
 
@@ -370,22 +401,23 @@ export default function CatalogFilters(props: Props) {
 
         <div className={styles.group}>
           <h3 className={styles.groupTitle}>Availability</h3>
-          <label className={styles.check}>
-            <input
-              type="checkbox"
-              checked={inStock}
-              onChange={() => pushUrl(router, params, { in_stock: inStock ? undefined : '1' })}
-            />
-            <span className={styles.checkLabel}>In stock</span>
-          </label>
-          <label className={styles.check}>
-            <input
-              type="checkbox"
-              checked={onSale}
-              onChange={() => pushUrl(router, params, { on_sale: onSale ? undefined : '1' })}
-            />
-            <span className={styles.checkLabel}>On sale</span>
-          </label>
+          <FilterDropdown
+            name="Availability"
+            options={[
+              { value: 'in_stock', label: 'In stock' },
+              { value: 'on_sale', label: 'On sale' },
+            ]}
+            appliedValues={[
+              ...(inStock ? ['in_stock'] : []),
+              ...(onSale ? ['on_sale'] : []),
+            ]}
+            onApply={(values) =>
+              pushUrl(router, params, {
+                in_stock: values.includes('in_stock') ? '1' : undefined,
+                on_sale: values.includes('on_sale') ? '1' : undefined,
+              })
+            }
+          />
         </div>
       </div>
     </aside>
