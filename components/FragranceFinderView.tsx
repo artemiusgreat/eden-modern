@@ -13,11 +13,11 @@ interface SearchResult {
 }
 
 const EXAMPLES = [
-  'Fresh citrus for the office, nothing too sweet',
+  'Fresh and light for the office, nothing too strong',
+  'A gentle moisturizer for dry skin',
   'Roses and musk for a wedding',
-  'Warm vanilla and oud for a date night',
-  'A gift for my dad — classic woody, nothing fruity',
-  'Something light and clean for summer days',
+  'A gift set for my dad — something classic',
+  'Warm vanilla for a date night',
 ];
 
 export default function FragranceFinderView() {
@@ -59,12 +59,12 @@ export default function FragranceFinderView() {
     <>
       <section className={styles.banner}>
         <MDBContainer className={styles.bannerInner}>
-          <p className={styles.kicker}>Fragrance Finder</p>
-          <h1 className={styles.title}>Describe your scent</h1>
+          <p className={styles.kicker}>Product Finder</p>
+          <h1 className={styles.title}>Describe what you’re looking for</h1>
           <p className={styles.sub}>
-            Tell us the occasion or the scent you have in mind — “something fresh for the
-            office”, “roses for a wedding” — and we will match you with perfumes from our
-            collection of nearly three thousand fragrances.
+            Tell us what you have in mind — “something fresh for the office”, “a gentle
+            cream for dry skin”, “a gift for a wedding” — and we will match you with
+            products from our collection of nearly three thousand items.
           </p>
           <form
             className={styles.searchForm}
@@ -76,14 +76,14 @@ export default function FragranceFinderView() {
             <input
               type="text"
               className={styles.searchInput}
-              placeholder="e.g. warm vanilla for a date night, nothing too heavy"
+              placeholder="e.g. something fresh for the office, or a gift for my wife"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               maxLength={300}
-              aria-label="Describe the scent or occasion"
+              aria-label="Describe what you are looking for"
             />
             <MDBBtn type="submit" color="dark" className={styles.searchBtn} disabled={loading}>
-              {loading ? <MDBSpinner size="sm" role="status" /> : 'Find my scent'}
+              {loading ? <MDBSpinner size="sm" role="status" /> : 'Find my match'}
             </MDBBtn>
           </form>
           <div className={styles.chips}>
@@ -116,7 +116,7 @@ export default function FragranceFinderView() {
                 <h2 className={styles.resultsTitle}>Your matches</h2>
                 {mode !== 'llm' && (
                   <p className={styles.modeNote}>
-                    Smart matching is busy right now — these are the closest scent matches.
+                    Smart matching is busy right now — these are the closest matches.
                   </p>
                 )}
               </div>
@@ -137,9 +137,9 @@ export default function FragranceFinderView() {
             <div className={styles.empty}>
               <h2 className={styles.resultsTitle}>No close matches yet</h2>
               <p>
-                Try describing the scent differently — a note you love (vanilla, rose, cedar),
-                a mood (fresh, warm, clean), or the occasion. Or{' '}
-                <Link href="/catalog?category=perfumes-colognes">browse all perfumes</Link>.
+                Try describing it differently — a product you want (a cream, a spray, a gift
+                set), an ingredient or scent you love, or the occasion. Or{' '}
+                <Link href="/catalog">browse the catalog</Link>.
               </p>
             </div>
           )}

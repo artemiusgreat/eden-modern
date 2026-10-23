@@ -51,7 +51,6 @@ const MENU: MenuEntry[] = [
         label: null,
         links: [
           { name: 'Perfumes & Colognes', href: '/catalog?category=perfumes-colognes' },
-          { name: 'Fragrance Finder', href: '/fragrance-finder' },
           { name: 'Home Fragrances', href: '/catalog?category=home-fragrances' },
           { name: 'Shop all fragrances', href: '/catalog?category=89,92', highlight: true },
         ],
@@ -151,6 +150,13 @@ export default function SiteNavbar() {
                   </div>
                 </MDBNavbarItem>
               ))}
+              <MDBNavbarItem>
+                <Link href="/fragrance-finder">
+                  <MDBNavbarLink tag="span" className={styles.navLink} onClick={closeAll}>
+                    Finder
+                  </MDBNavbarLink>
+                </Link>
+              </MDBNavbarItem>
               <MDBNavbarItem>
                 <Link href="/magazine">
                   <MDBNavbarLink tag="span" className={styles.navLink} onClick={closeAll}>
