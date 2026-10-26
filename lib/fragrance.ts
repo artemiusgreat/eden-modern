@@ -149,28 +149,32 @@ const PARSE_MODELS = [
 const PARSE_SYSTEM = `You parse perfume search queries into JSON. Reply with ONLY a JSON object, no markdown: {"liked_notes":[string],"disliked_notes":[string],"occasions":[string],"families":[string],"intensity":"light|medium|strong|any","gender":"women|men|unisex|any","free_terms":[string]}. Occasions vocabulary: office, date night, wedding, evening, daytime, summer, winter, sport, gift. Families vocabulary: citrus, floral, woody, oriental, gourmand, fruity, aquatic, green, musky, spicy, powdery, aromatic. Things the user does NOT want go in disliked_notes, including rejected qualities like sweetness (map to gourmand family and notes vanilla, caramel, tonka bean). Infer gender from recipients (wife/girlfriend/mom -> women; husband/boyfriend/dad -> men) and from phrases like "for her"/"for him".`;
 
 function extractJson(text: string): unknown | null {
-  const start = text.indexOf('{');
-  if (start < 0) return null;
-  let depth = 0;
-  let inStr = false;
-  let esc = false;
-  for (let i = start; i < text.length; i++) {
-    const ch = text[i];
-    if (inStr) {
-      if (esc) esc = false;
-      else if (ch === '\\') esc = true;
-      else if (ch === '"') inStr = false;
-      continue;
-    }
-    if (ch === '"') inStr = true;
-    else if (ch === '{') depth++;
-    else if (ch === '}') {
-      depth--;
-      if (depth === 0) {
-        try {
-          return JSON.parse(text.slice(start, i + 1));
-        } catch {
-          return null;
+  // Reasoning models may precede the real JSON with prose — including an
+  // echo of the prompt's schema with unquoted placeholders like [string],
+  // which brace-balances but does not parse. A failed candidate is not
+  // the end: resume scanning at the next '{' until one parses.
+  for (let start = text.indexOf('{'); start >= 0; start = text.indexOf('{', start + 1)) {
+    let depth = 0;
+    let inStr = false;
+    let esc = false;
+    for (let i = start; i < text.length; i++) {
+      const ch = text[i];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (ch === '\\') esc = true;
+        else if (ch === '"') inStr = false;
+        continue;
+      }
+      if (ch === '"') inStr = true;
+      else if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) {
+          try {
+            return JSON.parse(text.slice(start, i + 1));
+          } catch {
+            break; // try the next '{' as a candidate start
+          }
         }
       }
     }
@@ -206,7 +210,16 @@ function coerceIntent(raw: unknown): FragranceIntent | null {
     free_terms: strList(r.free_terms, 6),
   };
   // A parse that extracted nothing is a failure — let the fallback answer.
-  if (!intent.liked_notes.length && !intent.families.length && !intent.occasions.length && !intent.free_terms.length) {
+  // Disliked notes count as content: a pure-negation query ("scent without
+  // citrus") parses to ONLY disliked_notes, and discarding that parse would
+  // hand the query to tiers that cannot understand negation at all.
+  if (
+    !intent.liked_notes.length &&
+    !intent.disliked_notes.length &&
+    !intent.families.length &&
+    !intent.occasions.length &&
+    !intent.free_terms.length
+  ) {
     return null;
   }
   return intent;
@@ -262,24 +275,89 @@ function termFamilies(term: string): string[] {
   return TERM_FAMILIES[term] ?? [];
 }
 
+// Note lexicon per family — mirrors FAMILY_NOTES in
+// scripts/build-fragrance-index.mjs (the index builder's note->family map),
+// with 'neroli' added under citrus: for exclusion a missed note is the
+// costlier error. The index's per-product families are only a top-4
+// summary, so a family tag alone cannot be trusted to catch every product
+// carrying that family's notes (a bergamot scent can be tagged
+// woody/floral/fruity/green and still be a citrus carrier).
+const FAMILY_NOTES: Record<string, string[]> = {
+  citrus: ['bergamot', 'lemon', 'lime', 'orange', 'mandarin orange', 'mandarin', 'grapefruit', 'tangerine', 'yuzu', 'citron', 'blood orange', 'petitgrain', 'clementine', 'pomelo', 'bitter orange', 'sicilian lemon', 'calabrian bergamot', 'citrus', 'neroli'],
+  floral: ['rose', 'jasmine', 'lily', 'freesia', 'violet', 'peony', 'orchid', 'tuberose', 'gardenia', 'magnolia', 'orange blossom', 'ylang-ylang', 'carnation', 'hyacinth', 'narcissus', 'lotus', 'mimosa', 'osmanthus', 'honeysuckle', 'cherry blossom', 'iris', 'neroli', 'geranium', 'lily of the valley', 'turkish rose', 'bulgarian rose', 'damask rose', 'may rose', 'sambac jasmine', 'jasmine sambac', 'frangipani', 'tiara flower', 'hibiscus', 'lilac', 'daffodil', 'tulip', 'sunflower', 'poppy', 'daisy', 'lavender blossom'],
+  woody: ['sandalwood', 'cedar', 'cedarwood', 'virginia cedar', 'atlas cedar', 'vetiver', 'patchouli', 'oud', 'agarwood', 'guaiac wood', 'cypress', 'pine', 'birch', 'teak wood', 'ebony wood', 'cashmeran', 'papyrus', 'driftwood', 'rosewood', 'mahogany', 'oak', 'hinoki wood', 'palo santo'],
+  oriental: ['amber', 'benzoin', 'labdanum', 'myrrh', 'frankincense', 'incense', 'olibanum', 'saffron', 'ambergris', 'grey amber', 'white amber', 'amberwood', 'styrax', 'tolu balsam', 'peru balsam', 'opoponax'],
+  gourmand: ['vanilla', 'bourbon vanilla', 'madagascar vanilla', 'tahitian vanilla', 'caramel', 'tonka bean', 'chocolate', 'dark chocolate', 'cacao', 'coffee', 'honey', 'almond', 'praline', 'hazelnut', 'pistachio', 'brown sugar', 'sugar', 'cotton candy', 'marshmallow', 'whipped cream', 'cream', 'milk', 'coconut milk', 'toffee', 'maple', 'rum', 'whiskey', 'cognac', 'wine', 'champagne'],
+  fruity: ['apple', 'pear', 'peach', 'plum', 'black currant', 'red currant', 'raspberry', 'strawberry', 'blackberry', 'cherry', 'sour cherry', 'fig', 'coconut', 'mango', 'pineapple', 'melon', 'watermelon', 'passionfruit', 'passion fruit', 'lychee', 'apricot', 'nectarine', 'pomegranate', 'kiwi', 'banana', 'red berries', 'wild berries', 'berries', 'quince', 'rhubarb', 'guava', 'papaya'],
+  aquatic: ['sea salt', 'sea notes', 'marine notes', 'aquatic notes', 'water notes', 'ozonic notes', 'salt', 'seaweed', 'driftwood accord', 'water lily', 'lotus'],
+  green: ['green tea', 'tea', 'black tea', 'fig leaf', 'violet leaf', 'green notes', 'grass', 'galbanum', 'oakmoss', 'moss', 'tomato leaf', 'eucalyptus', 'green apple', 'bamboo', 'ivy', 'leafy greens', 'matcha'],
+  musky: ['musk', 'white musk', 'skin musk', 'ambrette', 'cotton flower', 'cashmere', 'suede musk'],
+  spicy: ['cinnamon', 'clove', 'nutmeg', 'cardamom', 'black pepper', 'pepper', 'pink pepper', 'sichuan pepper', 'ginger', 'coriander seed', 'cumin', 'star anise', 'anise', 'bay leaf', 'pimento', 'chili', 'curry'],
+  powdery: ['powdery notes', 'iris', 'orris', 'violet', 'mimosa', 'heliotrope', 'rice', 'talc'],
+  aromatic: ['lavender', 'rosemary', 'sage', 'clary sage', 'thyme', 'mint', 'peppermint', 'spearmint', 'basil', 'juniper', 'juniper berries', 'artemisia', 'tarragon', 'shiso', 'angelica', 'laurel'],
+  leather: ['leather', 'suede', 'tobacco', 'tobacco leaf', 'hay', 'birch tar', 'castoreum'],
+};
+
+// True when a product carries a disliked term: as a note, in its name, via
+// a family the term maps to, or — when the term IS a family name — via any
+// of that family's lexicon notes appearing in the product's notes or name.
+function dislikedMatch(p: IndexProduct, intent: FragranceIntent): boolean {
+  const nameLower = p.name.toLowerCase();
+  for (const term of intent.disliked_notes) {
+    if (noteMatch(p, term)) return true;
+    if (nameLower.includes(term)) return true;
+    for (const f of termFamilies(term)) {
+      if (p.families.includes(f)) return true;
+    }
+    if ((FAMILIES as readonly string[]).includes(term)) {
+      for (const n of FAMILY_NOTES[term] ?? []) {
+        if (nameLower.includes(n)) return true;
+        for (const note of p.notesLower) {
+          if (note.includes(n)) return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 function rankByIntent(
   products: IndexProduct[],
   intent: FragranceIntent,
   qvec: Float32Array | null,
   limit: number,
 ): FragranceHit[] {
+  // Gender is the one hard filter: a specific-gender product that
+  // contradicts the request never ranks. Unisex/unspecified always pass.
+  const genderOk = (p: IndexProduct) =>
+    intent.gender === 'any' || p.gender === 'any' || p.gender === 'unisex' || p.gender === intent.gender;
+
+  // Pure-negation intent ("scent without citrus"): the parse carries only
+  // disliked notes, so there is nothing to score positively — the soft
+  // penalties below would sink everything under the threshold and return
+  // an empty result. Treat the dislikes as a hard exclusion instead and
+  // rank what survives by the query embedding. (Mixed queries keep the
+  // soft penalties: a rejected quality like sweetness should demote,
+  // not ban.)
+  const negationOnly =
+    intent.disliked_notes.length > 0 &&
+    !intent.liked_notes.length &&
+    !intent.families.length &&
+    !intent.occasions.length;
+  if (negationOnly) {
+    const survivors: { p: IndexProduct; score: number }[] = [];
+    for (const p of products) {
+      if (!genderOk(p)) continue;
+      if (dislikedMatch(p, intent)) continue;
+      survivors.push({ p, score: qvec ? cosine(qvec, p.vec) : 0 });
+    }
+    survivors.sort((a, b) => b.score - a.score);
+    return survivors.slice(0, limit).map(({ p }) => ({ id: p.id, reason: fallbackReason(p) }));
+  }
+
   const scored: { p: IndexProduct; score: number; reasons: string[] }[] = [];
   for (const p of products) {
-    // Gender is the one hard filter: a specific-gender product that
-    // contradicts the request never ranks. Unisex/unspecified always pass.
-    if (
-      intent.gender !== 'any' &&
-      p.gender !== 'any' &&
-      p.gender !== 'unisex' &&
-      p.gender !== intent.gender
-    ) {
-      continue;
-    }
+    if (!genderOk(p)) continue;
     let score = 0;
     const reasons: string[] = [];
     for (const term of intent.liked_notes) {
