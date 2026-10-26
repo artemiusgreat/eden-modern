@@ -140,9 +140,13 @@ function cosine(a: Float32Array, b: Float32Array): number {
 
 // ---------- tier 1: LLM intent parse via OpenRouter ----------
 
+// Free-model slugs churn without notice — re-verified 2026-10-26:
+// gemma-4-31b-it:free returned provider 502s and
+// nemotron-3-super-120b-a12b:free is gone (404); only the ultra model
+// answered. It is a reasoning model, hence the generous max_tokens in
+// parseIntent — at 500 it can spend the whole budget thinking and
+// truncate its own JSON. Re-test the chain before adding models back.
 const PARSE_MODELS = [
-  'google/gemma-4-31b-it:free',
-  'nvidia/nemotron-3-super-120b-a12b:free',
   'nvidia/nemotron-3-ultra-550b-a55b:free',
 ];
 
@@ -243,7 +247,7 @@ async function parseIntent(query: string): Promise<FragranceIntent | null> {
           { role: 'user', content: query },
         ],
         response_format: { type: 'json_object' },
-        max_tokens: 500,
+        max_tokens: 1500,
         temperature: 0,
       }),
       signal: AbortSignal.timeout(30_000),
@@ -463,6 +467,89 @@ function rankByKeyword(products: IndexProduct[], query: string, limit: number): 
   }));
 }
 
+// ---------- fallback negation guard (tiers 2+3) ----------
+
+// Tiers 2+3 rank on text similarity alone and cannot understand negation —
+// left alone, "scent without citrus" returns the MOST citrus products.
+// This guard extracts explicitly negated terms from the raw query and
+// hard-filters them with the same dislikedMatch() the intent path uses,
+// before either fallback ranker slices to the limit. It is deliberately
+// conservative: a negated span is acted on only when it resolves to a
+// known note, a TERM_FAMILIES key, or a family name — filler like
+// "nothing too strong" resolves to nothing and filters nothing.
+
+let NOTE_VOCAB: Set<string> | null = null;
+
+function noteVocab(products: IndexProduct[]): Set<string> {
+  if (NOTE_VOCAB) return NOTE_VOCAB;
+  const vocab = new Set<string>();
+  for (const p of products) for (const n of p.notesLower) vocab.add(n);
+  for (const notes of Object.values(FAMILY_NOTES)) for (const n of notes) vocab.add(n);
+  NOTE_VOCAB = vocab;
+  return vocab;
+}
+
+function resolvableTerm(term: string, vocab: Set<string>): boolean {
+  if ((FAMILIES as readonly string[]).includes(term)) return true;
+  if (term in TERM_FAMILIES) return true;
+  // Mirror noteMatch's substring tolerance ("bergamot" also resolves
+  // against "calabrian bergamot").
+  for (const n of vocab) {
+    if (n === term || n.includes(term) || term.includes(n)) return true;
+  }
+  return false;
+}
+
+const NEGATION_PATTERNS: RegExp[] = [
+  /\bwithout\s+([a-z][a-z-]*)(?:\s+([a-z][a-z-]*))?/g,
+  /\bno\s+([a-z][a-z-]*)(?:\s+([a-z][a-z-]*))?/g,
+  /\bnot\s+([a-z][a-z-]*)(?:\s+([a-z][a-z-]*))?/g,
+  /\bfree\s+of\s+([a-z][a-z-]*)(?:\s+([a-z][a-z-]*))?/g,
+];
+const FREE_SUFFIX_PATTERN = /\b([a-z]+(?:-[a-z]+)*)-free\b/g;
+
+function extractNegatedTerms(query: string, products: IndexProduct[]): string[] {
+  const vocab = noteVocab(products);
+  const q = query.toLowerCase();
+  const terms: string[] = [];
+  const addSpan = (first: string, second?: string) => {
+    // Longest resolvable span wins ("mandarin orange" over "mandarin");
+    // an unresolvable span is ignored whole — never fall through to the
+    // second word alone, so "not too sweet" stays inert.
+    if (second && resolvableTerm(`${first} ${second}`, vocab)) {
+      const two = `${first} ${second}`;
+      if (!terms.includes(two)) terms.push(two);
+    } else if (resolvableTerm(first, vocab)) {
+      if (!terms.includes(first)) terms.push(first);
+    }
+  };
+  for (const re of NEGATION_PATTERNS) {
+    for (const m of q.matchAll(re)) addSpan(m[1], m[2]);
+  }
+  for (const m of q.matchAll(FREE_SUFFIX_PATTERN)) {
+    addSpan(m[1].replace(/-/g, ' '));
+  }
+  return terms.slice(0, 6);
+}
+
+function applyFallbackNegationGuard(products: IndexProduct[], query: string): IndexProduct[] {
+  const terms = extractNegatedTerms(query, products);
+  if (!terms.length) return products;
+  const guardIntent: FragranceIntent = {
+    liked_notes: [],
+    disliked_notes: terms,
+    occasions: [],
+    families: [],
+    intensity: 'any',
+    gender: 'any',
+    free_terms: [],
+  };
+  // Consistent with the intent path's hard exclusion: if everything
+  // matches a negated term the filtered result is honestly empty, never
+  // silently un-filtered.
+  return products.filter((p) => !dislikedMatch(p, guardIntent));
+}
+
 // ---------- orchestration ----------
 
 export async function searchFragrances(
@@ -480,10 +567,14 @@ export async function searchFragrances(
     return { mode: 'llm', intent, hits: rankByIntent(products, intent, qvec, limit) };
   }
 
+  // Tiers 2+3 cannot parse negation — run their shared pool through the
+  // deterministic negation guard before either ranker slices to limit.
+  const pool = applyFallbackNegationGuard(products, query);
+
   const qvec = await embedText(query);
   if (qvec) {
-    return { mode: 'embedding', intent: null, hits: rankByEmbedding(products, qvec, sniffGender(query), limit) };
+    return { mode: 'embedding', intent: null, hits: rankByEmbedding(pool, qvec, sniffGender(query), limit) };
   }
 
-  return { mode: 'keyword', intent: null, hits: rankByKeyword(products, query, limit) };
+  return { mode: 'keyword', intent: null, hits: rankByKeyword(pool, query, limit) };
 }
