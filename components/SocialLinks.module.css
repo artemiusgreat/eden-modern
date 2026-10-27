@@ -1,0 +1,29 @@
+.wrap {
+  margin-top: 3rem;
+}
+
+.title {
+  font-family: var(--font-card-title, var(--font-serif));
+  font-size: 1.25rem;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+
+/* Mirrors the footer's social buttons (SiteFooter.module.css .socialBtn). */
+.socialBtn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  font-size: 0.85rem;
+  transition: all 0.25s ease;
+}
+.socialBtn:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}

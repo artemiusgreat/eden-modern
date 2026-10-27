@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getWpPage } from '@/lib/woo';
 import InfoPageView from '@/components/InfoPageView';
 import ContactForm from '@/components/ContactForm';
+import SocialLinks from '@/components/SocialLinks';
 
 export const revalidate = 86400;
 
@@ -23,6 +24,7 @@ export default async function ContactsPage() {
       <InfoPageView title={page.title} content={content} caption="Questions about a product or your order? We're here to help." />
       <div className="container pb-5">
         <ContactForm />
+        <SocialLinks />
       </div>
     </>
   );
