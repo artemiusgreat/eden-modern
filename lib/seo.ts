@@ -67,7 +67,35 @@ export function organizationJsonLd(): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Indemos',
+    name: 'Eden by Indemos',
+    legalName: 'Indemos LLC',
     url: siteBase(),
+    email: 'service@indemos.com',
+    description:
+      'Eden by Indemos (Indemos LLC) is a US online retailer of skincare, cosmetics, and designer fragrances.',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Store 1250, 701 State Route 440 Ste 16',
+      addressLocality: 'Jersey City',
+      addressRegion: 'NJ',
+      postalCode: '07304',
+      addressCountry: 'US',
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: 'service@indemos.com',
+      contactType: 'customer service',
+    },
+    sameAs: [
+      'https://www.linkedin.com/company/eden-indemos',
+      'https://www.facebook.com/people/Eden-Indemos/61588893673349',
+      'https://www.instagram.com/eden.indemos',
+      'https://www.threads.com/@eden.indemos',
+      'https://www.pinterest.com/edenindemos',
+      'https://www.youtube.com/@eden-indemos',
+      'https://www.tiktok.com/@eden.indemos',
+      'https://x.com/edenindemos',
+      'https://www.trustpilot.com/review/eden.indemos.com',
+    ],
   };
 }
