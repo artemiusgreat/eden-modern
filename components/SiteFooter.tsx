@@ -6,7 +6,7 @@ import type { StoreCategory } from '@/lib/woo';
 import TrustpilotStars from './TrustpilotStars';
 import styles from './SiteFooter.module.css';
 
-const SOCIALS: { label: string; href: string; icon: string }[] = [
+export const SOCIALS: { label: string; href: string; icon: string }[] = [
   { label: 'Facebook', href: 'https://www.facebook.com/people/Eden-Indemos/61588893673349', icon: 'facebook-f' },
   { label: 'Instagram', href: 'https://www.instagram.com/eden.indemos', icon: 'instagram' },
   { label: 'Threads', href: 'https://www.threads.com/@eden.indemos', icon: 'threads' },
@@ -14,6 +14,7 @@ const SOCIALS: { label: string; href: string; icon: string }[] = [
   { label: 'YouTube', href: 'https://www.youtube.com/@eden-indemos', icon: 'youtube' },
   { label: 'TikTok', href: 'https://www.tiktok.com/@eden.indemos', icon: 'tiktok' },
   { label: 'X', href: 'https://x.com/edenindemos', icon: 'x-twitter' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/eden-indemos', icon: 'linkedin-in' },
 ];
 
 export default function SiteFooter({ categories }: { categories: StoreCategory[] }) {
