@@ -15,7 +15,7 @@ interface SearchResult {
 
 const EXAMPLES = [
   'Fresh and light for the office, nothing too strong',
-  'A gentle moisturizer for dry skin',
+  'Vanilla body lotion',
   'Roses and musk for a wedding',
   'A gift set for my dad — something classic',
   'Warm vanilla for a date night',
